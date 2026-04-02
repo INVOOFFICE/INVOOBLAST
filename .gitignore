@@ -1,0 +1,11 @@
+# Dépendances Node (re-install avec npm install dans server/)
+server/node_modules/
+
+# Fichiers système / éditeurs
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.log
+
+# Sauvegardes locales optionnelles à ne pas versionner si vous en créez ici
+# *.json

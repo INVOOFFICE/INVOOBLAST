@@ -1,0 +1,29 @@
+{
+  "id": "./app/index.html",
+  "name": "INVOOBLAST — Campagnes e-mail locales",
+  "short_name": "INVOOBLAST",
+  "description": "PWA offline-first pour campagnes e-mail. Données stockées uniquement sur l'appareil.",
+  "start_url": "./app/index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "theme_color": "#0f172a",
+  "background_color": "#0b1220",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": []
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta
+      name="description"
+      content="INVOOBLAST — PWA offline-first pour campagnes e-mail. Données locales uniquement (IndexedDB)."
+    />
+    <link rel="manifest" href="../manifest.json" />
+    <link rel="icon" href="../icons/icon.svg" type="image/svg+xml" />
+    <title>INVOOBLAST</title>
+    <link rel="stylesheet" href="css/app.css" />
+  </head>
+  <body>
+    <div id="app-root" aria-busy="true"></div>
+    <!-- Ordre des scripts : données → chiffrement → réseau → persistance comptes → UI -->
+    <script defer src="../data/db.js"></script>
+    <script defer src="services/crypto-vault.js"></script>
+    <script defer src="services/network-state.js"></script>
+    <script defer src="services/gmail-account-store.js"></script>
+    <script defer src="components/shell.js"></script>
+    <script defer src="js/navigation.js"></script>
+    <script defer src="js/dashboard.js"></script>
+    <script defer src="services/email-merge.js"></script>
+    <script defer src="vendor/xlsx.full.min.js"></script>
+    <script defer src="js/lists-import.js"></script>
+    <script defer src="js/email-editor.js"></script>
+    <script defer src="js/settings.js"></script>
+    <script defer src="services/smtp-relay-client.js"></script>
+    <script defer src="services/blast-send-engine.js"></script>
+    <script defer src="js/blast.js"></script>
+    <script defer src="js/app.js"></script>
+    <script defer src="js/sw-register.js"></script>
+  </body>
+</html>

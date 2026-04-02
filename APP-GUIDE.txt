@@ -1,0 +1,291 @@
+================================================================================
+  APP-GUIDE — Architecture et systèmes de CETTE application (INVOOBLAST)
+================================================================================
+  Document tiré du code du dépôt (pas un guide générique PWA).
+  Pour une IA ou un dev : lire ce fichier avant de cloner ou modifier l’architecture.
+  Dernière rédaction : 2026-04-02
+================================================================================
+
+
+1. VUE D’ENSEMBLE DE CETTE APPLICATION
+----------------------------------------
+
+  Type
+    • Application web **statique** : aucun serveur applicatif requis pour
+      consulter l’UI, les données locales ni le fonctionnement **hors ligne**
+      du shell.
+    • **PWA** : installable (**manifest.json**), **service-worker.js** avec
+      **précache** des assets pour une expérience **100 % offline** pour
+      l’application elle-même après le premier chargement réussi en contexte
+      sécurisé (HTTPS ou localhost).
+    • **Offline-first / local-first** :
+        – **Données métier** → **IndexedDB** uniquement (**data/db.js**).
+        – **Petites préférences UI** et **sel du coffre** → **localStorage**
+          (volontairement limité : pas de grosses payloads).
+        – **Secrets Gmail** → chiffrés en local (**app/services/crypto-vault.js**)
+          ; jamais de mot de passe d’application en clair persisté.
+    • **Aucun backend de stockage** : emails, listes, historiques, configs de
+      campagnes ne sont pas envoyés à un serveur tiers par l’architecture
+      prévue du dépôt.
+
+  Principe « 100 % offline » (à comprendre précisément)
+    • **Offline intégral** pour :
+        – chargement de l’interface (HTML, CSS, JS mis en cache par le SW) ;
+        – lecture/écriture des données **IndexedDB** ;
+        – édition locale (listes, templates, paramètres de campagne, etc.) ;
+        – consultation du tableau de bord et des journaux **locaux**.
+    • **Réseau requis uniquement** pour les **fonctions qui parlent à Internet**
+      (voir §5) : envoi SMTP / API Gmail, configuration OAuth ou test de comptes
+      distants, **scan IMAP** (bounces). L’UI doit rester utilisable hors ligne
+      et afficher un message clair si l’utilisateur lance une action en ligne
+      sans connexion (**InvooNetwork**).
+
+  Logique produit (orientation métier)
+    • Campagnes e-mail multi-comptes Gmail, rotation, anti-spam, reprise
+      (checkpoints), import listes, éditeur HTML avec variables, nettoyage
+      via IMAP : décrit dans les spécifications produit ; ce guide décrit
+      **comment le code est structuré** pour rester local-first et n’utiliser
+      le réseau que là où c’est indispensable.
+
+
+2. ARCHITECTURE RÉELLE DU PROJET
+---------------------------------
+
+2.1 Structure des dossiers (racine dépôt)
+
+    index.html              redirection vers **app/index.html** (racine servie)
+    manifest.json           métadonnées PWA (start_url vers **app/index.html**)
+    service-worker.js       cache statique ; **pas** de stockage métier
+    icons/                  icônes SVG (installation / raccourcis)
+    app/
+      index.html            entrée PWA ; ordre des **<script defer>**
+      css/                  tokens + app (**tokens.css**, **app.css**)
+      js/                   bootstrap, navigation, dashboard, enregistrement SW
+      components/           gabarit UI (**shell.js**)
+      services/             réseau, chiffrement, persistance comptes Gmail
+    data/
+      db.js                 IndexedDB : schéma, accès, stats dashboard
+
+
+2.2 Rôle précis des fichiers clés
+
+    app/index.html
+      • Coquille minimale : **#app-root** rempli par **app/js/app.js** après
+        chargement des scripts.
+      • Liste **ordonnée** des **<script defer>** — l’ordre est **contractuel**.
+
+    app/components/shell.js
+      • **shellHtml()** : structure sidebar, topbar, pages **#page-***.
+      • **PLACEHOLDERS** : HTML des sections non encore finalisées (import,
+        éditeur, blast, IMAP).
+
+    data/db.js
+      • **indexedDB.open('invooblast_db', DB_VERSION)** ; création des **stores**
+        : meta, lists, contacts, templates, campaigns, sendHistory, gmailAccounts,
+        checkpoints, logs (voir constante **STORES**).
+      • API globale **window.InvooBlastDB** : openDB, get/put/getAll/del,
+        getDashboardStats, getMeta/setMeta, appendLog, seedIfEmpty, uuid,
+        normalizeEmail.
+      • **Les données utilisateur vivent ici**, pas dans le Cache API du SW.
+
+    app/services/crypto-vault.js
+      • **PBKDF2** + **AES-GCM** ; sel persistant **localStorage**
+        (**invooblast_vault_salt_v1**), clé **en mémoire** si coffre déverrouillé.
+      • **InvooCryptoVault** : unlockVault, lockVault, isUnlocked, encryptString,
+        decryptString.
+
+    app/services/network-state.js
+      • **InvooNetwork** : isOnline, requireOnline (rejette avec message si
+        action nécessitant le réseau), onNetworkChange.
+      • À utiliser **systématiquement** avant tout appel SMTP, OAuth, Gmail API,
+        IMAP.
+
+    app/services/gmail-account-store.js
+      • **InvooGmailAccountStore** : persistance des comptes avec champ **enc**
+        chiffré (pas de mot de passe d’application en clair en base).
+
+    app/js/navigation.js
+      • Navigation légère entre sections (**data-page**), événement personnalisé
+        **invooblast:page** pour rafraîchir le dashboard, etc.
+
+    app/js/dashboard.js
+      • **InvooDashboard** : agrège **getDashboardStats**, bannières coffre /
+        hors ligne.
+
+    app/js/app.js
+      • **boot()** : openDB → seedIfEmpty → injection shell + placeholders →
+        init navigation → raccordement réseau / coffre / install PWA →
+        refreshDashboard.
+
+    app/js/sw-register.js
+      • Enregistre **../service-worker.js** avec **scope** parent (**../**) ;
+        nécessite **isSecureContext** (pas file:// pour le SW).
+
+    service-worker.js
+      • **CACHE_NAME** dérivé de **CACHE_VERSION** (ex. `invooblast-static-invooblast-v2`).
+      • **PRECACHE_ASSETS** : liste exhaustive des fichiers statiques à mettre
+        en cache à l’**install**.
+      • **fetch** : stratégie **cache-first** pour les assets d’app ; les données
+        **IndexedDB** ne passent **pas** par ce cache.
+
+
+2.3 Flux de démarrage (ordre réel)
+
+    1) Navigateur charge **app/index.html** ; scripts **defer** dans l’ordre.
+    2) **data/db.js** expose **InvooBlastDB**.
+    3) **crypto-vault.js**, **network-state.js**, **gmail-account-store.js**.
+    4) **shell.js**, **navigation.js**, **dashboard.js**.
+    5) **app.js** : **DOMContentLoaded** → **boot()** (IndexedDB + UI).
+    6) **sw-register.js** après **load** : enregistrement du SW.
+
+
+3. PWA (IMPLÉMENTATION ACTUELLE)
+---------------------------------
+
+3.1 manifest.json (résumé fidèle au fichier)
+    • **start_url** : `./app/index.html` ; **scope** : `./`.
+    • **display** : `standalone` (+ **display_override** minimal-ui).
+    • **theme_color** / **background_color** : tons sombres (#0f172a, #0b1220).
+    • **icons** : SVG (**./icons/icon.svg**, **icon-maskable.svg**).
+
+3.2 service-worker.js — fonctionnement
+    • **CACHE_VERSION** : chaîne unique ; toute évolution de **PRECACHE_ASSETS**
+      ou du shell critique → **incrémenter** cette valeur.
+    • **install** : remplit **caches.open(CACHE_NAME)** ; **skipWaiting** après
+      precache (tolérance partielle aux échecs : voir logs console).
+    • **activate** : purge les caches dont le nom ≠ **CACHE_NAME**.
+    • **fetch** (GET, même origine, chemins considérés comme assets d’app) :
+      **cache-first** ; navigation document : repli vers **app/index.html** si
+      réseau indisponible.
+
+3.3 Données utilisateur vs cache
+    • **Cache API** = copies des fichiers **JS/CSS/HTML** pour offline.
+    • **IndexedDB** = vérité métier ; changer **CACHE_VERSION** **n’efface pas**
+      IndexedDB.
+    • **localStorage** = sel coffre + préférences légères uniquement.
+
+
+4. STOCKAGE LOCAL (IMPLÉMENTATION ACTUELLE)
+--------------------------------------------
+
+4.1 IndexedDB (**data/db.js**)
+    • **DB_NAME** : `invooblast_db`.
+    • **DB_VERSION** : entier ; **onupgradeneeded** crée ou altère les stores.
+    • Toute évolution de schéma :
+        – incrémenter **DB_VERSION** ;
+        – ajouter la logique dans **onupgradeneeded** (migration par version
+          dans le même handler si plusieurs étapes).
+    • Pas d’OPFS ni de fichiers JSON métier sur disque dans cette version du
+      dépôt : la source de vérité est **uniquement** IndexedDB.
+
+4.2 localStorage (usage restreint)
+    • **crypto-vault.js** : sel PBKDF2 (**invooblast_vault_salt_v1**).
+    • Éventuellement **meta** UI très petite (préférence thème) si ajoutée —
+      ne pas ya stocker des listes ou historiques (risque quota / perf).
+
+4.3 Chiffrement des secrets
+    • Les mots de passe d’application Gmail passent par **encryptString** avant
+      **put** dans le store **gmailAccounts**.
+    • Sans **unlockVault**, **gmail-account-store** refuse d’écrire.
+
+
+5. CONNEXION RÉSEAU : OÙ ELLE EST NÉCESSAIRE
+---------------------------------------------
+
+  Principe
+    • Par défaut, l’app **ne dépend pas** du réseau pour l’UI et les données
+      locales.
+    • Toute fonctionnalité qui envoie ou reçoit des données **hors navigateur**
+      doit :
+        1) appeler **InvooNetwork.requireOnline()** ou vérifier **isOnline** ;
+        2) gérer l’erreur avec un message utilisateur explicite ;
+        3) ne jamais persister sur un serveur tiers les listes/configs (hors
+           protocoles mail/API demandés par l’utilisateur : SMTP, Gmail, IMAP).
+
+  Cas prévus par le produit (implémentation progressive dans le dépôt)
+    • **Envoi d’emails** (SMTP, Gmail API) : **online obligatoire**.
+    • **Configuration / test du pool Gmail** (OAuth, validation token, etc.) :
+      **online obligatoire**.
+    • **Scan IMAP** (bounces, fenêtre glissante ex. 30 jours) : **online
+      obligatoire** ; résultats **réécrits localement** dans IndexedDB (listes,
+      statuts contacts).
+
+  Cas qui doivent rester **offline**
+    • Consultation et édition des **listes** (après import local).
+    • **Templates** HTML, **campagnes** (brouillon), **checkpoints** de reprise,
+      **historique** d’envoi déjà enregistré, **logs** locaux.
+
+
+6. SÉCURITÉ (RAPPEL OPÉRATIONNEL)
+----------------------------------
+
+    • Ne pas stocker de **mot de passe Gmail en clair** : utiliser **mots de
+      passe d’application** + **coffre** + champ **enc**.
+    • **Web Crypto** (PBKDF2 / AES-GCM) exige un contexte sécurisé comme le SW.
+    • Ne pas exposer de clés ou tokens dans **PRECACHE_ASSETS** ni dans des
+      fichiers statiques non chiffrés.
+
+
+7. RÈGLES CRITIQUES DU PROJET
+------------------------------
+
+7.1 Quand modifier CACHE_VERSION (**service-worker.js**)
+    • Ajout / suppression / renommage d’un fichier listé dans **PRECACHE_ASSETS**.
+    • Changement du shell ou des JS/CSS que les utilisateurs doivent recevoir
+      sans mélange SW obsolète / fichiers manquants.
+    • Après bump : test hors ligne + installation PWA.
+
+7.2 Quand modifier DB_VERSION (**data/db.js**)
+    • Toute évolution des **stores** ou du **sens** des objets persistés.
+    • Implémenter les migrations dans **onupgradeneeded** (ou extraire une
+      couche **migrations** si le fichier grossit).
+    • Tester rechargement après migration depuis une base existante.
+
+7.3 Ordre des scripts (**app/index.html**)
+    • Respecter : **db.js** → **crypto-vault** → **network-state** →
+      **gmail-account-store** → **shell** → **navigation** → **dashboard** →
+      **app** → **sw-register**.
+    • **gmail-account-store** suppose **InvooBlastDB** et **InvooCryptoVault**
+      déjà définis.
+
+7.4 Erreurs à éviter
+    • Mettre des **données métier** dans le cache SW ou localStorage massivement.
+    • Oublier **requireOnline** sur une action SMTP/IMAP/API.
+    • Retirer du dépôt un fichier encore listé dans **PRECACHE_ASSETS**.
+    • Confondre **Cache API** et **IndexedDB** pour la « vérité » métier.
+
+
+8. CHECKLIST FINALE (QUALITÉ RELEASE)
+--------------------------------------
+
+  [ ] **Offline UI** : SW actif, precache cohérent, navigation principale hors ligne.
+  [ ] **IndexedDB** : ouverture OK, stats dashboard cohérentes après refresh.
+  [ ] **Coffre** : impossible d’enregistrer un secret non chiffré sans unlock.
+  [ ] **Réseau** : actions SMTP/IMAP/API bloquées ou message clair si offline.
+  [ ] **PWA** : installation possible ; **start_url** et **scope** corrects.
+  [ ] **CACHE_VERSION** bumpé si **PRECACHE_ASSETS** a changé.
+
+
+9. PROMPT RÉUTILISABLE (pour une IA)
+-------------------------------------
+
+  Copier-coller dans une nouvelle conversation :
+
+  ---
+  Lis APP-GUIDE.txt à la racine du dépôt INVOOBLAST. Respecte l’architecture :
+  app statique + PWA (**manifest.json**, **service-worker.js** avec
+  **PRECACHE_ASSETS** et **CACHE_VERSION**), données **IndexedDB** via
+  **data/db.js** (**DB_VERSION** / migrations), **localStorage** minimal pour
+  le sel du coffre, secrets Gmail chiffrés (**crypto-vault.js**,
+  **gmail-account-store.js**). L’application doit être **offline-first** pour
+  l’UI et les données locales ; le **réseau** uniquement pour envoi mail,
+  configuration comptes distants et scan IMAP (**InvooNetwork**). Pas de backend
+  de stockage pour les listes/configs. Pas de framework SPA imposé. Après
+  tout changement du precache, incrémente **CACHE_VERSION**. Après tout
+  changement de schéma IndexedDB, incrémente **DB_VERSION** et migrer.
+  ---
+
+
+================================================================================
+  Fin APP-GUIDE.txt
+================================================================================
