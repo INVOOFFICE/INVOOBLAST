@@ -1,0 +1,23 @@
+# Blueprint Render.com — relais SMTP open source pour INVOOBLAST (dépôt GitHub).
+# Déploiement : New > Blueprint > connecter ce repo > renseigner les variables ci-dessous.
+#
+# Après déploiement : copier l’URL https://… (sans slash final) dans l’app
+# Paramètres → URL du relais SMTP + la même clé que INVOOBLAST_RELAY_API_KEY.
+
+services:
+  - type: web
+    name: invooblast-smtp-relay
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: INVOOBLAST_SMTP_RELAY_HOST
+        value: 0.0.0.0
+      - key: INVOOBLAST_RELAY_API_KEY
+        generateValue: true
+      - key: INVOOBLAST_ALLOWED_ORIGINS
+        sync: false

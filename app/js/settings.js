@@ -44,12 +44,101 @@
     website: '',
     /** Lien optionnel (PDF, LinkedIn…) — utile si vous ne collez pas de HTML dans cvHtml. */
     cvUrl: '',
+<<<<<<< HEAD
     /** Fragment HTML du CV, fusionné dans l’e-mail via {{@cv_html}} (profil local, assaini à l’enregistrement). */
     cvHtml: ''
+=======
+    /** Fragment HTML du CV actif (doublon du bloc sélectionné — compat. anciennes sauvegardes). */
+    cvHtml: '',
+    /** @type {{ id: string, label: string, html: string }[]} */
+    cvHtmlVariants: [],
+    /** Id du bloc utilisé pour {{@cv_html}} (aperçu + envoi Blast). */
+    selectedCvHtmlId: ''
+>>>>>>> 7f4f399 (ok)
   };
 
   const APP_PWD_URL = 'https://support.google.com/mail/answer/185833?hl=fr';
 
+<<<<<<< HEAD
+=======
+  /** Normalise le profil : plusieurs CV HTML + id sélectionné pour la fusion. */
+  function migrateProfileCv(raw) {
+    const base = { ...DEFAULT_PROFILE, ...(raw && typeof raw === 'object' ? raw : {}) };
+    let variants = Array.isArray(base.cvHtmlVariants) ? base.cvHtmlVariants.slice() : [];
+    const legacyHtml = base.cvHtml != null ? String(base.cvHtml) : '';
+    if (!variants.length) {
+      variants = [{ id: 'cv-1', label: 'CV principal', html: legacyHtml }];
+    }
+    const used = new Set();
+    variants = variants.map((v, i) => {
+      let id = v && v.id != null ? String(v.id).trim() : '';
+      if (!id || used.has(id)) {
+        id = `cv-${i + 1}`;
+        while (used.has(id)) id = `${id}a`;
+      }
+      used.add(id);
+      const label =
+        v && v.label != null && String(v.label).trim() ? String(v.label).trim() : `CV ${i + 1}`;
+      const html = v && v.html != null ? String(v.html) : '';
+      return { id, label, html };
+    });
+    let sel = base.selectedCvHtmlId != null ? String(base.selectedCvHtmlId).trim() : '';
+    if (!sel || !variants.some((v) => v.id === sel)) sel = variants[0].id;
+    const activeHtml = (variants.find((v) => v.id === sel) || variants[0]).html;
+    return {
+      ...base,
+      cvHtmlVariants: variants,
+      selectedCvHtmlId: sel,
+      cvHtml: activeHtml
+    };
+  }
+
+  let cvVariantsState = [];
+  let cvEditId = '';
+
+  function syncCvFormToState(root) {
+    if (!cvEditId || !cvVariantsState.length) return;
+    const v = cvVariantsState.find((x) => x.id === cvEditId);
+    if (!v) return;
+    v.label = getInputTrim(root, '#pf-cv-label') || v.label;
+    v.html = getTextareaRaw(root, '#pf-cv-html');
+  }
+
+  function loadCvVariantIntoForm(root) {
+    const v = cvVariantsState.find((x) => x.id === cvEditId);
+    if (!v) return;
+    setInput(root, '#pf-cv-label', v.label);
+    setInput(root, '#pf-cv-html', v.html);
+  }
+
+  function fillCvSelects(root) {
+    const active = root.querySelector('#pf-cv-active');
+    const edit = root.querySelector('#pf-cv-edit');
+    const prevActive = active && active.value;
+    const opts = cvVariantsState
+      .map((v) => `<option value="${escapeAttr(v.id)}">${escapeHtml(v.label)}</option>`)
+      .join('');
+    if (active) {
+      active.innerHTML = opts;
+      const aVal =
+        prevActive && cvVariantsState.some((x) => x.id === prevActive)
+          ? prevActive
+          : cvVariantsState[0]?.id;
+      if (aVal) active.value = aVal;
+    }
+    if (edit) {
+      edit.innerHTML = opts;
+      const eVal = cvVariantsState.some((x) => x.id === cvEditId) ? cvEditId : cvVariantsState[0]?.id;
+      if (eVal) {
+        cvEditId = eVal;
+        edit.value = eVal;
+      }
+    }
+    const btnRm = root.querySelector('#pf-cv-remove');
+    if (btnRm) btnRm.disabled = cvVariantsState.length <= 1;
+  }
+
+>>>>>>> 7f4f399 (ok)
   function toast(msg, isErr) {
     const app = global.InvooApp;
     if (app && app.showToast) app.showToast(msg, !!isErr);
@@ -102,8 +191,26 @@
         <input id="pf-cv" type="url" class="editor-input" placeholder="https://…"/>
       </div>
       <div class="settings-field span-2">
+<<<<<<< HEAD
         <label for="pf-cv-html">CV intégré au message (HTML)</label>
         <textarea id="pf-cv-html" class="editor-textarea" rows="12" spellcheck="false" placeholder="Collez ici le HTML de votre CV (tableaux et styles inline recommandés pour Gmail). Sera inséré dans le modèle à la place de {{@cv_html}} — le bouton « Voir mon CV » fait défiler jusqu’à ce bloc dans le même e-mail."></textarea>
+=======
+        <label for="pf-cv-active">CV inséré dans l’envoi ({{@cv_html}})</label>
+        <select id="pf-cv-active" class="editor-input" style="max-width:min(100%,480px)"></select>
+        <p class="editor-hint" style="margin-top:8px">Ce bloc HTML est fusionné dans le brouillon et l’aperçu éditeur. Le menu ci‑dessus est <strong>enregistré automatiquement</strong> dès que vous changez de CV (aperçu Message et envoi Blast). Vous pouvez définir plusieurs CV ci‑dessous et les éditer séparément.</p>
+      </div>
+      <div class="settings-field span-2">
+        <label for="pf-cv-edit">Éditer un CV HTML</label>
+        <div class="row-actions" style="margin:0 0 0.65rem 0;flex-wrap:wrap;gap:0.5rem;align-items:center">
+          <select id="pf-cv-edit" class="editor-input" style="max-width:min(100%,360px)"></select>
+          <button type="button" class="btn" id="pf-cv-add">Ajouter un CV</button>
+          <button type="button" class="btn" id="pf-cv-remove">Supprimer ce CV</button>
+        </div>
+        <label for="pf-cv-label">Libellé (menu)</label>
+        <input id="pf-cv-label" type="text" class="editor-input" placeholder="ex. CV technique, CV court…"/>
+        <label for="pf-cv-html" style="display:block;margin-top:0.65rem">HTML du CV</label>
+        <textarea id="pf-cv-html" class="editor-textarea" rows="12" spellcheck="false" placeholder="Collez ici le HTML de votre CV (tableaux et styles inline recommandés pour Gmail). Sera inséré à la place de {{@cv_html}} pour le CV choisi ci‑dessus — le bouton « Voir mon CV » fait défiler jusqu’à ce bloc dans le même e-mail."></textarea>
+>>>>>>> 7f4f399 (ok)
         <p class="editor-hint" style="margin-top:8px">Pas de JavaScript. Les balises &lt;script&gt;, &lt;iframe&gt; et les attributs d’événements sont retirés à l’enregistrement.</p>
       </div>
       <div class="settings-field span-2">
@@ -205,7 +312,11 @@
       <div class="settings-field span-2">
         <label for="bc-smtp-relay">URL du relais SMTP</label>
         <input id="bc-smtp-relay" type="url" class="editor-input" placeholder="http://127.0.0.1:18765 ou https://votre-relais.onrender.com" autocomplete="off"/>
+<<<<<<< HEAD
         <span class="editor-hint">En local : <code>http://127.0.0.1:18765</code> + <code>npm start</code> dans <code>server/</code>. Sur GitHub Pages : déployez le relais en <strong>HTTPS</strong> ailleurs (Render, Fly.io…) et mettez son URL <code>https://…</code> ici — le port par défaut du script est <strong>18765</strong>.</span>
+=======
+        <span class="editor-hint">Relais <strong>open source</strong> (<code>server/</code>) : <code>npm start</code> en local, ou déploiement HTTPS (Docker, <code>render.yaml</code>). URL de base sans <code>/send</code>. <strong>GitHub Pages est en HTTPS</strong> : un relais <code>http://127.0.0.1</code> ne fonctionnera pas depuis le site en ligne — déployez le relais en <code>https://…</code>, ou utilisez l’app en <code>http://localhost</code> pour le relais local. Pool Gmail ci‑dessous.</span>
+>>>>>>> 7f4f399 (ok)
       </div>
       <div class="settings-field span-2">
         <label for="bc-relay-api-key">Clé API relais (optionnel)</label>
@@ -263,7 +374,12 @@
   }
 
   async function loadProfileIntoForm(root) {
+<<<<<<< HEAD
     const p = { ...DEFAULT_PROFILE, ...(await db.getMeta(META_PROFILE)) };
+=======
+    const raw = await db.getMeta(META_PROFILE);
+    const p = migrateProfileCv({ ...DEFAULT_PROFILE, ...(raw && typeof raw === 'object' ? raw : {}) });
+>>>>>>> 7f4f399 (ok)
     setInput(root, '#pf-first', p.firstName);
     setInput(root, '#pf-last', p.lastName);
     setInput(root, '#pf-company', p.company);
@@ -273,7 +389,20 @@
     setInput(root, '#pf-phone', p.phone);
     setInput(root, '#pf-site', p.website);
     setInput(root, '#pf-cv', p.cvUrl);
+<<<<<<< HEAD
     setInput(root, '#pf-cv-html', p.cvHtml);
+=======
+    cvVariantsState = p.cvHtmlVariants.map((x) => ({ ...x }));
+    cvEditId = cvVariantsState[0]?.id || '';
+    fillCvSelects(root);
+    const activeSel = root.querySelector('#pf-cv-active');
+    if (activeSel && p.selectedCvHtmlId && cvVariantsState.some((x) => x.id === p.selectedCvHtmlId)) {
+      activeSel.value = p.selectedCvHtmlId;
+    }
+    const editSel = root.querySelector('#pf-cv-edit');
+    if (editSel) editSel.value = cvEditId;
+    loadCvVariantIntoForm(root);
+>>>>>>> 7f4f399 (ok)
     setInput(root, '#pf-address', p.addressLine);
     setInput(root, '#pf-zip', p.postalCode);
     setInput(root, '#pf-city', p.city);
@@ -285,10 +414,31 @@
     return el ? String(el.value || '') : '';
   }
 
+<<<<<<< HEAD
   async function saveProfileFromForm(root) {
     const merge = global.InvooEmailMerge;
     const sanitize =
       merge && typeof merge.sanitizeCvHtml === 'function' ? merge.sanitizeCvHtml : (h) => String(h || '').trim();
+=======
+  async function saveProfileFromForm(root, opts) {
+    const silent = opts && opts.silent;
+    const merge = global.InvooEmailMerge;
+    const sanitize =
+      merge && typeof merge.sanitizeCvHtml === 'function' ? merge.sanitizeCvHtml : (h) => String(h || '').trim();
+    syncCvFormToState(root);
+    const sanitizedVariants = cvVariantsState.map((v, i) => ({
+      id: v.id,
+      label: String(v.label || '').trim() || `CV ${i + 1}`,
+      html: sanitize(v.html == null ? '' : String(v.html))
+    }));
+    const activeEl = root.querySelector('#pf-cv-active');
+    let selectedCvHtmlId = activeEl && activeEl.value ? String(activeEl.value) : '';
+    if (!selectedCvHtmlId || !sanitizedVariants.some((v) => v.id === selectedCvHtmlId)) {
+      selectedCvHtmlId = sanitizedVariants[0]?.id || '';
+    }
+    const activeHtml =
+      sanitizedVariants.find((v) => v.id === selectedCvHtmlId)?.html ?? sanitizedVariants[0]?.html ?? '';
+>>>>>>> 7f4f399 (ok)
     const p = {
       firstName: getInputTrim(root, '#pf-first'),
       lastName: getInputTrim(root, '#pf-last'),
@@ -299,7 +449,13 @@
       phone: getInputTrim(root, '#pf-phone'),
       website: getInputTrim(root, '#pf-site'),
       cvUrl: getInputTrim(root, '#pf-cv'),
+<<<<<<< HEAD
       cvHtml: sanitize(getTextareaRaw(root, '#pf-cv-html')),
+=======
+      cvHtml: activeHtml,
+      cvHtmlVariants: sanitizedVariants,
+      selectedCvHtmlId: selectedCvHtmlId,
+>>>>>>> 7f4f399 (ok)
       addressLine: getInputTrim(root, '#pf-address'),
       postalCode: getInputTrim(root, '#pf-zip'),
       city: getInputTrim(root, '#pf-city'),
@@ -307,11 +463,46 @@
       updatedAt: Date.now()
     };
     await db.setMeta(META_PROFILE, p);
+<<<<<<< HEAD
     await db.appendLog('info', 'Profil utilisateur enregistré.');
     toast('Profil enregistré localement.');
     global.dispatchEvent(new CustomEvent('invooblast:profile-updated'));
   }
 
+=======
+    if (!silent) {
+      await db.appendLog('info', 'Profil utilisateur enregistré.');
+      toast('Profil enregistré localement.');
+    }
+    global.dispatchEvent(new CustomEvent('invooblast:profile-updated'));
+  }
+
+  /**
+   * Change uniquement le CV actif ({{@cv_html}}) sans passer par le formulaire Paramètres — ex. sélecteur dans l’éditeur e-mail.
+   * @param {string} id
+   * @returns {Promise<boolean>} true si enregistré
+   */
+  async function setSelectedCvHtmlId(id) {
+    const raw = await db.getMeta(META_PROFILE);
+    const p = migrateProfileCv({ ...DEFAULT_PROFILE, ...(raw && typeof raw === 'object' ? raw : {}) });
+    const sel = id != null ? String(id).trim() : '';
+    if (!sel || !p.cvHtmlVariants.some((v) => v.id === sel)) return false;
+    const merge = global.InvooEmailMerge;
+    const sanitize =
+      merge && typeof merge.sanitizeCvHtml === 'function' ? merge.sanitizeCvHtml : (h) => String(h || '').trim();
+    const activeHtml = sanitize(p.cvHtmlVariants.find((v) => v.id === sel).html);
+    const next = {
+      ...p,
+      selectedCvHtmlId: sel,
+      cvHtml: activeHtml,
+      updatedAt: Date.now()
+    };
+    await db.setMeta(META_PROFILE, next);
+    global.dispatchEvent(new CustomEvent('invooblast:profile-updated'));
+    return true;
+  }
+
+>>>>>>> 7f4f399 (ok)
   async function loadBlastIntoForm(root) {
     const c = { ...DEFAULT_BLAST, ...(await db.getMeta(META_BLAST)) };
     root.querySelector('#bc-relay').checked = !!c.useFallbackRelay;
@@ -405,7 +596,22 @@
     container.querySelectorAll('[data-remove]').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const id = btn.getAttribute('data-remove');
+<<<<<<< HEAD
         if (!id || !global.confirm('Retirer ce compte du pool ?')) return;
+=======
+        if (!id) return;
+        const dlg = global.InvooConfirm;
+        const ok = dlg
+          ? await dlg.show({
+              title: 'Retirer le compte ?',
+              message: 'Retirer ce compte du pool ?',
+              confirmLabel: 'Retirer',
+              cancelLabel: 'Annuler',
+              danger: true
+            })
+          : global.confirm('Retirer ce compte du pool ?');
+        if (!ok) return;
+>>>>>>> 7f4f399 (ok)
         await gmailStore.removeAccount(id);
         await db.appendLog('info', 'Compte retiré du pool Gmail.', { id });
         await renderPoolList(container);
@@ -473,10 +679,71 @@
   }
 
   function wire(root) {
+<<<<<<< HEAD
+=======
+    const pfCvEdit = root.querySelector('#pf-cv-edit');
+    if (pfCvEdit) {
+      pfCvEdit.addEventListener('change', () => {
+        syncCvFormToState(root);
+        cvEditId = pfCvEdit.value || cvEditId;
+        loadCvVariantIntoForm(root);
+      });
+    }
+    const pfCvAdd = root.querySelector('#pf-cv-add');
+    if (pfCvAdd) {
+      pfCvAdd.addEventListener('click', () => {
+        syncCvFormToState(root);
+        const nid = db && typeof db.uuid === 'function' ? db.uuid() : `cv-${Date.now()}`;
+        cvVariantsState.push({
+          id: nid,
+          label: `CV ${cvVariantsState.length + 1}`,
+          html: ''
+        });
+        cvEditId = nid;
+        fillCvSelects(root);
+        loadCvVariantIntoForm(root);
+      });
+    }
+    const pfCvRemove = root.querySelector('#pf-cv-remove');
+    if (pfCvRemove) {
+      pfCvRemove.addEventListener('click', async () => {
+        if (cvVariantsState.length <= 1) return;
+        const dlg = global.InvooConfirm;
+        const ok = dlg
+          ? await dlg.show({
+              title: 'Supprimer ce CV ?',
+              message:
+                'Ce bloc HTML sera retiré du profil. Le brouillon dans l’éditeur e-mail n’est pas modifié.',
+              confirmLabel: 'Supprimer',
+              cancelLabel: 'Annuler',
+              danger: true
+            })
+          : global.confirm('Supprimer ce CV HTML ?');
+        if (!ok) return;
+        syncCvFormToState(root);
+        const removed = cvEditId;
+        cvVariantsState = cvVariantsState.filter((x) => x.id !== removed);
+        cvEditId = cvVariantsState[0]?.id || '';
+        fillCvSelects(root);
+        loadCvVariantIntoForm(root);
+      });
+    }
+
+>>>>>>> 7f4f399 (ok)
     root.querySelector('#st-profile-save').addEventListener('click', () =>
       saveProfileFromForm(root).catch((e) => toast(e.message || String(e), true))
     );
 
+<<<<<<< HEAD
+=======
+    const pfCvActive = root.querySelector('#pf-cv-active');
+    if (pfCvActive) {
+      pfCvActive.addEventListener('change', () => {
+        saveProfileFromForm(root, { silent: true }).catch((e) => toast(e.message || String(e), true));
+      });
+    }
+
+>>>>>>> 7f4f399 (ok)
     root.querySelector('#st-blast-save').addEventListener('click', () =>
       saveBlastFromForm(root).catch((e) => toast(e.message || String(e), true))
     );
@@ -503,7 +770,23 @@
     });
 
     root.querySelector('#st-pool-reset').addEventListener('click', async () => {
+<<<<<<< HEAD
       if (!global.confirm('Réinitialiser l’état du pool (réactiver les comptes, effacer les compteurs d’erreur) ?')) return;
+=======
+      const dlg = global.InvooConfirm;
+      const ok = dlg
+        ? await dlg.show({
+            title: 'Réinitialiser le pool ?',
+            message:
+              'Réinitialiser l’état du pool (réactiver les comptes, effacer les compteurs d’erreur) ?',
+            confirmLabel: 'Réinitialiser',
+            cancelLabel: 'Annuler'
+          })
+        : global.confirm(
+            'Réinitialiser l’état du pool (réactiver les comptes, effacer les compteurs d’erreur) ?'
+          );
+      if (!ok) return;
+>>>>>>> 7f4f399 (ok)
       const n = await gmailStore.resetPoolHealth();
       await renderPoolList(root.querySelector('#st-pool-list'));
       toast(`Pool réinitialisé (${n} compte(s)).`);
@@ -567,6 +850,7 @@
         const f = backupImportFile.files && backupImportFile.files[0];
         backupImportFile.value = '';
         if (!f) return;
+<<<<<<< HEAD
         if (
           !global.confirm(
             'Remplacer toutes les données locales INVOOBLAST par cette sauvegarde ? Action irréversible sans une autre copie de secours.'
@@ -574,6 +858,22 @@
         ) {
           return;
         }
+=======
+        const dlg = global.InvooConfirm;
+        const okImp = dlg
+          ? await dlg.show({
+              title: 'Importer la sauvegarde ?',
+              message:
+                'Remplacer toutes les données locales INVOOBLAST par cette sauvegarde ? Action irréversible sans une autre copie de secours.',
+              confirmLabel: 'Importer',
+              cancelLabel: 'Annuler',
+              danger: true
+            })
+          : global.confirm(
+              'Remplacer toutes les données locales INVOOBLAST par cette sauvegarde ? Action irréversible sans une autre copie de secours.'
+            );
+        if (!okImp) return;
+>>>>>>> 7f4f399 (ok)
         try {
           const text = await f.text();
           await db.importBackupFromJsonText(text);
@@ -625,6 +925,14 @@
     init: initSettings,
     getBlastConfig: () =>
       db.getMeta(META_BLAST).then((c) => ({ ...DEFAULT_BLAST, ...(c && typeof c === 'object' ? c : {}) })),
+<<<<<<< HEAD
     getProfile: () => db.getMeta(META_PROFILE).then((p) => ({ ...DEFAULT_PROFILE, ...p }))
+=======
+    getProfile: () =>
+      db
+        .getMeta(META_PROFILE)
+        .then((p) => migrateProfileCv({ ...DEFAULT_PROFILE, ...(p && typeof p === 'object' ? p : {}) })),
+    setSelectedCvHtmlId
+>>>>>>> 7f4f399 (ok)
   };
 })(window);

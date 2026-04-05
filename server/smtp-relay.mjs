@@ -4,8 +4,15 @@
  */
 import http from 'node:http';
 import nodemailer from 'nodemailer';
+<<<<<<< HEAD
 
 const PORT = Number(process.env.INVOOBLAST_SMTP_RELAY_PORT || 18765);
+=======
+import { scanInboxForBounces } from './bounce-scan.mjs';
+
+/** Render / Fly / Docker injectent souvent PORT ; local : 18765. */
+const PORT = Number(process.env.PORT || process.env.INVOOBLAST_SMTP_RELAY_PORT || 18765);
+>>>>>>> 7f4f399 (ok)
 const HOST = process.env.INVOOBLAST_SMTP_RELAY_HOST || '127.0.0.1';
 const API_KEY = String(process.env.INVOOBLAST_RELAY_API_KEY || '').trim();
 
@@ -115,6 +122,39 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+<<<<<<< HEAD
+=======
+  if (req.method === 'POST' && url.pathname === '/scan-bounces') {
+    if (!apiKeyOk(req)) {
+      sendJson(res, 401, { ok: false, error: 'Clé API requise (X-INVOOBLAST-KEY)' }, origin);
+      return;
+    }
+    let body;
+    try {
+      body = await readBody(req);
+    } catch (_) {
+      sendJson(res, 400, { ok: false, error: 'JSON invalide' }, origin);
+      return;
+    }
+    const auth = body.auth;
+    if (!auth || !auth.user || !auth.pass) {
+      sendJson(res, 400, { ok: false, error: 'auth.user et auth.pass requis' }, origin);
+      return;
+    }
+    try {
+      const result = await scanInboxForBounces(auth, {
+        days: body.days,
+        maxMessages: body.maxMessages
+      });
+      sendJson(res, 200, { ok: true, ...result }, origin);
+    } catch (e) {
+      const msg = e && e.message ? String(e.message) : 'Erreur IMAP';
+      sendJson(res, 502, { ok: false, error: msg }, origin);
+    }
+    return;
+  }
+
+>>>>>>> 7f4f399 (ok)
   if (req.method !== 'POST' || url.pathname !== '/send') {
     sendJson(res, 404, { ok: false, error: 'Not found' }, origin);
     return;
@@ -178,7 +218,11 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, HOST, () => {
   console.log(`[INVOOBLAST] Relais SMTP sur http://${HOST}:${PORT}`);
+<<<<<<< HEAD
   console.log(`[INVOOBLAST] GET /health  POST /send`);
+=======
+  console.log(`[INVOOBLAST] GET /health  POST /send  POST /scan-bounces (IMAP bounces)`);
+>>>>>>> 7f4f399 (ok)
   if (API_KEY) console.log('[INVOOBLAST] Clé API : activée (X-INVOOBLAST-KEY)');
   if (ALLOWED_ORIGINS && ALLOWED_ORIGINS.length) {
     console.log('[INVOOBLAST] CORS restreint :', ALLOWED_ORIGINS.join(', '));

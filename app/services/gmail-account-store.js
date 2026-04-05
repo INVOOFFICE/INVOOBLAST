@@ -152,6 +152,32 @@
     return rows.length;
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * Active ou désactive manuellement un compte (problème SMTP, boîte à isoler).
+   * Si le compte était « secours », le drapeau secours est retiré.
+   * @param {string} id
+   * @param {boolean} disabled
+   */
+  async function setAccountDisabled(id, disabled) {
+    const accId = String(id || '').trim();
+    if (!accId) throw new Error('Compte requis');
+    const acc = await get(STORES.GMAIL_ACCOUNTS, accId);
+    if (!acc) throw new Error('Compte introuvable.');
+    const nextDisabled = !!disabled;
+    const now = Date.now();
+    await put(STORES.GMAIL_ACCOUNTS, {
+      ...acc,
+      disabled: nextDisabled,
+      updatedAt: now
+    });
+    if (nextDisabled && acc.isFallback) {
+      await setFallbackAccount(null);
+    }
+  }
+
+>>>>>>> 7f4f399 (ok)
   /** Un seul compte « relais de secours » à la fois. */
   async function setFallbackAccount(idOrNull) {
     const rows = await getAll(STORES.GMAIL_ACCOUNTS);
@@ -234,6 +260,11 @@
     getSmtpAuth,
     recordSendOutcome,
     resetPoolHealth,
+<<<<<<< HEAD
     setFallbackAccount
+=======
+    setFallbackAccount,
+    setAccountDisabled
+>>>>>>> 7f4f399 (ok)
   };
 })(typeof window !== 'undefined' ? window : self);

@@ -44,6 +44,195 @@
 
 
 
+<<<<<<< HEAD
+=======
+  const HISTORY_PAGE_SIZE = 12;
+
+  let blastHistoryPage = 1;
+
+  function truncateText(s, max) {
+
+    const t = String(s || '');
+
+    if (t.length <= max) return t;
+
+    return `${t.slice(0, Math.max(0, max - 1))}…`;
+
+  }
+
+  function formatHistoryTs(ts) {
+
+    try {
+
+      return new Date(ts).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'medium' });
+
+    } catch (_) {
+
+      return '—';
+
+    }
+
+  }
+
+  /** Met à jour la ligne « En direct » pendant / après une campagne. */
+
+  function applyBlastProgressLive(root, p) {
+
+    const el = root.querySelector('#blast-live-line');
+
+    if (!el || !p) return;
+
+    if (p.phase === 'sending') {
+
+      el.textContent = `Envoi ${p.index} / ${p.total} → ${p.lastTo || '—'} (compte ${p.from || '—'})`;
+
+      return;
+
+    }
+
+    if (p.phase === 'error') {
+
+      el.textContent = `Échec ${p.index} / ${p.total} → ${p.lastTo || '—'} — ${p.error || 'erreur'}`;
+
+      return;
+
+    }
+
+    if (p.phase === 'done') {
+
+      el.textContent = `Terminé : ${p.sent} envoyé(s), ${p.failed} échec(s) sur ${p.total}.`;
+
+      return;
+
+    }
+
+    if (p.phase === 'aborted') {
+
+      el.textContent = `Interrompu : ${p.sent} envoyé(s), ${p.failed} échec(s) sur ${p.total}.`;
+
+    }
+
+  }
+
+  async function renderBlastHistory(root) {
+
+    const wrap = root.querySelector('#blast-history-table-wrap');
+
+    const pager = root.querySelector('#blast-history-pager');
+
+    const prev = root.querySelector('#blast-history-prev');
+
+    const next = root.querySelector('#blast-history-next');
+
+    const info = root.querySelector('#blast-history-pageinfo');
+
+    if (!wrap || !db || !db.STORES) return;
+
+    let rows = [];
+
+    try {
+
+      rows = await db.getAll(db.STORES.SEND_HISTORY);
+
+    } catch (_) {
+
+      rows = [];
+
+    }
+
+    rows.sort((a, b) => (b.ts || 0) - (a.ts || 0));
+
+    const total = rows.length;
+
+    const pageSize = HISTORY_PAGE_SIZE;
+
+    const pageCount = Math.max(1, Math.ceil(total / pageSize) || 1);
+
+    if (blastHistoryPage > pageCount) blastHistoryPage = pageCount;
+
+    if (blastHistoryPage < 1) blastHistoryPage = 1;
+
+    const start = (blastHistoryPage - 1) * pageSize;
+
+    const slice = rows.slice(start, start + pageSize);
+
+    if (total === 0) {
+
+      wrap.innerHTML =
+
+        '<p class="editor-hint" style="margin:0">Aucun envoi enregistré pour l’instant. Lancez une campagne ci‑dessus.</p>';
+
+      if (pager) pager.hidden = true;
+
+      return;
+
+    }
+
+    wrap.innerHTML = `
+
+<div style="overflow-x:auto">
+
+<table class="settings-pool-table blast-history-table" role="grid">
+
+  <thead><tr><th>Date</th><th>Destinataire</th><th>Statut</th><th>Compte</th><th>Objet</th></tr></thead>
+
+  <tbody>
+
+    ${slice
+
+      .map((r) => {
+
+        const st =
+
+          r.status === 'sent'
+
+            ? '<span class="tag ok">Envoyé</span>'
+
+            : '<span class="tag bad">Échec</span>';
+
+        const subj = truncateText(r.subject || '—', 48);
+
+        const titleFull = escHtml(r.subject || '');
+
+        return `<tr>
+
+        <td>${escHtml(formatHistoryTs(r.ts))}</td>
+
+        <td>${escHtml(r.to || '—')}</td>
+
+        <td>${st}</td>
+
+        <td>${escHtml(r.from || '—')}</td>
+
+        <td title="${titleFull}">${escHtml(subj)}</td>
+
+      </tr>`;
+
+      })
+
+      .join('')}
+
+  </tbody>
+
+</table>
+
+</div>`;
+
+    if (pager && info && prev && next) {
+
+      pager.hidden = pageCount <= 1;
+
+      info.textContent = `Page ${blastHistoryPage} / ${pageCount} · ${total} envoi(s)`;
+
+      prev.disabled = blastHistoryPage <= 1;
+
+      next.disabled = blastHistoryPage >= pageCount;
+
+    }
+
+  }
+
+>>>>>>> 7f4f399 (ok)
   function mountBlast(root) {
 
     root.innerHTML = `
@@ -152,6 +341,17 @@
 
       <div id="blast-pool-wrap"></div>
 
+<<<<<<< HEAD
+=======
+      <p class="row-actions" style="margin:0.75rem 0 0 0;flex-wrap:wrap;gap:0.75rem;align-items:center">
+
+        <button type="button" class="btn" id="blast-pool-reset" title="Réactive tous les comptes et efface les erreurs enregistrées">Réinitialiser le pool</button>
+
+        <span class="editor-hint" style="margin:0">Réactive les comptes désactivés et remet les compteurs d’erreur à zéro (identique à Paramètres → Pool Gmail).</span>
+
+      </p>
+
+>>>>>>> 7f4f399 (ok)
       <p class="editor-hint" style="margin-top:0.75rem">Les mots de passe d’application ne sont jamais affichés ; ils sont chiffrés sur cet appareil.</p>
 
     </div>
@@ -190,6 +390,51 @@
 
       </p>
 
+<<<<<<< HEAD
+=======
+      <p class="row-actions blast-send-controls" id="blast-send-controls" style="margin:0.75rem 0 0 0;flex-wrap:wrap;gap:0.5rem" hidden>
+
+        <button type="button" class="btn" id="blast-btn-pause">Pause</button>
+
+        <button type="button" class="btn primary" id="blast-btn-resume" hidden>Reprendre</button>
+
+        <button type="button" class="btn danger" id="blast-btn-abort">Arrêter l’envoi</button>
+
+      </p>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="panel">
+
+    <div class="panel-h"><h2>Historique d’envoi</h2></div>
+
+    <div class="panel-b">
+
+      <div id="blast-live-wrap" style="margin:0 0 1rem 0;padding:0.75rem 1rem;border-radius:var(--radius-md);background:var(--bg-elevated);border:1px solid var(--border)">
+
+        <div style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:0.4rem">En direct</div>
+
+        <div id="blast-live-line" class="blast-dd-mono" style="margin:0;min-height:1.35em;word-break:break-word">— Aucun envoi en cours</div>
+
+      </div>
+
+      <div id="blast-history-table-wrap"></div>
+
+      <p class="row-actions" id="blast-history-pager" style="margin:0.75rem 0 0 0;flex-wrap:wrap;gap:0.75rem;align-items:center" hidden>
+
+        <button type="button" class="btn" id="blast-history-prev">Précédent</button>
+
+        <span id="blast-history-pageinfo" class="editor-hint" style="margin:0"></span>
+
+        <button type="button" class="btn" id="blast-history-next">Suivant</button>
+
+      </p>
+
+>>>>>>> 7f4f399 (ok)
     </div>
 
   </div>
@@ -291,6 +536,7 @@
 
     const wrap = root.querySelector('#blast-pool-wrap');
 
+<<<<<<< HEAD
     if (!wrap || !gmailStore || typeof gmailStore.listAccounts !== 'function') return;
 
     let rows = await gmailStore.listAccounts();
@@ -310,6 +556,29 @@
 <table class="settings-pool-table blast-pool-readonly" role="grid">
 
   <thead><tr><th>Compte</th><th>État</th><th>Secours</th></tr></thead>
+=======
+    if (wrap && gmailStore && typeof gmailStore.listAccounts === 'function') {
+
+      let rows = await gmailStore.listAccounts();
+
+      rows = [...rows].sort((a, b) => String(a.email).localeCompare(b.email, 'fr'));
+
+      if (!rows.length) {
+
+        wrap.innerHTML =
+
+          '<p class="editor-hint" style="margin:0">Aucun compte Gmail dans le pool. Ajoutez-en dans <strong>Paramètres → Pool Gmail</strong>.</p>';
+
+      } else {
+
+        wrap.innerHTML = `
+
+<div style="overflow-x:auto">
+
+<table class="settings-pool-table blast-pool-table" role="grid">
+
+  <thead><tr><th>Compte</th><th>État</th><th>Secours</th><th>Dernière erreur</th><th>Actions</th></tr></thead>
+>>>>>>> 7f4f399 (ok)
 
   <tbody>
 
@@ -327,7 +596,23 @@
 
         const err = r.failCount ? ` <span class="dim">(${r.failCount} err.)</span>` : '';
 
+<<<<<<< HEAD
         return `<tr><td>${escHtml(r.email)}${err}</td><td>${st}</td><td>${fb}</td></tr>`;
+=======
+        const lastErr = r.lastError
+
+          ? `<span class="dim" title="${escHtml(truncateText(r.lastError, 500))}">${escHtml(truncateText(r.lastError, 40))}</span>`
+
+          : '—';
+
+        const act = r.disabled
+
+          ? `<button type="button" class="btn" data-blast-account="${escHtml(r.id)}" data-blast-action="enable" style="padding:0.25rem 0.55rem;font-size:0.88rem">Réactiver</button>`
+
+          : `<button type="button" class="btn danger" data-blast-account="${escHtml(r.id)}" data-blast-action="disable" style="padding:0.25rem 0.55rem;font-size:0.88rem">Désactiver</button>`;
+
+        return `<tr><td>${escHtml(r.email)}${err}</td><td>${st}</td><td>${fb}</td><td>${lastErr}</td><td>${act}</td></tr>`;
+>>>>>>> 7f4f399 (ok)
 
       })
 
@@ -335,12 +620,33 @@
 
   </tbody>
 
+<<<<<<< HEAD
 </table>`;
+=======
+</table>
+
+</div>`;
+
+      }
+
+    } else if (wrap) {
+
+      wrap.innerHTML =
+
+        '<p class="editor-hint" style="margin:0">Pool Gmail indisponible (rechargez la page).</p>';
+>>>>>>> 7f4f399 (ok)
 
     }
 
 
 
+<<<<<<< HEAD
+=======
+    await renderBlastHistory(root);
+
+
+
+>>>>>>> 7f4f399 (ok)
     const netHint = root.querySelector('#blast-net-hint');
 
     if (netHint) {
@@ -369,17 +675,317 @@
 
     const statusEl = root.querySelector('#blast-send-status');
 
+<<<<<<< HEAD
+=======
+    const listSel = root.querySelector('#blast-list-id');
+
+    const controlsRow = root.querySelector('#blast-send-controls');
+
+    const btnPause = root.querySelector('#blast-btn-pause');
+
+    const btnResume = root.querySelector('#blast-btn-resume');
+
+    const btnAbort = root.querySelector('#blast-btn-abort');
+
+>>>>>>> 7f4f399 (ok)
     if (!btn) return;
 
 
 
+<<<<<<< HEAD
+=======
+    const histPrev = root.querySelector('#blast-history-prev');
+
+    const histNext = root.querySelector('#blast-history-next');
+
+    if (histPrev) {
+
+      histPrev.addEventListener('click', () => {
+
+        if (blastHistoryPage > 1) {
+
+          blastHistoryPage--;
+
+          renderBlastHistory(root).catch(console.error);
+
+        }
+
+      });
+
+    }
+
+    if (histNext) {
+
+      histNext.addEventListener('click', () => {
+
+        blastHistoryPage++;
+
+        renderBlastHistory(root).catch(console.error);
+
+      });
+
+    }
+
+
+
+    const btnPoolReset = root.querySelector('#blast-pool-reset');
+
+    if (btnPoolReset) {
+
+      btnPoolReset.addEventListener('click', async () => {
+
+        const toast = global.InvooApp && global.InvooApp.showToast;
+
+        if (!gmailStore || typeof gmailStore.resetPoolHealth !== 'function') {
+
+          if (toast) toast('Pool Gmail indisponible (rechargez la page).', true);
+
+          return;
+
+        }
+
+        const dlg = global.InvooConfirm;
+
+        const ok = dlg
+
+          ? await dlg.show({
+
+              title: 'Réinitialiser le pool ?',
+
+              message:
+
+                'Réinitialiser l’état du pool (réactiver les comptes, effacer les compteurs d’erreur) ?',
+
+              confirmLabel: 'Réinitialiser',
+
+              cancelLabel: 'Annuler'
+
+            })
+
+          : global.confirm(
+
+              'Réinitialiser l’état du pool (réactiver les comptes, effacer les compteurs d’erreur) ?'
+
+            );
+
+        if (!ok) return;
+
+        try {
+
+          const n = await gmailStore.resetPoolHealth();
+
+          if (toast) toast(`Pool réinitialisé (${n} compte(s)).`);
+
+          global.dispatchEvent(new CustomEvent('invooblast:blast-settings-updated'));
+
+          if (global.InvooDashboard && global.InvooDashboard.refreshDashboard) {
+
+            global.InvooDashboard.refreshDashboard().catch(() => {});
+
+          }
+
+        } catch (e) {
+
+          const msg = e && e.message ? String(e.message) : String(e);
+
+          if (toast) toast(msg, true);
+
+        }
+
+      });
+
+    }
+
+
+
+    root.addEventListener('click', async (ev) => {
+
+      const t = ev.target;
+
+      const btnPool = t && t.closest && t.closest('[data-blast-action][data-blast-account]');
+
+      if (!btnPool || !root.contains(btnPool)) return;
+
+      const id = btnPool.getAttribute('data-blast-account');
+
+      const action = btnPool.getAttribute('data-blast-action');
+
+      if (!id || !gmailStore || typeof gmailStore.setAccountDisabled !== 'function') return;
+
+      ev.preventDefault();
+
+      const toast = global.InvooApp && global.InvooApp.showToast;
+
+      try {
+
+        if (action === 'disable') {
+
+          const dlg = global.InvooConfirm;
+
+          const ok = dlg
+
+            ? await dlg.show({
+
+                title: 'Désactiver ce compte ?',
+
+                message:
+
+                  'Il ne sera plus utilisé pour l’envoi Blast tant que vous ne le réactivez pas (ici ou dans Paramètres).',
+
+                confirmLabel: 'Désactiver',
+
+                cancelLabel: 'Annuler',
+
+                danger: true
+
+              })
+
+            : global.confirm('Désactiver ce compte pour l’envoi ?');
+
+          if (!ok) return;
+
+          await gmailStore.setAccountDisabled(id, true);
+
+          if (toast) toast('Compte désactivé pour l’envoi.');
+
+        } else if (action === 'enable') {
+
+          await gmailStore.setAccountDisabled(id, false);
+
+          if (toast) toast('Compte réactivé.');
+
+        } else {
+
+          return;
+
+        }
+
+        global.dispatchEvent(new CustomEvent('invooblast:blast-settings-updated'));
+
+      } catch (err) {
+
+        const msg = err && err.message ? String(err.message) : String(err);
+
+        if (toast) toast(msg, true);
+
+      }
+
+    });
+
+
+
+    function syncPauseButtons() {
+
+      const eng = global.InvooBlastSend;
+
+      const paused = eng && typeof eng.isSendPaused === 'function' && eng.isSendPaused();
+
+      if (btnPause) {
+
+        btnPause.hidden = !!paused;
+
+        btnPause.disabled = false;
+
+      }
+
+      if (btnResume) {
+
+        btnResume.hidden = !paused;
+
+        btnResume.disabled = false;
+
+      }
+
+    }
+
+
+
+    if (btnPause) {
+
+      btnPause.addEventListener('click', () => {
+
+        const eng = global.InvooBlastSend;
+
+        if (!eng || typeof eng.pauseSend !== 'function') return;
+
+        eng.pauseSend();
+
+        if (statusEl) statusEl.textContent = 'En pause…';
+
+        syncPauseButtons();
+
+      });
+
+    }
+
+
+
+    if (btnResume) {
+
+      btnResume.addEventListener('click', () => {
+
+        const eng = global.InvooBlastSend;
+
+        if (!eng || typeof eng.resumeSend !== 'function') return;
+
+        eng.resumeSend();
+
+        syncPauseButtons();
+
+      });
+
+    }
+
+
+
+    if (btnAbort) {
+
+      btnAbort.addEventListener('click', async () => {
+
+        const eng = global.InvooBlastSend;
+
+        if (!eng || typeof eng.abortSend !== 'function') return;
+
+        const dlg = global.InvooConfirm;
+
+        const ok = dlg
+
+          ? await dlg.show({
+
+              title: 'Arrêter l’envoi ?',
+
+              message:
+
+                'Les messages déjà envoyés le restent ; le reste de la campagne ne sera pas traité.',
+
+              confirmLabel: 'Arrêter',
+
+              cancelLabel: 'Continuer'
+
+            })
+
+          : global.confirm('Arrêter l’envoi ? Les messages déjà envoyés le restent.');
+
+        if (ok) eng.abortSend();
+
+      });
+
+    }
+
+
+
+>>>>>>> 7f4f399 (ok)
     btn.addEventListener('click', async () => {
 
       const engine = global.InvooBlastSend;
 
       const toast = global.InvooApp && global.InvooApp.showToast;
 
+<<<<<<< HEAD
       const listId = root.querySelector('#blast-list-id') && root.querySelector('#blast-list-id').value;
+=======
+      const listId = listSel && listSel.value;
+>>>>>>> 7f4f399 (ok)
 
       if (!listId) {
 
@@ -451,11 +1057,26 @@
 
 
 
+<<<<<<< HEAD
       const ok = global.confirm(
 
         `Envoyer jusqu’à ${totalValid} message(s) vers la liste sélectionnée ? Les comptes Gmail du pool seront utilisés selon la rotation configurée.`
 
       );
+=======
+      const dlg = global.InvooConfirm;
+
+      const ok = dlg
+        ? await dlg.show({
+            title: 'Lancer l’envoi ?',
+            message: `Envoyer jusqu’à ${totalValid} message(s) vers la liste sélectionnée ? Les comptes Gmail du pool seront utilisés selon la rotation configurée.`,
+            confirmLabel: 'Envoyer',
+            cancelLabel: 'Annuler'
+          })
+        : global.confirm(
+            `Envoyer jusqu’à ${totalValid} message(s) vers la liste sélectionnée ? Les comptes Gmail du pool seront utilisés selon la rotation configurée.`
+          );
+>>>>>>> 7f4f399 (ok)
 
       if (!ok) return;
 
@@ -463,6 +1084,17 @@
 
       btn.disabled = true;
 
+<<<<<<< HEAD
+=======
+      if (listSel) listSel.disabled = true;
+
+      if (controlsRow) controlsRow.hidden = false;
+
+      if (btnAbort) btnAbort.disabled = false;
+
+      syncPauseButtons();
+
+>>>>>>> 7f4f399 (ok)
       if (statusEl) {
 
         statusEl.hidden = false;
@@ -471,16 +1103,32 @@
 
       }
 
+<<<<<<< HEAD
+=======
+      const liveLine = root.querySelector('#blast-live-line');
+
+      if (liveLine) liveLine.textContent = 'Préparation…';
+
+>>>>>>> 7f4f399 (ok)
 
 
       try {
 
+<<<<<<< HEAD
         await engine.runBlastSend({
+=======
+        const result = await engine.runBlastSend({
+>>>>>>> 7f4f399 (ok)
 
           listId,
 
           onProgress: (p) => {
 
+<<<<<<< HEAD
+=======
+            applyBlastProgressLive(root, p);
+
+>>>>>>> 7f4f399 (ok)
             if (!statusEl) return;
 
             if (p.phase === 'done') {
@@ -491,6 +1139,17 @@
 
             }
 
+<<<<<<< HEAD
+=======
+            if (p.phase === 'aborted') {
+
+              statusEl.textContent = `Interrompu : ${p.sent} envoyé(s), ${p.failed} échec(s) sur ${p.total}.`;
+
+              return;
+
+            }
+
+>>>>>>> 7f4f399 (ok)
             if (p.phase === 'sending') {
 
               statusEl.textContent = `Envoi ${p.index} / ${p.total} → ${p.lastTo || ''} (depuis ${p.from || ''})…`;
@@ -509,7 +1168,23 @@
 
         });
 
+<<<<<<< HEAD
         if (toast) toast('Campagne terminée. Voir le statut ci-dessous ou les journaux.');
+=======
+        if (toast) {
+
+          if (result && result.aborted) {
+
+            toast('Envoi interrompu. Voir le statut ci-dessous ou les journaux.');
+
+          } else {
+
+            toast('Campagne terminée. Voir le statut ci-dessous ou les journaux.');
+
+          }
+
+        }
+>>>>>>> 7f4f399 (ok)
 
         if (global.InvooDashboard && global.InvooDashboard.refreshDashboard) {
 
@@ -529,12 +1204,40 @@
 
         }
 
+<<<<<<< HEAD
+=======
+        const liveErr = root.querySelector('#blast-live-line');
+
+        if (liveErr) liveErr.textContent = `Erreur : ${msg}`;
+
+>>>>>>> 7f4f399 (ok)
         if (toast) toast(msg, true);
 
       } finally {
 
         btn.disabled = false;
 
+<<<<<<< HEAD
+=======
+        if (listSel) listSel.disabled = false;
+
+        if (controlsRow) controlsRow.hidden = true;
+
+        if (btnPause) {
+
+          btnPause.hidden = false;
+
+          btnPause.disabled = false;
+
+        }
+
+        if (btnResume) btnResume.hidden = true;
+
+        if (btnAbort) btnAbort.disabled = false;
+
+        blastHistoryPage = 1;
+
+>>>>>>> 7f4f399 (ok)
         await refreshBlastUI(root);
 
       }

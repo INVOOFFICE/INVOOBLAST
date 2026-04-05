@@ -16,6 +16,47 @@
     return new Promise((r) => setTimeout(r, ms));
   }
 
+<<<<<<< HEAD
+=======
+  /** Contrôle partagé pour l’envoi en cours (pause / arrêt). */
+  let activeControl = null;
+
+  async function waitWhilePausedAndDelay(ms, control) {
+    if (!ms || ms <= 0) return;
+    const end = Date.now() + ms;
+    while (Date.now() < end) {
+      if (control.aborted) return;
+      while (control.paused && !control.aborted) {
+        await sleep(200);
+      }
+      if (control.aborted) return;
+      const left = end - Date.now();
+      if (left <= 0) break;
+      await sleep(Math.min(250, left));
+    }
+  }
+
+  function pauseSend() {
+    if (activeControl) activeControl.paused = true;
+  }
+
+  function resumeSend() {
+    if (activeControl) activeControl.paused = false;
+  }
+
+  function abortSend() {
+    if (activeControl) activeControl.aborted = true;
+  }
+
+  function isSendRunning() {
+    return activeControl != null;
+  }
+
+  function isSendPaused() {
+    return activeControl && activeControl.paused && !activeControl.aborted;
+  }
+
+>>>>>>> 7f4f399 (ok)
   function buildAccountPool(rows, cfg) {
     const active = rows.filter((a) => !a.disabled);
     const fb = active.filter((a) => a.isFallback);
@@ -97,11 +138,31 @@
 
     const onProgress = typeof opts.onProgress === 'function' ? opts.onProgress : () => {};
 
+<<<<<<< HEAD
+=======
+    if (activeControl) {
+      throw new Error('Un envoi est déjà en cours (utilisez Pause ou Arrêter).');
+    }
+
+    const control = { paused: false, aborted: false };
+    activeControl = control;
+
+>>>>>>> 7f4f399 (ok)
     let sent = 0;
     let failed = 0;
     const total = contacts.length;
 
+<<<<<<< HEAD
     for (let i = 0; i < contacts.length; i++) {
+=======
+    try {
+    for (let i = 0; i < contacts.length; i++) {
+      while (control.paused && !control.aborted) {
+        await sleep(200);
+      }
+      if (control.aborted) break;
+
+>>>>>>> 7f4f399 (ok)
       const contact = contacts[i];
       const rows = await gmailStore.listAccounts();
       const pool = buildAccountPool(rows, cfg);
@@ -188,6 +249,7 @@
         onProgress({ phase: 'error', index: i + 1, total, sent, failed, lastTo: contact.email, error: errMsg });
       }
 
+<<<<<<< HEAD
       if (delayMs > 0 && i < contacts.length - 1) await sleep(delayMs);
     }
 
@@ -199,4 +261,40 @@
   }
 
   global.InvooBlastSend = { runBlastSend };
+=======
+      if (control.aborted) break;
+      if (delayMs > 0 && i < contacts.length - 1) await waitWhilePausedAndDelay(delayMs, control);
+    }
+
+    if (control.aborted) {
+      onProgress({
+        phase: 'aborted',
+        index: Math.min(sent + failed, total),
+        total,
+        sent,
+        failed,
+        lastTo: null
+      });
+      await db.appendLog('info', 'Envoi Blast interrompu par l’utilisateur.', { sent, failed, total });
+    } else {
+      onProgress({ phase: 'done', index: total, total, sent, failed, lastTo: null });
+    }
+    global.dispatchEvent(new CustomEvent('invooblast:blast-settings-updated'));
+    global.dispatchEvent(new CustomEvent('invooblast:send-finished'));
+
+    return { sent, failed, total, aborted: control.aborted };
+    } finally {
+      activeControl = null;
+    }
+  }
+
+  global.InvooBlastSend = {
+    runBlastSend,
+    pauseSend,
+    resumeSend,
+    abortSend,
+    isSendRunning,
+    isSendPaused
+  };
+>>>>>>> 7f4f399 (ok)
 })(typeof window !== 'undefined' ? window : self);

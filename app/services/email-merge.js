@@ -53,7 +53,20 @@
 
   function profileCvRawHtml(profile) {
     const p = profile && typeof profile === 'object' ? profile : {};
+<<<<<<< HEAD
     return sanitizeCvHtml(p.cvHtml == null ? '' : String(p.cvHtml));
+=======
+    const variants = Array.isArray(p.cvHtmlVariants) ? p.cvHtmlVariants : [];
+    const selId = p.selectedCvHtmlId != null ? String(p.selectedCvHtmlId).trim() : '';
+    let raw = '';
+    if (variants.length) {
+      const found = variants.find((v) => v && String(v.id) === selId);
+      if (found && found.html != null) raw = String(found.html);
+      else if (variants[0] && variants[0].html != null) raw = String(variants[0].html);
+    }
+    if (!raw && p.cvHtml != null) raw = String(p.cvHtml);
+    return sanitizeCvHtml(raw);
+>>>>>>> 7f4f399 (ok)
   }
 
   /** {{whatsapp_link}} et {{whatsapp_lien}} pointent vers le même lien (aperçu / listes). */

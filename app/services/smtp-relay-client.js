@@ -88,7 +88,11 @@
       return {
         ok: false,
         message:
+<<<<<<< HEAD
           'Cette page est en HTTPS : le navigateur bloque un relais en http://. Déployez le relais derrière HTTPS (Render, Fly.io, etc.) et mettez son URL https:// dans Paramètres, ou ouvrez l’app en http://localhost pour le relais local.'
+=======
+          'Site en HTTPS (ex. GitHub Pages) + relais en http:// : le navigateur bloque ce mélange (sécurité). Deux possibilités : (1) Déployer le dossier server/ en HTTPS (Render, Fly.io, voir render.yaml) et mettre son URL https:// dans Paramètres. (2) Utiliser le relais local uniquement en ouvrant l’app en http://localhost sur votre PC (npx serve dans le clone du repo), pas via github.io.'
+>>>>>>> 7f4f399 (ok)
       };
     }
 
@@ -168,11 +172,63 @@
     }
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * Scan IMAP rebonds (relais Node — POST /scan-bounces).
+   * @param {string} baseUrl
+   * @param {{ auth: { user: string, pass: string }, days?: number, maxMessages?: number }} payload
+   * @param {string} [apiKey]
+   * @returns {Promise<{ ok: boolean, account?: string, uidMatched?: number, messagesFetched?: number, failedRecipients?: string[], error?: string }>}
+   */
+  async function relayScanBounces(baseUrl, payload, apiKey) {
+    const bases = relayUrlCandidates(baseUrl);
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 180000);
+    let lastErr = null;
+    try {
+      for (const base of bases) {
+        try {
+          const r = await fetch(`${base}/scan-bounces`, {
+            method: 'POST',
+            headers: relayHeaders(apiKey, true),
+            signal: ctrl.signal,
+            mode: 'cors',
+            cache: 'no-store',
+            body: JSON.stringify(payload)
+          });
+          const j = await r.json().catch(() => ({}));
+          if (!r.ok || !j.ok) {
+            throw new Error((j && j.error) || `HTTP ${r.status}`);
+          }
+          return j;
+        } catch (e) {
+          lastErr = e;
+          const name = e && e.name;
+          const msg = e && e.message ? String(e.message) : '';
+          const isNetworkLayer =
+            name === 'TypeError' ||
+            name === 'AbortError' ||
+            /Failed to fetch|NetworkError|Load failed|network/i.test(msg);
+          if (!isNetworkLayer) throw e;
+        }
+      }
+      throw lastErr || new Error('Échec scan rebonds');
+    } finally {
+      clearTimeout(t);
+    }
+  }
+
+>>>>>>> 7f4f399 (ok)
   global.InvooSmtpRelayClient = {
     normalizeBaseUrl,
     relayUrlCandidates,
     relayHealth,
     relaySendMail,
+<<<<<<< HEAD
+=======
+    relayScanBounces,
+>>>>>>> 7f4f399 (ok)
     relayHeaders
   };
 })(typeof window !== 'undefined' ? window : self);

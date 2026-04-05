@@ -1,0 +1,213 @@
+<table width="700" cellpadding="0" cellspacing="0" border="0" align="center" style="background:#ffffff; border-collapse:collapse;">
+
+  <!-- HEADER -->
+  <tr>
+    <td colspan="2" style="background:#1a8a4a; padding:36px 40px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="vertical-align:middle;">
+            <!-- Initials circle -->
+            <div style="width:90px; height:90px; border-radius:50%; background:#f0c040; display:inline-block; text-align:center; line-height:90px; font-size:30px; font-weight:900; color:#116336; border:3px solid rgba(255,255,255,0.4); vertical-align:middle;">OY</div>
+          </td>
+          <td style="padding-left:24px; vertical-align:middle;">
+            <div style="font-size:34px; font-weight:900; color:#ffffff; letter-spacing:-1px; line-height:1;">ONOUARI YOUSSEF</div>
+            <div style="font-size:12px; color:#f0c040; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-top:6px;">Candidat motivé &amp; polyvalent</div>
+            <div style="margin-top:10px; display:inline-block; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:#ffffff; padding:4px 14px; border-radius:20px; font-size:12px; font-weight:600;">● Disponible immédiatement</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- CONTACT BAR -->
+  <tr>
+    <td colspan="2" style="background:#116336; padding:10px 40px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="color:rgba(255,255,255,0.85); font-size:12px; padding-right:20px;">📍 Hay El Haddad Rue 3 No 2, Tanger, Maroc</td>
+          <td style="color:rgba(255,255,255,0.85); font-size:12px; padding-right:20px;">📞 +212 630 23 08 03</td>
+          <td style="color:rgba(255,255,255,0.85); font-size:12px;">✉️ ysonouari@gmail.com</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- BODY: SIDEBAR + MAIN -->
+  <tr>
+
+    <!-- SIDEBAR -->
+    <td width="220" valign="top" style="background:#f0f7f2; padding:28px 22px; border-right:1px solid #d4e8dc;">
+
+      <!-- Langues -->
+      <div style="font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#1a8a4a; font-weight:700; border-bottom:1px solid #d4e8dc; padding-bottom:7px; margin-bottom:14px;">Langues</div>
+
+      <div style="margin-bottom:10px;">
+        <table width="100%" cellpadding="0" cellspacing="0"><tr>
+          <td style="font-size:12px; color:#1a1a1a; font-weight:600;">Arabe</td>
+          <td align="right" style="font-size:10px; color:#1a8a4a; font-weight:700; letter-spacing:1px; text-transform:uppercase;">Natif</td>
+        </tr></table>
+        <div style="height:3px; background:#d4e8dc; border-radius:2px; margin-top:4px;">
+          <div style="height:3px; width:100%; background:#1a8a4a; border-radius:2px;"></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:10px;">
+        <table width="100%" cellpadding="0" cellspacing="0"><tr>
+          <td style="font-size:12px; color:#1a1a1a; font-weight:600;">Français</td>
+          <td align="right" style="font-size:10px; color:#1a8a4a; font-weight:700; letter-spacing:1px; text-transform:uppercase;">Intermédiaire</td>
+        </tr></table>
+        <div style="height:3px; background:#d4e8dc; border-radius:2px; margin-top:4px;">
+          <div style="height:3px; width:65%; background:#1a8a4a; border-radius:2px;"></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <table width="100%" cellpadding="0" cellspacing="0"><tr>
+          <td style="font-size:12px; color:#1a1a1a; font-weight:600;">Anglais</td>
+          <td align="right" style="font-size:10px; color:#1a8a4a; font-weight:700; letter-spacing:1px; text-transform:uppercase;">Débutant</td>
+        </tr></table>
+        <div style="height:3px; background:#d4e8dc; border-radius:2px; margin-top:4px;">
+          <div style="height:3px; width:25%; background:#1a8a4a; border-radius:2px;"></div>
+        </div>
+      </div>
+
+      <!-- Compétences -->
+      <div style="font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#1a8a4a; font-weight:700; border-bottom:1px solid #d4e8dc; padding-bottom:7px; margin-bottom:14px;">Compétences</div>
+
+      <div style="margin-bottom:24px; line-height:2;">
+        <span style="display:inline-block; background:#1a8a4a; color:#ffffff; padding:2px 9px; border-radius:12px; font-size:11px; margin:2px 2px 2px 0;">SEO</span>
+        <span style="display:inline-block; background:#1a8a4a; color:#ffffff; padding:2px 9px; border-radius:12px; font-size:11px; margin:2px 2px 2px 0;">Réseaux sociaux</span>
+        <span style="display:inline-block; background:#1a8a4a; color:#ffffff; padding:2px 9px; border-radius:12px; font-size:11px; margin:2px 2px 2px 0;">Publicité digitale</span>
+        <span style="display:inline-block; background:#1a8a4a; color:#ffffff; padding:2px 9px; border-radius:12px; font-size:11px; margin:2px 2px 2px 0;">WordPress</span>
+        <span style="display:inline-block; background:#1a8a4a; color:#ffffff; padding:2px 9px; border-radius:12px; font-size:11px; margin:2px 2px 2px 0;">Graphisme</span>
+        <span style="display:inline-block; background:#1a8a4a; color:#ffffff; padding:2px 9px; border-radius:12px; font-size:11px; margin:2px 2px 2px 0;">Informatique & Réseaux</span>
+        <span style="display:inline-block; background:#1a8a4a; color:#ffffff; padding:2px 9px; border-radius:12px; font-size:11px; margin:2px 2px 2px 0;">Montage vidéo</span>
+        <span style="display:inline-block; background:#1a8a4a; color:#ffffff; padding:2px 9px; border-radius:12px; font-size:11px; margin:2px 2px 2px 0;">Automatisation</span>
+        <span style="display:inline-block; background:#1a8a4a; color:#ffffff; padding:2px 9px; border-radius:12px; font-size:11px; margin:2px 2px 2px 0;">Administration</span>
+        <span style="display:inline-block; background:#1a8a4a; color:#ffffff; padding:2px 9px; border-radius:12px; font-size:11px; margin:2px 2px 2px 0;">Gestion documentaire</span>
+      </div>
+
+      <!-- Bénévolat -->
+      <div style="font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#1a8a4a; font-weight:700; border-bottom:1px solid #d4e8dc; padding-bottom:7px; margin-bottom:14px;">Bénévolat</div>
+      <div style="font-size:12px; color:#555555; line-height:1.7;">Organisation d'événements culturels : coordination et logistique.</div>
+
+    </td>
+
+    <!-- MAIN CONTENT -->
+    <td valign="top" style="padding:28px 32px;">
+
+      <!-- Objectif -->
+      <div style="font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#1a8a4a; font-weight:700; margin-bottom:10px;">Objectif</div>
+      <div style="border-left:3px solid #f0c040; padding-left:12px; font-size:13px; color:#555555; line-height:1.8; margin-bottom:28px;">
+        Motivé, sérieux et polyvalent, je souhaite intégrer une entreprise où je pourrai mettre à profit mes compétences, mon sens de l'organisation et ma capacité d'adaptation. Disponible pour tout type de mission nécessitant rigueur, autonomie, esprit d'équipe et volonté d'apprendre.
+      </div>
+
+      <!-- Expérience -->
+      <div style="font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#1a8a4a; font-weight:700; border-bottom:1px solid #e8f5ee; padding-bottom:7px; margin-bottom:18px;">Expérience professionnelle</div>
+
+      <!-- EXP 1 -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:18px;">
+        <tr>
+          <td width="14" valign="top" style="padding-top:3px;">
+            <div style="width:10px; height:10px; border-radius:50%; background:#1a8a4a; border:2px solid #ffffff; box-shadow:0 0 0 1px #1a8a4a;"></div>
+          </td>
+          <td style="padding-left:10px;">
+            <table width="100%" cellpadding="0" cellspacing="0"><tr>
+              <td style="font-size:14px; font-weight:700; color:#1a1a1a;">Assistant Administratif &amp; Automatisation</td>
+              <td align="right" style="font-size:11px; color:#1a8a4a; font-weight:600; white-space:nowrap;">Jan. 2024 – Présent</td>
+            </tr></table>
+            <div style="font-size:11px; color:#1a8a4a; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin:3px 0 8px;">DP Services Contact Center · Tanger</div>
+            <div style="font-size:12px; color:#555555; line-height:1.7;">› Création d'un système automatisé d'envoi d'emails pour prospects et partenaires.<br>› Gestion administrative complète : factures, documents et suivi historique.<br>› Optimisation des processus marketing et administratifs.</div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- EXP 2 -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:18px;">
+        <tr>
+          <td width="14" valign="top" style="padding-top:3px;">
+            <div style="width:10px; height:10px; border-radius:50%; background:#1a8a4a; border:2px solid #ffffff; box-shadow:0 0 0 1px #1a8a4a;"></div>
+          </td>
+          <td style="padding-left:10px;">
+            <table width="100%" cellpadding="0" cellspacing="0"><tr>
+              <td style="font-size:14px; font-weight:700; color:#1a1a1a;">Spécialiste Marketing Digital</td>
+              <td align="right" style="font-size:11px; color:#1a8a4a; font-weight:600; white-space:nowrap;">2018 – 2023</td>
+            </tr></table>
+            <div style="font-size:11px; color:#1a8a4a; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin:3px 0 8px;">Facelook · Tanger</div>
+            <div style="font-size:12px; color:#555555; line-height:1.7;">› Optimisation SEO et gestion des réseaux sociaux.<br>› Développement des campagnes d'acquisition et suivi des ventes.</div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- EXP 3 -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:18px;">
+        <tr>
+          <td width="14" valign="top" style="padding-top:3px;">
+            <div style="width:10px; height:10px; border-radius:50%; background:#1a8a4a; border:2px solid #ffffff; box-shadow:0 0 0 1px #1a8a4a;"></div>
+          </td>
+          <td style="padding-left:10px;">
+            <table width="100%" cellpadding="0" cellspacing="0"><tr>
+              <td style="font-size:14px; font-weight:700; color:#1a1a1a;">Graphiste</td>
+              <td align="right" style="font-size:11px; color:#1a8a4a; font-weight:600; white-space:nowrap;">2017 – 2018</td>
+            </tr></table>
+            <div style="font-size:11px; color:#1a8a4a; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin:3px 0 8px;">Delta Act · Agadir</div>
+            <div style="font-size:12px; color:#555555; line-height:1.7;">› Conception de supports graphiques et identité visuelle.<br>› Gestion de la communication visuelle de l'entreprise.</div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- EXP 4 -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+        <tr>
+          <td width="14" valign="top" style="padding-top:3px;">
+            <div style="width:10px; height:10px; border-radius:50%; background:#1a8a4a; border:2px solid #ffffff; box-shadow:0 0 0 1px #1a8a4a;"></div>
+          </td>
+          <td style="padding-left:10px;">
+            <table width="100%" cellpadding="0" cellspacing="0"><tr>
+              <td style="font-size:14px; font-weight:700; color:#1a1a1a;">Graphiste</td>
+              <td align="right" style="font-size:11px; color:#1a8a4a; font-weight:600; white-space:nowrap;">2016</td>
+            </tr></table>
+            <div style="font-size:11px; color:#1a8a4a; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin:3px 0 8px;">Raji Web · Agadir</div>
+            <div style="font-size:12px; color:#555555; line-height:1.7;">› Création de maquettes et identité visuelle pour sites web.</div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Formation -->
+      <div style="font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#1a8a4a; font-weight:700; border-bottom:1px solid #e8f5ee; padding-bottom:7px; margin-bottom:16px;">Formation</div>
+
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;">
+        <tr>
+          <td width="36" valign="top">
+            <div style="width:32px; height:32px; background:#e8f5ee; border-radius:8px; text-align:center; line-height:32px; font-size:16px;">🎓</div>
+          </td>
+          <td style="padding-left:12px; vertical-align:top;">
+            <div style="font-size:13px; font-weight:700; color:#1a1a1a;">DTS Systèmes et Réseaux Informatiques</div>
+            <div style="font-size:11px; color:#777777; margin-top:2px;">Institut Spécialisé de Technologie, Agadir — 2 ans (diplôme non obtenu)</div>
+          </td>
+        </tr>
+      </table>
+
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td width="36" valign="top">
+            <div style="width:32px; height:32px; background:#e8f5ee; border-radius:8px; text-align:center; line-height:32px; font-size:16px;">📘</div>
+          </td>
+          <td style="padding-left:12px; vertical-align:top;">
+            <div style="font-size:13px; font-weight:700; color:#1a1a1a;">Baccalauréat Sciences Physiques</div>
+            <div style="font-size:11px; color:#777777; margin-top:2px;">Lycée Mokhtar Soucis, Agadir — 2013</div>
+          </td>
+        </tr>
+      </table>
+
+    </td>
+  </tr>
+
+  <!-- FOOTER -->
+  <tr>
+    <td colspan="2" style="background:#1a8a4a; padding:14px 40px; text-align:center;">
+      <span style="font-size:11px; color:rgba(255,255,255,0.7);">ysonouari@gmail.com &nbsp;·&nbsp; +212 630 23 08 03 &nbsp;·&nbsp; Tanger, Maroc</span>
+    </td>
+  </tr>
+
+</table>

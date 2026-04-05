@@ -112,11 +112,34 @@
     if (window.InvooListsImport && typeof window.InvooListsImport.init === 'function') {
       window.InvooListsImport.init();
     }
+<<<<<<< HEAD
+=======
+
+    if (window.InvooImapPage && typeof window.InvooImapPage.init === 'function') {
+      window.InvooImapPage.init();
+    }
+>>>>>>> 7f4f399 (ok)
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     boot().catch((err) => console.error('[INVOOBLAST]', err));
   });
 
+<<<<<<< HEAD
   window.InvooApp = { showToast };
+=======
+  window.InvooApp = {
+    showToast,
+    confirm: (opts) => {
+      if (window.InvooConfirm && typeof window.InvooConfirm.show === 'function') {
+        return window.InvooConfirm.show(opts);
+      }
+      const msg =
+        opts && typeof opts === 'object' && opts.message != null
+          ? String(opts.message)
+          : String(opts || '');
+      return Promise.resolve(window.confirm(msg));
+    }
+  };
+>>>>>>> 7f4f399 (ok)
 })();
