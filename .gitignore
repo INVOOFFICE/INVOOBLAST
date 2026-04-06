@@ -14,3 +14,9 @@ Desktop.ini
 
 # Sauvegardes locales optionnelles à ne pas versionner si vous en créez ici
 # *.json
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
