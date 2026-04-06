@@ -91,8 +91,16 @@
     nav.initNavigation();
     dash.wireDashboardRefresh();
     wireNetPill();
-      wireOnlineOnlyPages();
+    wireOnlineOnlyPages();
     wireInstall();
+
+    window.addEventListener('invooblast:relay-waiting', (e) => {
+      const m =
+        e.detail && e.detail.message != null
+          ? String(e.detail.message)
+          : 'Server waking up, please wait…';
+      showToast(m, false);
+    });
 
     await dash.refreshDashboard();
     updateNetPill();

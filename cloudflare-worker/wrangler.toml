@@ -1,0 +1,10 @@
+# Exemple Cloudflare Worker — déploiement : npx wrangler deploy (depuis ce dossier)
+# Secrets : wrangler secret put RESEND_API_KEY
+# Variables : RESEND_FROM = "Nom <onboarding@resend.dev>" (domaine vérifié Resend)
+
+name = "invooblast-send"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# [vars]
+# RESEND_FROM = "INVOOBLAST <mail@votredomaine.com>"

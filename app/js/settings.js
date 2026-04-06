@@ -30,6 +30,10 @@
     listUnsubscribeHeader: false,
     /** Relais Node : multipart text/plain dérivé du HTML (meilleure compatibilité). */
     plainTextAlternative: false,
+    /** `local` = relais Node + Gmail ; `cloud` = Worker HTTPS (Resend côté Worker). */
+    sendingMode: 'local',
+    /** URL de base du Worker (ex. https://xxx.workers.dev), sans /send. */
+    cloudWorkerUrl: '',
     /** Relais Node local (voir server/smtp-relay.mjs). */
     smtpRelayUrl: 'http://127.0.0.1:18765',
     /** Si le relais déployé exige INVOOBLAST_RELAY_API_KEY côté serveur. */
@@ -399,19 +403,38 @@
     <div class="panel-h">
       <h2>Configuration envoi (Blast)</h2>
       <div class="row-actions">
-        <button type="button" class="btn" id="st-blast-verify" title="Vérifie que le relais Node répond sur l’URL configurée">Tester le relais SMTP</button>
+        <button type="button" class="btn" id="st-blast-verify" title="Vérifie le relais SMTP (mode local) ou le Worker (mode Cloud)">Tester la connexion</button>
         <button type="button" class="btn primary" id="st-blast-save">Enregistrer config</button>
       </div>
     </div>
     <div class="panel-b settings-form-grid">
-      <div class="settings-field span-2 settings-toggle-row">
+      <div class="settings-field span-2">
+        <span class="settings-label-like">Mode d’envoi</span>
+        <div class="settings-radio-row" role="radiogroup" aria-label="Mode d’envoi">
+          <label class="settings-check">
+            <input type="radio" name="bc-send-mode" id="bc-mode-local" value="local" checked />
+            <span>SMTP local</span>
+          </label>
+          <label class="settings-check">
+            <input type="radio" name="bc-send-mode" id="bc-mode-cloud" value="cloud" />
+            <span>Cloud (Worker API)</span>
+          </label>
+        </div>
+        <span class="editor-hint" style="display:block;margin-top:0.35rem">Local : relais Node + comptes Gmail (comportement actuel). Cloud : envoi via un Worker HTTPS ; les clés API restent sur Cloudflare / Resend, pas dans l’app.</span>
+      </div>
+      <div class="settings-field span-2 bc-cloud-only" hidden>
+        <label for="bc-worker-url">URL du Worker (Cloud)</label>
+        <input id="bc-worker-url" type="url" class="editor-input" placeholder="https://votre-worker.workers.dev" autocomplete="off"/>
+        <span class="editor-hint">URL de base uniquement (sans <code>/send</code>). Déployez le dossier <code>cloudflare-worker/</code> et définissez les secrets Resend sur le Worker.</span>
+      </div>
+      <div class="settings-field span-2 settings-toggle-row bc-local-only">
         <label class="settings-check">
           <input type="checkbox" id="bc-relay"/>
           <span>Relais de secours</span>
         </label>
         <span class="editor-hint">Utiliser le compte Gmail marqué « secours » si les comptes principaux sont indisponibles.</span>
       </div>
-      <div class="settings-field span-2 settings-toggle-row">
+      <div class="settings-field span-2 settings-toggle-row bc-local-only">
         <label class="settings-check">
           <input type="checkbox" id="bc-disable-err"/>
           <span>Désactiver automatiquement le compte en erreur</span>
@@ -444,14 +467,14 @@
         </div>
         <span class="editor-hint" style="display:block;margin-top:0.35rem">Pause <strong>supplémentaire aléatoire</strong> après le délai fixe (entre chaque message). Réduit une cadence trop régulière ; ne remplace pas un bon contenu ni les limites Gmail.</span>
       </div>
-      <div class="settings-field">
+      <div class="settings-field bc-local-only">
         <label for="bc-rotate">Rotation pool</label>
         <div class="settings-input-suffix">
           <input id="bc-rotate" type="number" min="1" step="1" class="editor-input"/>
           <span class="suffix">e-mails / compte</span>
         </div>
       </div>
-      <div class="settings-field span-2 settings-toggle-row">
+      <div class="settings-field span-2 settings-toggle-row bc-local-only">
         <label class="settings-check">
           <input type="checkbox" id="bc-list-unsub"/>
           <span>En-tête List-Unsubscribe (mailto expéditeur)</span>
@@ -461,16 +484,16 @@
       <div class="settings-field span-2 settings-toggle-row">
         <label class="settings-check">
           <input type="checkbox" id="bc-plain-text"/>
-          <span>Version texte brut (multipart HTML + texte)</span>
+          <span>Version texte brut (multipart ou champ <code>text</code> Worker)</span>
         </label>
-        <span class="editor-hint">Le relais génère un <code>text/plain</code> simple à partir du HTML — utile pour clients et filtres qui valorisent le multipart. Aperçu approximatif (balises retirées).</span>
+        <span class="editor-hint">Mode local : le relais génère un <code>text/plain</code> à partir du HTML. Mode Cloud : le même extrait est envoyé au Worker (Resend) en champ <code>text</code> optionnel.</span>
       </div>
-      <div class="settings-field span-2">
+      <div class="settings-field span-2 bc-local-only">
         <label for="bc-smtp-relay">URL du relais SMTP</label>
         <input id="bc-smtp-relay" type="url" class="editor-input" placeholder="http://127.0.0.1:18765 ou https://votre-relais.onrender.com" autocomplete="off"/>
         <span class="editor-hint">Relais <strong>open source</strong> (<code>server/</code>) : <code>npm start</code> en local, ou déploiement HTTPS (Docker, <code>render.yaml</code>). URL de base sans <code>/send</code>. <strong>GitHub Pages est en HTTPS</strong> : un relais <code>http://127.0.0.1</code> ne fonctionnera pas depuis le site en ligne — déployez le relais en <code>https://…</code>, ou utilisez l’app en <code>http://localhost</code> pour le relais local. Pool Gmail ci‑dessous.</span>
       </div>
-      <div class="settings-field span-2">
+      <div class="settings-field span-2 bc-local-only">
         <label for="bc-relay-api-key">Clé API relais (optionnel)</label>
         <input id="bc-relay-api-key" type="password" class="editor-input" placeholder="Si INVOOBLAST_RELAY_API_KEY est défini sur le serveur" autocomplete="off"/>
         <span class="editor-hint">Laissez vide en local sans variable d’environnement. En production, même valeur que sur le serveur (voir <code>server/README.txt</code>).</span>
@@ -694,8 +717,23 @@
     return true;
   }
 
+  function updateBlastModeUi(root) {
+    const cloud = !!(root.querySelector('#bc-mode-cloud') && root.querySelector('#bc-mode-cloud').checked);
+    root.querySelectorAll('.bc-local-only').forEach((el) => {
+      el.hidden = cloud;
+    });
+    const wc = root.querySelector('.bc-cloud-only');
+    if (wc) wc.hidden = !cloud;
+  }
+
   async function loadBlastIntoForm(root) {
     const c = { ...DEFAULT_BLAST, ...(await db.getMeta(META_BLAST)) };
+    const mode = c.sendingMode === 'cloud' ? 'cloud' : 'local';
+    const rLocal = root.querySelector('#bc-mode-local');
+    const rCloud = root.querySelector('#bc-mode-cloud');
+    if (rLocal) rLocal.checked = mode === 'local';
+    if (rCloud) rCloud.checked = mode === 'cloud';
+    setInput(root, '#bc-worker-url', c.cloudWorkerUrl ?? '');
     root.querySelector('#bc-relay').checked = !!c.useFallbackRelay;
     root.querySelector('#bc-disable-err').checked = c.disableOnError !== false;
     root.querySelector('#bc-start').value = String(c.startLine ?? 1);
@@ -714,6 +752,7 @@
     }
     setInput(root, '#bc-smtp-relay', relayShow);
     setInput(root, '#bc-relay-api-key', c.smtpRelayApiKey ?? '');
+    updateBlastModeUi(root);
   }
 
   async function saveBlastFromForm(root) {
@@ -730,7 +769,11 @@
         toast('Le port a été corrigé en 18765 (et non 1876).');
       }
     } catch (_) {}
+    const modeCloud = !!(root.querySelector('#bc-mode-cloud') && root.querySelector('#bc-mode-cloud').checked);
+    const sendingMode = modeCloud ? 'cloud' : 'local';
     const c = {
+      sendingMode,
+      cloudWorkerUrl: getInputTrim(root, '#bc-worker-url'),
       startLine: Math.max(1, parseInt(root.querySelector('#bc-start').value, 10) || 1),
       globalQuota: Math.max(1, parseInt(root.querySelector('#bc-quota').value, 10) || 500),
       delaySec: Math.max(0, parseInt(root.querySelector('#bc-delay').value, 10) || 0),
@@ -1116,23 +1159,39 @@
 
     root.querySelector('#st-blast-verify').addEventListener('click', async () => {
       if (!net.isOnline()) {
-        toast('Test relais : connexion Internet requise pour joindre Gmail après le relais local.', true);
+        toast('Test : connexion Internet requise.', true);
         return;
       }
-      let relayUrl = getInputTrim(root, '#bc-smtp-relay');
-      if (!relayUrl) relayUrl = DEFAULT_BLAST.smtpRelayUrl;
-      const client = global.InvooSmtpRelayClient;
-      if (!client || typeof client.relayHealth !== 'function') {
-        toast('Client relais indisponible (rechargez la page).', true);
-        return;
-      }
-      const apiKey = getInputTrim(root, '#bc-relay-api-key');
+      const modeCloud = !!(root.querySelector('#bc-mode-cloud') && root.querySelector('#bc-mode-cloud').checked);
       try {
-        const h = await client.relayHealth(relayUrl, apiKey);
-        toast(h.ok ? `Relais OK (${relayUrl})` : h.message, !h.ok);
+        if (modeCloud) {
+          const wu = getInputTrim(root, '#bc-worker-url');
+          const cw = global.InvooCloudWorkerClient;
+          if (!cw || typeof cw.workerHealth !== 'function') {
+            toast('Client Worker indisponible (rechargez la page).', true);
+            return;
+          }
+          const h = await cw.workerHealth(wu);
+          toast(h.ok ? `Worker OK (${wu || 'URL'})` : h.message, !h.ok);
+        } else {
+          let relayUrl = getInputTrim(root, '#bc-smtp-relay');
+          if (!relayUrl) relayUrl = DEFAULT_BLAST.smtpRelayUrl;
+          const client = global.InvooSmtpRelayClient;
+          if (!client || typeof client.relayHealth !== 'function') {
+            toast('Client relais indisponible (rechargez la page).', true);
+            return;
+          }
+          const apiKey = getInputTrim(root, '#bc-relay-api-key');
+          const h = await client.relayHealth(relayUrl, apiKey);
+          toast(h.ok ? `Relais OK (${relayUrl})` : h.message, !h.ok);
+        }
       } catch (e) {
         toast(e.message || String(e), true);
       }
+    });
+
+    root.querySelectorAll('input[name="bc-send-mode"]').forEach((radio) => {
+      radio.addEventListener('change', () => updateBlastModeUi(root));
     });
 
     root.querySelector('#st-pool-reset').addEventListener('click', async () => {

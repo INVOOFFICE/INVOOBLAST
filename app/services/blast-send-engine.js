@@ -1,5 +1,5 @@
 /**
- * Moteur d’envoi Blast : fusion brouillon + contacts, rotation pool Gmail, relais SMTP local.
+ * Moteur d’envoi Blast : fusion brouillon + contacts ; envoi SMTP local (relais + Gmail) ou Cloud (Worker).
  */
 (function (global) {
   'use strict';
@@ -83,9 +83,11 @@
    * @returns {Promise<{ sent: number, failed: number, total: number }>}
    */
   async function runBlastSend(opts) {
-    if (!db || !relay || !gmailStore || !merge || !settings) {
+    if (!db || !relay || !merge || !settings) {
       throw new Error('Services Blast incomplets (rechargez la page).');
     }
+
+    const cloudClient = global.InvooCloudWorkerClient;
 
     await net.requireOnline('Envoi Blast : connexion Internet requise.');
 
@@ -97,12 +99,34 @@
     if (!listId) throw new Error('Choisissez une liste de destinataires.');
 
     const cfg = { ...(await settings.getBlastConfig()) };
-    const relayUrl = relay.normalizeBaseUrl(cfg.smtpRelayUrl);
+    const isCloud = cfg.sendingMode === 'cloud';
 
+    if (!isCloud && !gmailStore) {
+      throw new Error('Services Blast incomplets (rechargez la page).');
+    }
+    if (isCloud && !cloudClient) {
+      throw new Error('Client Worker indisponible (rechargez la page).');
+    }
+
+    const relayUrl = relay.normalizeBaseUrl(cfg.smtpRelayUrl);
     const relayApiKey = cfg.smtpRelayApiKey != null ? String(cfg.smtpRelayApiKey) : '';
-    const health = await relay.relayHealth(relayUrl, relayApiKey);
-    if (!health.ok) throw new Error(health.message);
-    const sendRelayBase = health.resolvedBase || relayUrl;
+    let relaySendBase = relayUrl;
+    let workerSendBase = '';
+
+    if (!isCloud) {
+      const health = await relay.relayHealth(relayUrl, relayApiKey);
+      if (!health.ok) throw new Error(health.message);
+      relaySendBase = health.resolvedBase || relayUrl;
+    } else {
+      let wb = String(cfg.cloudWorkerUrl || '').trim();
+      wb = cloudClient.normalizeWorkerBaseUrl(wb);
+      if (!wb) {
+        throw new Error('URL du Worker Cloud non configurée (Paramètres → Mode d’envoi).');
+      }
+      const wh = await cloudClient.workerHealth(wb);
+      if (!wh.ok) throw new Error(wh.message || 'Relais injoignable');
+      workerSendBase = wh.resolvedBase || wb;
+    }
 
     const listRow = await db.get(db.STORES.LISTS, listId);
     if (!listRow) throw new Error('Liste introuvable ou supprimée.');
@@ -210,6 +234,96 @@
       const merged = await merge.mergeWithProfileAndContact(templateRow, contact, profileForSend);
       const toAddr = String(contact.email || '').trim();
 
+      if (isCloud) {
+        const displayFrom =
+          profileForSend && profileForSend.email
+            ? String(profileForSend.email).trim()
+            : 'Cloud (Worker)';
+        const textExtra =
+          plainTextAlternative && typeof cloudClient.htmlToPlainApprox === 'function'
+            ? cloudClient.htmlToPlainApprox(merged.html)
+            : null;
+
+        onProgress({
+          phase: 'sending',
+          index: i + 1,
+          total,
+          sent,
+          failed,
+          lastTo: contact.email,
+          from: displayFrom
+        });
+
+        try {
+          await cloudClient.sendViaWorker(workerSendBase, {
+            to: toAddr,
+            subject: merged.subject,
+            html: merged.html,
+            ...(textExtra ? { text: textExtra } : {})
+          });
+          sent++;
+          await db.put(db.STORES.SEND_HISTORY, {
+            id: db.uuid(),
+            campaignId: null,
+            listId,
+            contactId: contact.id,
+            ts: Date.now(),
+            status: 'sent',
+            to: toAddr,
+            from: displayFrom,
+            accountId: null,
+            subject: merged.subject,
+            error: null
+          });
+          await db.appendLog('info', 'Envoi Blast (Worker) réussi.', { to: toAddr });
+        } catch (e) {
+          failed++;
+          const errMsg = e && e.message ? String(e.message) : 'Relais injoignable';
+          await db.put(db.STORES.SEND_HISTORY, {
+            id: db.uuid(),
+            campaignId: null,
+            listId,
+            contactId: contact.id,
+            ts: Date.now(),
+            status: 'failed',
+            to: toAddr,
+            from: displayFrom,
+            accountId: null,
+            subject: merged.subject,
+            error: errMsg
+          });
+          await db.appendLog('error', 'Envoi Blast (Worker) échoué.', { to: toAddr, error: errMsg });
+          onProgress({
+            phase: 'error',
+            index: i + 1,
+            total,
+            sent,
+            failed,
+            lastTo: contact.email,
+            error: errMsg
+          });
+        }
+
+        const nextAbs0Cloud = startIdx + i + 1;
+        if (nextAbs0Cloud < contactsFull.length) {
+          await db.setMeta(META_BLAST_RESUME, {
+            listId,
+            nextLine1Based: nextAbs0Cloud + 1,
+            lastProcessedEmail: String(contact.email || '').trim(),
+            ts: Date.now()
+          });
+        } else {
+          await db.del(db.STORES.META, META_BLAST_RESUME);
+        }
+
+        if (control.aborted) break;
+        if (i < contacts.length - 1) {
+          const betweenMs = delayMs + randomJitterMs();
+          if (betweenMs > 0) await waitWhilePausedAndDelay(betweenMs, control);
+        }
+        continue;
+      }
+
       const triedAccountIds = new Set();
       let delivered = false;
       let lastErrMsg = '';
@@ -275,7 +389,7 @@
         });
 
         try {
-          await relay.relaySendMail(sendRelayBase, payload, relayApiKey);
+          await relay.relaySendMail(relaySendBase, payload, relayApiKey);
           sent++;
           await gmailStore.recordSendOutcome(account.id, { ok: true, disableOnError });
           await db.put(db.STORES.SEND_HISTORY, {

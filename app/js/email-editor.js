@@ -1679,8 +1679,8 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
         showEdToast('Client relais SMTP indisponible. Rechargez la page après mise à jour de l’app.', true);
         return;
       }
-      if (!settingsNow || typeof settingsNow.getBlastConfig !== 'function' || !gmailNow) {
-        showEdToast('Paramètres ou pool Gmail indisponibles.', true);
+      if (!settingsNow || typeof settingsNow.getBlastConfig !== 'function') {
+        showEdToast('Paramètres indisponibles.', true);
         return;
       }
       const merge = global.InvooEmailMerge;
@@ -1732,6 +1732,51 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
         const testSubject = `[Test] ${String(merged.subject || '').trim()}`;
 
         const cfg = await settingsNow.getBlastConfig();
+        const isCloud = cfg.sendingMode === 'cloud';
+
+        if (!isCloud && !gmailNow) {
+          showEdToast('Pool Gmail indisponible.', true);
+          return;
+        }
+
+        if (isCloud) {
+          const cw = global.InvooCloudWorkerClient;
+          if (!cw || typeof cw.sendViaWorker !== 'function') {
+            showEdToast('Client Worker indisponible (rechargez la page).', true);
+            return;
+          }
+          let wu = String(cfg.cloudWorkerUrl || '').trim();
+          wu = cw.normalizeWorkerBaseUrl(wu);
+          if (!wu) {
+            showEdToast('URL du Worker Cloud non configurée (Paramètres).', true);
+            return;
+          }
+          const wh = await cw.workerHealth(wu);
+          if (!wh.ok) {
+            showEdToast(wh.message || 'Relais injoignable', true);
+            return;
+          }
+          const wBase = wh.resolvedBase || wu;
+          const textExtra =
+            cfg.plainTextAlternative && typeof cw.htmlToPlainApprox === 'function'
+              ? cw.htmlToPlainApprox(merged.html)
+              : null;
+          if (testStatus) testStatus.textContent = 'Envoi via Worker Cloud…';
+          await cw.sendViaWorker(wBase, {
+            to: toAddr,
+            subject: testSubject,
+            html: merged.html,
+            ...(textExtra ? { text: textExtra } : {})
+          });
+          await db.appendLog('info', 'E-mail de test envoyé depuis l’éditeur (Worker).', { to: toAddr });
+          showEdToast(`Test envoyé vers ${toAddr} (Cloud Worker).`);
+          if (testStatus) {
+            testStatus.textContent = `Envoyé — vérifiez ${toAddr}. L’expéditeur est celui défini côté Worker (Resend).`;
+          }
+          global.dispatchEvent(new CustomEvent('invooblast:blast-settings-updated'));
+          return;
+        }
+
         const relayUrl = relayNow.normalizeBaseUrl(cfg.smtpRelayUrl);
         const apiKey = cfg.smtpRelayApiKey != null ? String(cfg.smtpRelayApiKey) : '';
 
@@ -1793,6 +1838,7 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
         if (testStatus) testStatus.textContent = '';
         try {
           const cfg = await settingsNow.getBlastConfig();
+          if (cfg.sendingMode === 'cloud') return;
           const rows = await gmailNow.listAccounts();
           const pool = buildTestAccountPool(rows, cfg);
           const account = pool[0];

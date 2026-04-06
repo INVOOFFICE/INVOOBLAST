@@ -3,7 +3,7 @@
  * Met en cache l’application statique ; les données utilisateur restent dans IndexedDB (hors Cache API).
  * Incrémenter CACHE_VERSION après tout changement d’assets précachés.
  */
-const CACHE_VERSION = 'invooblast-v50';
+const CACHE_VERSION = 'invooblast-v52';
 const CACHE_NAME = `invooblast-static-${CACHE_VERSION}`;
 
 /** Chemins relatifs à la racine du dépôt (servir depuis la racine, ex. npx serve .) */
@@ -21,6 +21,7 @@ const PRECACHE_ASSETS = [
   './app/services/network-state.js',
   './app/services/gmail-account-store.js',
   './app/services/smtp-relay-client.js',
+  './app/services/cloud-worker-client.js',
   './app/services/blast-send-engine.js',
   './app/services/email-merge.js',
   './app/vendor/xlsx.full.min.js',

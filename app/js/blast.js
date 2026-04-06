@@ -300,7 +300,11 @@
 
       <dl class="blast-dl" id="blast-config-dl">
 
-        <dt>Relais SMTP local</dt>
+        <dt>Mode d’envoi</dt>
+
+        <dd id="blast-c-send-mode">—</dd>
+
+        <dt id="blast-dt-endpoint">Relais SMTP (URL)</dt>
 
         <dd id="blast-c-relay-url" class="blast-dd-mono">—</dd>
 
@@ -320,23 +324,23 @@
 
         <dd id="blast-c-jitter">—</dd>
 
-        <dt>Rotation du pool</dt>
+        <dt class="blast-local-only-row">Rotation du pool</dt>
 
-        <dd id="blast-c-rotate">—</dd>
+        <dd class="blast-local-only-row" id="blast-c-rotate">—</dd>
 
-        <dt>Relais de secours</dt>
+        <dt class="blast-local-only-row">Relais de secours</dt>
 
-        <dd id="blast-c-relay">—</dd>
+        <dd class="blast-local-only-row" id="blast-c-relay">—</dd>
 
-        <dt>Désactivation auto (erreur SMTP)</dt>
+        <dt class="blast-local-only-row">Désactivation auto (erreur SMTP)</dt>
 
-        <dd id="blast-c-err">—</dd>
+        <dd class="blast-local-only-row" id="blast-c-err">—</dd>
 
-        <dt>List-Unsubscribe (mailto)</dt>
+        <dt class="blast-local-only-row">List-Unsubscribe (mailto)</dt>
 
-        <dd id="blast-c-list-unsub">—</dd>
+        <dd class="blast-local-only-row" id="blast-c-list-unsub">—</dd>
 
-        <dt>Multipart texte brut</dt>
+        <dt>Multipart / texte brut (Worker)</dt>
 
         <dd id="blast-c-plain">—</dd>
 
@@ -616,8 +620,18 @@
 
     };
 
-    const relayU = String(cfg.smtpRelayUrl || 'http://127.0.0.1:18765').trim() || '—';
+    const modeCloud = cfg.sendingMode === 'cloud';
+    setText('#blast-c-send-mode', modeCloud ? 'Cloud (Worker API)' : 'SMTP local');
+    const ep = root.querySelector('#blast-dt-endpoint');
+    if (ep) ep.textContent = modeCloud ? 'Worker Cloud (URL de base)' : 'Relais SMTP (URL)';
+    const relayU = modeCloud
+      ? String(cfg.cloudWorkerUrl || '').trim() || '—'
+      : String(cfg.smtpRelayUrl || 'http://127.0.0.1:18765').trim() || '—';
     setText('#blast-c-relay-url', relayU);
+
+    root.querySelectorAll('.blast-local-only-row').forEach((el) => {
+      el.style.display = modeCloud ? 'none' : '';
+    });
 
     setText('#blast-c-start', String(cfg.startLine ?? 1));
 
@@ -645,7 +659,11 @@
 
       const ru = escHtml(relayU);
 
-      readyRecap.innerHTML = `Même réglages que <strong>Paramètres → Configuration envoi (Blast)</strong> : relais <span class="blast-dd-mono">${ru}</span>, ligne départ <strong>${cfg.startLine ?? 1}</strong>, quota <strong>${cfg.globalQuota ?? 500}</strong>, délai <strong>${cfg.delaySec ?? 15}</strong>&nbsp;s, rotation <strong>${cfg.rotationEvery ?? 50}</strong>. En cas d’échec sur une boîte, le même destinataire est <strong>réessayé avec les autres comptes actifs</strong> du pool (voir option désactivation auto dans Paramètres).`;
+      if (modeCloud) {
+        readyRecap.innerHTML = `Mode <strong>Cloud (Worker)</strong> : URL <span class="blast-dd-mono">${ru}</span>, ligne départ <strong>${cfg.startLine ?? 1}</strong>, quota <strong>${cfg.globalQuota ?? 500}</strong>, délai <strong>${cfg.delaySec ?? 15}</strong>&nbsp;s. Les e-mails partent via le Worker (Resend) ; l’expéditeur est défini sur le serveur, pas dans l’app.`;
+      } else {
+        readyRecap.innerHTML = `Même réglages que <strong>Paramètres → Configuration envoi (Blast)</strong> : relais <span class="blast-dd-mono">${ru}</span>, ligne départ <strong>${cfg.startLine ?? 1}</strong>, quota <strong>${cfg.globalQuota ?? 500}</strong>, délai <strong>${cfg.delaySec ?? 15}</strong>&nbsp;s, rotation <strong>${cfg.rotationEvery ?? 50}</strong>. En cas d’échec sur une boîte, le même destinataire est <strong>réessayé avec les autres comptes actifs</strong> du pool (voir option désactivation auto dans Paramètres).`;
+      }
 
     }
 
