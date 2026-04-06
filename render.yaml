@@ -3,6 +3,9 @@
 #
 # Après déploiement : copier l’URL https://… (sans slash final) dans l’app
 # Paramètres → URL du relais SMTP + la même clé que INVOOBLAST_RELAY_API_KEY.
+#
+# Service créé à la main sur render.com : Build = npm install, Start = npm start
+# (évite Yarn + avertissement package-lock.json / lockfiles désynchronisés).
 
 services:
   - type: web

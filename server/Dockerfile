@@ -1,5 +1,5 @@
 # Relais SMTP open source INVOOBLAST — déployable sur tout hébergeur Docker (Render, Fly.io, VPS…).
-FROM node:20-alpine
+FROM node:22-alpine
 WORKDIR /app
 
 COPY package.json package-lock.json* ./

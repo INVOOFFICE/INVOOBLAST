@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Relais HTTP→SMTP open source pour INVOOBLAST (Gmail App Password). Local ou déployé (Docker, Render…).",
   "engines": {
-    "node": ">=18"
+    "node": "22.x"
   },
   "type": "module",
   "main": "smtp-relay.mjs",

@@ -8,7 +8,9 @@ import { scanInboxForBounces } from './bounce-scan.mjs';
 
 /** Render / Fly / Docker injectent souvent PORT ; local : 18765. */
 const PORT = Number(process.env.PORT || process.env.INVOOBLAST_SMTP_RELAY_PORT || 18765);
-const HOST = process.env.INVOOBLAST_SMTP_RELAY_HOST || '127.0.0.1';
+const HOST =
+  process.env.INVOOBLAST_SMTP_RELAY_HOST ||
+  (process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1');
 const API_KEY = String(process.env.INVOOBLAST_RELAY_API_KEY || '').trim();
 
 const ALLOWED_ORIGINS = process.env.INVOOBLAST_ALLOWED_ORIGINS
@@ -240,7 +242,10 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`[INVOOBLAST] Relais SMTP sur http://${HOST}:${PORT}`);
+  console.log(`[INVOOBLAST] Relais SMTP à l'écoute sur ${HOST}:${PORT}`);
+  if (HOST === '0.0.0.0') {
+    console.log('[INVOOBLAST] Toutes interfaces ; en prod utilisez l’URL HTTPS de l’hébergeur (Render, etc.).');
+  }
   console.log(`[INVOOBLAST] GET /health  POST /send  POST /scan-bounces (IMAP bounces)`);
   if (API_KEY) console.log('[INVOOBLAST] Clé API : activée (X-INVOOBLAST-KEY)');
   if (ALLOWED_ORIGINS && ALLOWED_ORIGINS.length) {
