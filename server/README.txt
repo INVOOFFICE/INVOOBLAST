@@ -12,15 +12,9 @@ Démarrage local :
   npm start
 
 Par défaut : http://127.0.0.1:18765
-<<<<<<< HEAD
-  • GET  /health  — état du relais
-  • POST /send    — JSON : auth { user, pass }, from, to, subject, html [, replyTo ]
-
-Variables d’environnement (optionnelles) :
-=======
-  • GET  /health        — état du relais
-  • POST /send          — JSON : auth { user, pass }, from, to, subject, html [, replyTo ]
-  • POST /scan-bounces  — JSON : auth { user, pass } [, days, maxMessages ]
+  • GET  /health           — état du relais
+  • POST /send             — JSON : auth { user, pass }, from, to, subject, html [, replyTo ]
+  • POST /scan-bounces     — JSON : auth { user, pass } [, days, maxMessages ]
                           IMAP Gmail : lecture INBOX + Spam, recherche DSN / rebonds récents,
                           renvoie { failedRecipients, folders: [ { path, uidMatched, messagesFetched } ] }.
                           Page « IMAP & bounces » (pool Gmail).
@@ -28,7 +22,6 @@ Variables d’environnement (optionnelles) :
 Variables d’environnement (optionnelles) :
   PORT
     — défini automatiquement sur Render, Fly, Railway, etc. (prioritaire sur le port).
->>>>>>> 7f4f399 (ok)
   INVOOBLAST_SMTP_RELAY_PORT=18765
   INVOOBLAST_SMTP_RELAY_HOST=127.0.0.1
     — en déploiement cloud, utiliser souvent 0.0.0.0 pour écouter toutes les interfaces.
@@ -50,18 +43,6 @@ Sécurité (local) :
   entre le navigateur et ce processus : ne pas exposer le port sur Internet sans
   HTTPS, clé API et CORS stricts.
 
-<<<<<<< HEAD
-GitHub Pages + envoi d’e-mails (résumé) :
-  • GitHub Pages ne fait tourner que des fichiers statiques : pas de Node.js.
-  • Hébergez ce dossier server/ sur un service qui exécute Node (Render, Fly.io,
-    Railway, VPS…) avec HTTPS.
-  • Dans l’app (Paramètres), URL du relais = l’URL https:// fournie par ce service.
-  • Définissez INVOOBLAST_ALLOWED_ORIGINS avec l’URL exacte de votre site GitHub Pages.
-  • Définissez INVOOBLAST_RELAY_API_KEY et la même clé dans l’app.
-  • Les boîtes Gmail restent configurées dans l’app (pool) comme en local ; les
-    mots de passe d’application ne sont pas stockés sur GitHub, ils restent dans
-    le navigateur (IndexedDB chiffré).
-=======
 Déploiement open source (même code que le local) :
   • Dockerfile : dans server/ — image Node alpine, prête pour Docker / Kubernetes.
   • render.yaml : à la racine du dépôt — Blueprint Render.com (New > Blueprint).
@@ -84,4 +65,3 @@ GitHub Pages + envoi d’e-mails (résumé) :
   • Définissez INVOOBLAST_RELAY_API_KEY et la même clé dans l’app (Paramètres).
   • Les mots de passe d’application ne sont pas sur GitHub : IndexedDB chiffré dans
     le navigateur de chaque utilisateur.
->>>>>>> 7f4f399 (ok)

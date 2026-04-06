@@ -88,11 +88,7 @@
       return {
         ok: false,
         message:
-<<<<<<< HEAD
-          'Cette page est en HTTPS : le navigateur bloque un relais en http://. Déployez le relais derrière HTTPS (Render, Fly.io, etc.) et mettez son URL https:// dans Paramètres, ou ouvrez l’app en http://localhost pour le relais local.'
-=======
           'Site en HTTPS (ex. GitHub Pages) + relais en http:// : le navigateur bloque ce mélange (sécurité). Deux possibilités : (1) Déployer le dossier server/ en HTTPS (Render, Fly.io, voir render.yaml) et mettre son URL https:// dans Paramètres. (2) Utiliser le relais local uniquement en ouvrant l’app en http://localhost sur votre PC (npx serve dans le clone du repo), pas via github.io.'
->>>>>>> 7f4f399 (ok)
       };
     }
 
@@ -172,8 +168,6 @@
     }
   }
 
-<<<<<<< HEAD
-=======
   /**
    * Scan IMAP rebonds (relais Node — POST /scan-bounces).
    * @param {string} baseUrl
@@ -219,16 +213,12 @@
     }
   }
 
->>>>>>> 7f4f399 (ok)
   global.InvooSmtpRelayClient = {
     normalizeBaseUrl,
     relayUrlCandidates,
     relayHealth,
     relaySendMail,
-<<<<<<< HEAD
-=======
     relayScanBounces,
->>>>>>> 7f4f399 (ok)
     relayHeaders
   };
 })(typeof window !== 'undefined' ? window : self);

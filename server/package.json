@@ -2,21 +2,17 @@
   "name": "invooblast-smtp-relay",
   "private": true,
   "version": "1.0.0",
-<<<<<<< HEAD
-  "description": "Relais SMTP local pour INVOOBLAST (Gmail App Password). À lancer sur la même machine que le navigateur.",
-=======
   "description": "Relais HTTP→SMTP open source pour INVOOBLAST (Gmail App Password). Local ou déployé (Docker, Render…).",
->>>>>>> 7f4f399 (ok)
+  "engines": {
+    "node": ">=18"
+  },
   "type": "module",
   "main": "smtp-relay.mjs",
   "scripts": {
     "start": "node smtp-relay.mjs"
   },
   "dependencies": {
-<<<<<<< HEAD
-=======
     "imapflow": "^1.0.186",
->>>>>>> 7f4f399 (ok)
     "nodemailer": "^6.9.16"
   }
 }

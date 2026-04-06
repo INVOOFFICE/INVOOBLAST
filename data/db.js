@@ -292,6 +292,32 @@
     await importBackup(parsed);
   }
 
+  /** Export « base propre » : listes + contacts encore valides (hors sauvegarde complète coffre / historique). */
+  const CLEAN_EXPORT_FORMAT = 'invooblast-clean-lists';
+  const CLEAN_EXPORT_VERSION = 1;
+
+  async function exportCleanListsPayload() {
+    const [lists, contacts] = await Promise.all([getAll(STORES.LISTS), getAll(STORES.CONTACTS)]);
+    const validContacts = contacts.filter((c) => c.valid !== false);
+    const invalidContacts = contacts.filter((c) => c.valid === false);
+    return {
+      format: CLEAN_EXPORT_FORMAT,
+      version: CLEAN_EXPORT_VERSION,
+      exportedAt: Date.now(),
+      app: 'INVOOBLAST',
+      note:
+        'Uniquement les contacts avec valid !== false. Pas une sauvegarde complète (pas d’historique d’envoi, pas des comptes Gmail chiffrés — utiliser Paramètres → Exporter pour cela).',
+      lists,
+      contacts: validContacts,
+      summary: {
+        listCount: lists.length,
+        contactTotal: contacts.length,
+        contactValid: validContacts.length,
+        contactInvalid: invalidContacts.length
+      }
+    };
+  }
+
   const api = {
     STORES,
     openDB,
@@ -308,7 +334,10 @@
     seedIfEmpty,
     BACKUP_FORMAT,
     BACKUP_VERSION,
+    CLEAN_EXPORT_FORMAT,
+    CLEAN_EXPORT_VERSION,
     exportBackup,
+    exportCleanListsPayload,
     importBackup,
     importBackupFromJsonText
   };

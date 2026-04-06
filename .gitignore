@@ -1,13 +1,10 @@
 # Dépendances Node (re-install avec npm install dans server/)
 server/node_modules/
-<<<<<<< HEAD
-=======
 node_modules/
 
 # Secrets locaux (relais, clés) — ne pas versionner .env ; .env.example est fourni comme modèle.
 .env
 server/.env
->>>>>>> 7f4f399 (ok)
 
 # Fichiers système / éditeurs
 Thumbs.db

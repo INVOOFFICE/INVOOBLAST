@@ -4,15 +4,10 @@
  */
 import http from 'node:http';
 import nodemailer from 'nodemailer';
-<<<<<<< HEAD
-
-const PORT = Number(process.env.INVOOBLAST_SMTP_RELAY_PORT || 18765);
-=======
 import { scanInboxForBounces } from './bounce-scan.mjs';
 
 /** Render / Fly / Docker injectent souvent PORT ; local : 18765. */
 const PORT = Number(process.env.PORT || process.env.INVOOBLAST_SMTP_RELAY_PORT || 18765);
->>>>>>> 7f4f399 (ok)
 const HOST = process.env.INVOOBLAST_SMTP_RELAY_HOST || '127.0.0.1';
 const API_KEY = String(process.env.INVOOBLAST_RELAY_API_KEY || '').trim();
 
@@ -80,6 +75,26 @@ function readBody(req) {
   });
 }
 
+/** Extrait un texte lisible pour multipart/alternative (approximatif). */
+function htmlToPlainText(html) {
+  let s = String(html || '');
+  s = s.replace(/<script[\s\S]*?<\/script>/gi, ' ');
+  s = s.replace(/<style[\s\S]*?<\/style>/gi, ' ');
+  s = s.replace(/<br\s*\/?>/gi, '\n');
+  s = s.replace(/<\/(p|div|tr|h[1-6]|li|table|thead|tbody)>/gi, '\n');
+  s = s.replace(/<[^>]+>/g, '');
+  s = s.replace(/\u00a0/g, ' ');
+  s = s.replace(/&nbsp;/gi, ' ');
+  s = s.replace(/&amp;/gi, '&');
+  s = s.replace(/&lt;/gi, '<');
+  s = s.replace(/&gt;/gi, '>');
+  s = s.replace(/&quot;/gi, '"');
+  s = s.replace(/&#39;/g, "'");
+  s = s.replace(/[ \t]+\n/g, '\n');
+  s = s.replace(/\n{3,}/g, '\n\n');
+  return s.trim() || '—';
+}
+
 function createGmailTransport(auth) {
   return nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -122,8 +137,6 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-<<<<<<< HEAD
-=======
   if (req.method === 'POST' && url.pathname === '/scan-bounces') {
     if (!apiKeyOk(req)) {
       sendJson(res, 401, { ok: false, error: 'Clé API requise (X-INVOOBLAST-KEY)' }, origin);
@@ -154,7 +167,6 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
->>>>>>> 7f4f399 (ok)
   if (req.method !== 'POST' || url.pathname !== '/send') {
     sendJson(res, 404, { ok: false, error: 'Not found' }, origin);
     return;
@@ -179,6 +191,8 @@ const server = http.createServer(async (req, res) => {
   const subject = String(body.subject || '');
   const html = String(body.html || '');
   const replyTo = body.replyTo ? String(body.replyTo).trim() : '';
+  const listUnsubscribeHeader = !!body.listUnsubscribeHeader;
+  const plainTextAlternative = !!body.plainTextAlternative;
 
   if (!auth || !auth.user || !auth.pass) {
     sendJson(res, 400, { ok: false, error: 'auth.user et auth.pass requis' }, origin);
@@ -198,6 +212,15 @@ const server = http.createServer(async (req, res) => {
       html
     };
     if (replyTo) mail.replyTo = replyTo;
+    if (plainTextAlternative) {
+      mail.text = htmlToPlainText(html);
+    }
+    if (listUnsubscribeHeader) {
+      const subj = encodeURIComponent('Unsubscribe');
+      mail.headers = {
+        'List-Unsubscribe': `<mailto:${from}?subject=${subj}>`
+      };
+    }
     const info = await transport.sendMail(mail);
     sendJson(
       res,
@@ -218,11 +241,7 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, HOST, () => {
   console.log(`[INVOOBLAST] Relais SMTP sur http://${HOST}:${PORT}`);
-<<<<<<< HEAD
-  console.log(`[INVOOBLAST] GET /health  POST /send`);
-=======
   console.log(`[INVOOBLAST] GET /health  POST /send  POST /scan-bounces (IMAP bounces)`);
->>>>>>> 7f4f399 (ok)
   if (API_KEY) console.log('[INVOOBLAST] Clé API : activée (X-INVOOBLAST-KEY)');
   if (ALLOWED_ORIGINS && ALLOWED_ORIGINS.length) {
     console.log('[INVOOBLAST] CORS restreint :', ALLOWED_ORIGINS.join(', '));

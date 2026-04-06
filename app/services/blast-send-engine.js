@@ -12,12 +12,13 @@
   const merge = global.InvooEmailMerge;
   const settings = global.InvooSettings;
 
+  /** Reprise d’envoi : prochaine ligne (1-based) dans la liste triée des contacts valides. */
+  const META_BLAST_RESUME = 'blast_resume_v1';
+
   function sleep(ms) {
     return new Promise((r) => setTimeout(r, ms));
   }
 
-<<<<<<< HEAD
-=======
   /** Contrôle partagé pour l’envoi en cours (pause / arrêt). */
   let activeControl = null;
 
@@ -56,7 +57,6 @@
     return activeControl && activeControl.paused && !activeControl.aborted;
   }
 
->>>>>>> 7f4f399 (ok)
   function buildAccountPool(rows, cfg) {
     const active = rows.filter((a) => !a.disabled);
     const fb = active.filter((a) => a.isFallback);
@@ -67,6 +67,15 @@
       order = main.sort(sortE);
     }
     return order;
+  }
+
+  /** Quota / limite d’envoi (Gmail, etc.) : désactiver ce compte pour laisser la rotation utiliser les autres. */
+  function shouldForceDisableAccount(errMsg) {
+    const m = String(errMsg || '').toLowerCase();
+    if (!m) return false;
+    return /quota|quotidi|daily\s*sending|sending\s*limit|rate\s*limit|ratelimit|too\s+many|exceed|4\.2\.2|452|450|421|5\.4\.5|5\.7\.1|temporary\s+failure/i.test(
+      m
+    );
   }
 
   /**
@@ -99,11 +108,21 @@
     if (!listRow) throw new Error('Liste introuvable ou supprimée.');
 
     const allContacts = await db.getAll(db.STORES.CONTACTS);
-    let contacts = allContacts.filter((c) => c.listId === listId && c.valid !== false);
-    contacts.sort((a, b) => String(a.email).localeCompare(String(b.email), 'fr'));
+    const contactsFull = allContacts
+      .filter((c) => c.listId === listId && c.valid !== false)
+      .sort((a, b) => String(a.email).localeCompare(String(b.email), 'fr'));
 
-    const startIdx = Math.max(0, (Number(cfg.startLine) || 1) - 1);
-    contacts = contacts.slice(startIdx);
+    const cfgLine = Math.max(1, Number(cfg.startLine) || 1);
+    const useResume = !!(opts && opts.useResume === true && opts.resumeFromLine1Based != null);
+    const resumeLine1 = useResume
+      ? Math.max(1, Math.floor(Number(opts.resumeFromLine1Based)) || 1)
+      : null;
+    const startIdx =
+      resumeLine1 != null
+        ? Math.min(contactsFull.length, Math.max(0, resumeLine1 - 1))
+        : Math.max(0, cfgLine - 1);
+
+    let contacts = contactsFull.slice(startIdx);
 
     const quota = Math.max(1, Number(cfg.globalQuota) || 500);
     const maxN = Math.min(quota, contacts.length);
@@ -119,14 +138,37 @@
     if (!editor || typeof editor.loadDraft !== 'function') {
       throw new Error('Éditeur e-mail indisponible.');
     }
+    if (typeof editor.persistDraftFromEditorDom === 'function') {
+      await editor.persistDraftFromEditorDom();
+    }
     const draft = await editor.loadDraft();
+
+    let profileForSend = null;
+    const dpid = draft.draftProfileId != null ? String(draft.draftProfileId).trim() : '';
+    if (dpid && settings && typeof settings.getProfileById === 'function') {
+      profileForSend = await settings.getProfileById(dpid);
+    }
+    if (!profileForSend && settings && typeof settings.getProfile === 'function') {
+      profileForSend = await settings.getProfile();
+    }
+
+    const rawSubj = String((draft && draft.subject) || '');
+    const rawRto = String((draft && draft.replyTo) || '');
+    const subjDraftTrim = rawSubj.trim();
+    const rtoDraftTrim = rawRto.trim();
+    const subjProf = profileForSend ? String(profileForSend.emailSubject || '').trim() : '';
+    const rtoProf = profileForSend ? String(profileForSend.emailReplyTo || '').trim() : '';
     const templateRow = {
       html: (draft && draft.html) || '',
-      subject: (draft && draft.subject) || '',
-      replyTo: (draft && draft.replyTo) || ''
+      /** Texte exact du brouillon si non vide ; sinon repli profil (Paramètres). */
+      subject: subjDraftTrim ? rawSubj : subjProf,
+      replyTo: rtoDraftTrim ? rawRto.trim() : rtoProf
     };
+
     if (!String(templateRow.subject).trim()) {
-      throw new Error('Objet du brouillon vide — enregistrez un sujet dans l’éditeur e-mail.');
+      throw new Error(
+        'Objet vide — renseignez-le dans l’éditeur e-mail ou dans Paramètres → Profil (Objet e-mail).'
+      );
     }
     if (!String(templateRow.html).trim()) {
       throw new Error('Corps du brouillon vide — enregistrez le message dans l’éditeur e-mail.');
@@ -134,12 +176,18 @@
 
     const rot = Math.max(1, Number(cfg.rotationEvery) || 50);
     const delayMs = Math.max(0, Number(cfg.delaySec) || 0) * 1000;
+    const jitterSec = Math.min(120, Math.max(0, Number(cfg.delayJitterSec) || 0));
+    const listUnsubscribeHeader = !!cfg.listUnsubscribeHeader;
+    const plainTextAlternative = !!cfg.plainTextAlternative;
     const disableOnError = cfg.disableOnError !== false;
+
+    function randomJitterMs() {
+      if (jitterSec <= 0) return 0;
+      return Math.floor(Math.random() * (jitterSec * 1000 + 1));
+    }
 
     const onProgress = typeof opts.onProgress === 'function' ? opts.onProgress : () => {};
 
-<<<<<<< HEAD
-=======
     if (activeControl) {
       throw new Error('Un envoi est déjà en cours (utilisez Pause ou Arrêter).');
     }
@@ -147,14 +195,10 @@
     const control = { paused: false, aborted: false };
     activeControl = control;
 
->>>>>>> 7f4f399 (ok)
     let sent = 0;
     let failed = 0;
     const total = contacts.length;
 
-<<<<<<< HEAD
-    for (let i = 0; i < contacts.length; i++) {
-=======
     try {
     for (let i = 0; i < contacts.length; i++) {
       while (control.paused && !control.aborted) {
@@ -162,76 +206,112 @@
       }
       if (control.aborted) break;
 
->>>>>>> 7f4f399 (ok)
       const contact = contacts[i];
-      const rows = await gmailStore.listAccounts();
-      const pool = buildAccountPool(rows, cfg);
-      if (!pool.length) {
-        throw new Error(
-          'Plus aucun compte Gmail actif dans le pool. Paramètres → Pool Gmail ou réinitialisez les comptes désactivés.'
-        );
-      }
+      const merged = await merge.mergeWithProfileAndContact(templateRow, contact, profileForSend);
+      const toAddr = String(contact.email || '').trim();
 
-      const accIndex = Math.floor(sent / rot) % pool.length;
-      const account = pool[accIndex];
+      const triedAccountIds = new Set();
+      let delivered = false;
+      let lastErrMsg = '';
+      let lastFrom = '';
+      let lastAccountId = '';
 
-      const merged = await merge.mergeWithProfileAndContact(templateRow, contact);
-      const auth = await gmailStore.getSmtpAuth(account.id);
-      if (!auth) {
-        failed++;
-        await db.appendLog('error', 'Compte Gmail : impossible de lire les identifiants (coffre ou compte).', {
-          accountId: account.id
-        });
-        onProgress({ phase: 'error', index: i + 1, total, sent, failed, lastTo: contact.email });
-        continue;
-      }
+      while (!delivered && !control.aborted) {
+        const rows = await gmailStore.listAccounts();
+        const pool = buildAccountPool(rows, cfg);
+        if (!pool.length) {
+          if (triedAccountIds.size === 0) {
+            throw new Error(
+              'Plus aucun compte Gmail actif dans le pool. Paramètres → Pool Gmail ou réinitialisez les comptes désactivés.'
+            );
+          }
+          break;
+        }
 
-      const from = auth.user;
-      const payload = {
-        auth,
-        from,
-        to: String(contact.email || '').trim(),
-        subject: merged.subject,
-        html: merged.html
-      };
-      if (merged.replyTo) payload.replyTo = merged.replyTo;
+        const n = pool.length;
+        const rotBase = Math.floor(sent / rot) % n;
+        let account = null;
+        for (let t = 0; t < n; t++) {
+          const cand = pool[(rotBase + t) % n];
+          if (!triedAccountIds.has(cand.id)) {
+            account = cand;
+            break;
+          }
+        }
+        if (!account) break;
 
-      onProgress({
-        phase: 'sending',
-        index: i + 1,
-        total,
-        sent,
-        failed,
-        lastTo: contact.email,
-        from
-      });
+        triedAccountIds.add(account.id);
+        lastAccountId = account.id;
 
-      try {
-        await relay.relaySendMail(sendRelayBase, payload, relayApiKey);
-        sent++;
-        await gmailStore.recordSendOutcome(account.id, { ok: true, disableOnError });
-        await db.put(db.STORES.SEND_HISTORY, {
-          id: db.uuid(),
-          campaignId: null,
-          listId,
-          contactId: contact.id,
-          ts: Date.now(),
-          status: 'sent',
-          to: payload.to,
+        const auth = await gmailStore.getSmtpAuth(account.id);
+        if (!auth) {
+          await db.appendLog('error', 'Compte Gmail : identifiants indisponibles (désactivé ou coffre).', {
+            accountId: account.id
+          });
+          continue;
+        }
+
+        const from = auth.user;
+        lastFrom = from;
+        const payload = {
+          auth,
           from,
-          accountId: account.id,
+          to: toAddr,
           subject: merged.subject,
-          error: null
+          html: merged.html
+        };
+        if (merged.replyTo) payload.replyTo = merged.replyTo;
+        if (listUnsubscribeHeader) payload.listUnsubscribeHeader = true;
+        if (plainTextAlternative) payload.plainTextAlternative = true;
+
+        onProgress({
+          phase: 'sending',
+          index: i + 1,
+          total,
+          sent,
+          failed,
+          lastTo: contact.email,
+          from
         });
-        await db.appendLog('info', 'Envoi Blast réussi.', { to: payload.to, accountId: account.id });
-      } catch (e) {
+
+        try {
+          await relay.relaySendMail(sendRelayBase, payload, relayApiKey);
+          sent++;
+          await gmailStore.recordSendOutcome(account.id, { ok: true, disableOnError });
+          await db.put(db.STORES.SEND_HISTORY, {
+            id: db.uuid(),
+            campaignId: null,
+            listId,
+            contactId: contact.id,
+            ts: Date.now(),
+            status: 'sent',
+            to: payload.to,
+            from,
+            accountId: account.id,
+            subject: merged.subject,
+            error: null
+          });
+          await db.appendLog('info', 'Envoi Blast réussi.', { to: payload.to, accountId: account.id });
+          delivered = true;
+        } catch (e) {
+          const errMsg = e && e.message ? String(e.message) : 'Erreur envoi';
+          lastErrMsg = errMsg;
+          const doDisable = disableOnError !== false || shouldForceDisableAccount(errMsg);
+          await gmailStore.recordSendOutcome(account.id, {
+            ok: false,
+            errorMessage: errMsg,
+            disableOnError: doDisable
+          });
+          await db.appendLog('error', 'Envoi Blast échoué (autre compte sera essayé si disponible).', {
+            to: payload.to,
+            accountId: account.id,
+            error: errMsg
+          });
+        }
+      }
+
+      if (!delivered && !control.aborted) {
         failed++;
-        const errMsg = e && e.message ? String(e.message) : 'Erreur envoi';
-        await gmailStore.recordSendOutcome(account.id, {
-          ok: false,
-          errorMessage: errMsg,
-          disableOnError
-        });
         await db.put(db.STORES.SEND_HISTORY, {
           id: db.uuid(),
           campaignId: null,
@@ -239,31 +319,44 @@
           contactId: contact.id,
           ts: Date.now(),
           status: 'failed',
-          to: payload.to,
-          from,
-          accountId: account.id,
+          to: toAddr,
+          from: lastFrom || '—',
+          accountId: lastAccountId || null,
           subject: merged.subject,
-          error: errMsg
+          error: lastErrMsg || 'Aucun compte du pool n’a pu envoyer.'
         });
-        await db.appendLog('error', 'Envoi Blast échoué.', { to: payload.to, error: errMsg });
-        onProgress({ phase: 'error', index: i + 1, total, sent, failed, lastTo: contact.email, error: errMsg });
+        await db.appendLog('error', 'Envoi Blast : échec sur tous les comptes essayés pour ce destinataire.', {
+          to: toAddr,
+          error: lastErrMsg
+        });
+        onProgress({
+          phase: 'error',
+          index: i + 1,
+          total,
+          sent,
+          failed,
+          lastTo: contact.email,
+          error: lastErrMsg || 'Tous les comptes ont échoué ou sont indisponibles.'
+        });
       }
 
-<<<<<<< HEAD
-      if (delayMs > 0 && i < contacts.length - 1) await sleep(delayMs);
-    }
+      const nextAbs0 = startIdx + i + 1;
+      if (nextAbs0 < contactsFull.length) {
+        await db.setMeta(META_BLAST_RESUME, {
+          listId,
+          nextLine1Based: nextAbs0 + 1,
+          lastProcessedEmail: String(contact.email || '').trim(),
+          ts: Date.now()
+        });
+      } else {
+        await db.del(db.STORES.META, META_BLAST_RESUME);
+      }
 
-    onProgress({ phase: 'done', index: total, total, sent, failed, lastTo: null });
-    global.dispatchEvent(new CustomEvent('invooblast:blast-settings-updated'));
-    global.dispatchEvent(new CustomEvent('invooblast:send-finished'));
-
-    return { sent, failed, total };
-  }
-
-  global.InvooBlastSend = { runBlastSend };
-=======
       if (control.aborted) break;
-      if (delayMs > 0 && i < contacts.length - 1) await waitWhilePausedAndDelay(delayMs, control);
+      if (i < contacts.length - 1) {
+        const betweenMs = delayMs + randomJitterMs();
+        if (betweenMs > 0) await waitWhilePausedAndDelay(betweenMs, control);
+      }
     }
 
     if (control.aborted) {
@@ -288,13 +381,24 @@
     }
   }
 
+  async function clearBlastResume() {
+    await db.del(db.STORES.META, META_BLAST_RESUME);
+    global.dispatchEvent(new CustomEvent('invooblast:blast-resume-updated'));
+  }
+
+  function getBlastResumeState() {
+    return db.getMeta(META_BLAST_RESUME, null);
+  }
+
   global.InvooBlastSend = {
     runBlastSend,
     pauseSend,
     resumeSend,
     abortSend,
     isSendRunning,
-    isSendPaused
+    isSendPaused,
+    META_BLAST_RESUME,
+    clearBlastResume,
+    getBlastResumeState
   };
->>>>>>> 7f4f399 (ok)
 })(typeof window !== 'undefined' ? window : self);

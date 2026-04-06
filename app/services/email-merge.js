@@ -6,22 +6,55 @@
 (function (global) {
   'use strict';
 
+  /** Même règle que l’en-tête de colonne importée : « Société » / « Prénom » → societe, prenom. */
+  function headerLabelToMergeKey(label) {
+    return String(label || '')
+      .trim()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-z0-9_]/g, '');
+  }
+
+  /** Libellés [Société] / colonnes CSV reconnus comme champs de fusion (liste blanche). */
+  const MERGE_KNOWN_KEYS = new Set([
+    'prenom',
+    'nom',
+    'nom_complet',
+    'email',
+    'email_reply_to',
+    'telephone',
+    'ville',
+    'fonction',
+    'societe',
+    'organisation',
+    'domaine',
+    'adresse_ligne',
+    'code_postal',
+    'pays',
+    'site_web',
+    'lien_cv',
+    'whatsapp_lien',
+    'whatsapp_link',
+    'signature',
+    'email_contact',
+    'lien_desinscription',
+    'poste_vise',
+    'public',
+    'cv_html'
+  ]);
+
   /**
    * Normalise les clés de colonnes (Excel) : minuscules, espaces → underscores.
-   * Ex. "Prénom" → prenom, "Poste visé" → poste_visé (accents retirés côté clé).
+   * Ex. "Prénom" → prenom, "Poste visé" → poste_vise (accents retirés côté clé).
    * @param {Record<string, unknown>} row
    */
   function normalizeFieldMap(row) {
     const out = {};
     if (!row || typeof row !== 'object') return out;
     for (const [k, v] of Object.entries(row)) {
-      const key = String(k)
-        .trim()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .replace(/\s+/g, '_')
-        .replace(/[^a-z0-9_]/g, '');
+      const key = headerLabelToMergeKey(k);
       if (!key) continue;
       out[key] = v == null ? '' : String(v);
     }
@@ -53,9 +86,6 @@
 
   function profileCvRawHtml(profile) {
     const p = profile && typeof profile === 'object' ? profile : {};
-<<<<<<< HEAD
-    return sanitizeCvHtml(p.cvHtml == null ? '' : String(p.cvHtml));
-=======
     const variants = Array.isArray(p.cvHtmlVariants) ? p.cvHtmlVariants : [];
     const selId = p.selectedCvHtmlId != null ? String(p.selectedCvHtmlId).trim() : '';
     let raw = '';
@@ -66,7 +96,6 @@
     }
     if (!raw && p.cvHtml != null) raw = String(p.cvHtml);
     return sanitizeCvHtml(raw);
->>>>>>> 7f4f399 (ok)
   }
 
   /** {{whatsapp_link}} et {{whatsapp_lien}} pointent vers le même lien (aperçu / listes). */
@@ -81,6 +110,47 @@
     return d;
   }
 
+  /** Saisie brute type [societe] ou {{societe}} dans une cellule importée : traitée comme vide. */
+  function looksLikeLiteralPlaceholder(s) {
+    const t = String(s || '').trim();
+    if (!t) return false;
+    if (/^\{\{\s*[a-zA-Z][a-zA-Z0-9_]*\s*\}\}$/.test(t)) return true;
+    if (/^\[\s*[a-zA-Z][a-zA-Z0-9_]*\s*\]$/.test(t)) return true;
+    return false;
+  }
+
+  function sanitizeMergeValue(v) {
+    if (v == null) return '';
+    const t = String(v).trim();
+    if (looksLikeLiteralPlaceholder(t)) return '';
+    return String(v);
+  }
+
+  function sanitizedMergeValues(map) {
+    const out = {};
+    if (!map || typeof map !== 'object') return out;
+    for (const [k, v] of Object.entries(map)) {
+      out[k] = sanitizeMergeValue(v);
+    }
+    return out;
+  }
+
+  /** Après fusion : enlève tout {{variable}} / {{@raw}} restant et [Libellé] reconnu comme champ fusion. */
+  function stripResidualPlaceholders(text) {
+    let s = String(text || '');
+    for (let pass = 0; pass < 6; pass++) {
+      let next = s.replace(/\{\{\@\s*([a-zA-Z0-9_]+)\s*\}\}/g, '');
+      next = next.replace(/\{\{\s*([a-zA-Z][a-zA-Z0-9_]*)\s*\}\}/g, '');
+      if (next === s) break;
+      s = next;
+    }
+    s = s.replace(/\[\s*([^\]]+)\s*\]/g, (full, inner) => {
+      const k = headerLabelToMergeKey(inner);
+      return k && MERGE_KNOWN_KEYS.has(k) ? '' : full;
+    });
+    return s;
+  }
+
   /**
    * @param {{ html?: string, subject?: string, replyTo?: string }} templateRow
    * @param {Record<string, unknown>} fieldMap — champs fusionnés (profil + contact)
@@ -91,13 +161,32 @@
     if (!editor || typeof editor.applyVars !== 'function') {
       throw new Error('InvooEmailEditor.applyVars indisponible.');
     }
-    const data = aliasWhatsAppFields(normalizeFieldMap(fieldMap));
+    const applyHdr =
+      typeof editor.applyVarsHeaders === 'function' ? editor.applyVarsHeaders : editor.applyVars;
+    const data = aliasWhatsAppFields(sanitizedMergeValues(normalizeFieldMap(fieldMap)));
     const raw = rawFieldMap && typeof rawFieldMap === 'object' ? rawFieldMap : null;
-    return {
-      html: editor.applyVars(templateRow.html || '', data, raw),
-      subject: editor.applyVars(templateRow.subject || '', data, null),
-      replyTo: templateRow.replyTo ? editor.applyVars(String(templateRow.replyTo), data, null).trim() : ''
-    };
+    let html = editor.applyVars(templateRow.html || '', data, raw);
+    let subject = applyHdr(templateRow.subject || '', data, null);
+    let replyTo = templateRow.replyTo ? applyHdr(String(templateRow.replyTo), data, null).trim() : '';
+    html = stripResidualPlaceholders(html);
+    subject = stripResidualPlaceholders(subject).replace(/\s+/g, ' ').trim();
+    replyTo = stripResidualPlaceholders(replyTo).trim();
+    return { html, subject, replyTo };
+  }
+
+  /**
+   * Profil puis contact : une valeur contact vide (ou seulement des espaces) ne remplace pas le profil.
+   * Sinon une colonne CSV « Prénom » vide écrase {{prenom}} / {{nom}} du profil et l’objet part en [prenom] [nom].
+   */
+  function mergeProfileAndContactFields(fromProfile, fromContact) {
+    const out = { ...(fromProfile && typeof fromProfile === 'object' ? fromProfile : {}) };
+    if (!fromContact || typeof fromContact !== 'object') return out;
+    for (const [k, v] of Object.entries(fromContact)) {
+      let s = v == null ? '' : String(v).trim();
+      if (looksLikeLiteralPlaceholder(s)) s = '';
+      if (s !== '') out[k] = s;
+    }
+    return out;
   }
 
   /** Variante si le contact est stocké { email, fields: { … } }. */
@@ -138,16 +227,22 @@
     if (!lienCv) lienCv = site;
     const waDigits = phoneDigitsForWhatsApp(p.phone);
     const whatsappLien = waDigits ? 'https://wa.me/' + waDigits : '';
+    const identEmail = p.email == null ? '' : String(p.email).trim();
+    const replyToProf = p.emailReplyTo == null ? '' : String(p.emailReplyTo).trim();
+    /** Pied de page : préfère Reply-To (profil) ; sinon e-mail du profil. Jamais l’e-mail destinataire (colonne {{email}} en Blast). */
+    const email_reply_to = replyToProf || identEmail;
 
     return {
       prenom,
       nom,
       nom_complet: [prenom, nom].filter(Boolean).join(' ').trim(),
-      email: p.email == null ? '' : String(p.email),
+      email: identEmail,
+      email_reply_to,
       telephone: p.phone == null ? '' : String(p.phone),
       ville: p.city == null ? '' : String(p.city),
       fonction: p.jobTitle == null ? '' : String(p.jobTitle),
-      societe: p.company == null ? '' : String(p.company),
+      societe: '',
+      organisation: '',
       domaine: p.expertiseDomains == null ? '' : String(p.expertiseDomains),
       adresse_ligne: p.addressLine == null ? '' : String(p.addressLine),
       code_postal: p.postalCode == null ? '' : String(p.postalCode),
@@ -159,26 +254,83 @@
     };
   }
 
+  /** Champ « Lien CV ou portfolio » (cvUrl) renseigné dans le profil Paramètres. */
+  function hasCvPortfolioUrl(profile) {
+    const p = profile && typeof profile === 'object' ? profile : {};
+    return String(p.cvUrl || '').trim() !== '';
+  }
+
+  /**
+   * Retire la ligne du bouton « Consulter mon CV » (#invoo-cv) des modèles de base INVOOBLAST.
+   */
+  function stripDefaultTemplateCvButtonRow(html) {
+    let s = String(html || '');
+    const marker = '<td align="center" style="padding:6px 36px 4px;">';
+    const mi = s.indexOf(marker);
+    if (mi === -1) return s;
+    if (!/href="#invoo-cv"/.test(s.slice(mi, mi + 4000))) return s;
+    const trStart = s.lastIndexOf('<tr>', mi);
+    if (trStart === -1) return s;
+    let i = trStart + 4;
+    let depth = 1;
+    const low = (j, tag) => s.slice(j, j + tag.length).toLowerCase() === tag;
+    while (i < s.length && depth > 0) {
+      if (low(i, '<tr>')) {
+        depth++;
+        i += 4;
+      } else if (low(i, '</tr>')) {
+        depth--;
+        if (depth === 0) {
+          const trEnd = i + 5;
+          return s.slice(0, trStart) + s.slice(trEnd);
+        }
+        i += 5;
+      } else {
+        i++;
+      }
+    }
+    return s;
+  }
+
+  /** Sans lien CV / portfolio (Paramètres) : masque le bouton ancre « Consulter mon CV » ; WhatsApp reste. */
+  function stripCvButtonIfNoCvPortfolioUrl(html, profile) {
+    if (hasCvPortfolioUrl(profile)) return String(html || '');
+    return stripDefaultTemplateCvButtonRow(html);
+  }
+
   /**
    * Profil local puis surcharge par la ligne contact importée (si présente).
    * @param {object} templateRow
    * @param {object|null|undefined} contact
+   * @param {object|null|undefined} profileOverride — si défini (objet profil complet), utilisé à la place du profil actif Paramètres
    */
-  async function mergeWithProfileAndContact(templateRow, contact) {
+  async function mergeWithProfileAndContact(templateRow, contact, profileOverride) {
     const db = global.InvooBlastDB;
-    const prof = db ? await db.getMeta('user_profile') : null;
+    let prof =
+      profileOverride && typeof profileOverride === 'object' ? profileOverride : null;
+    if (!prof) {
+      if (global.InvooSettings && typeof global.InvooSettings.getProfile === 'function') {
+        prof = await global.InvooSettings.getProfile();
+      } else if (db) {
+        prof = await db.getMeta('user_profile');
+      }
+    }
     const fromProfile = profileToTemplateFields(prof || {});
     const raw = contact && contact.fields && typeof contact.fields === 'object' ? contact.fields : contact;
     const fromContact = raw ? normalizeFieldMap(raw) : {};
     if (contact && contact.email) {
       fromContact.email = fromContact.email || String(contact.email);
     }
+    const mergedFields = mergeProfileAndContactFields(fromProfile, fromContact);
+    if (contact && contact.email) {
+      mergedFields.email = String(contact.email).trim();
+    }
     const cvRaw = profileCvRawHtml(prof || {});
-    return mergeTemplate(
-      templateRow,
-      { ...fromProfile, ...fromContact },
-      { cv_html: cvRaw }
-    );
+    const merged = mergeTemplate(templateRow, mergedFields, { cv_html: cvRaw });
+    if (!hasCvPortfolioUrl(prof || {})) {
+      return { ...merged, html: stripDefaultTemplateCvButtonRow(merged.html) };
+    }
+    return merged;
   }
 
   /**
@@ -252,11 +404,15 @@
   global.InvooEmailMerge = {
     mergeTemplate,
     mergeForContact,
+    mergeProfileAndContactFields,
     profileToTemplateFields,
     profileCvRawHtml,
     sanitizeCvHtml,
     mergeWithProfileAndContact,
     normalizeFieldMap,
+    hasCvPortfolioUrl,
+    stripDefaultTemplateCvButtonRow,
+    stripCvButtonIfNoCvPortfolioUrl,
     lintOutgoingEmail,
     recommendedHeadersHint
   };

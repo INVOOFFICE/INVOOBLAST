@@ -1,9 +1,5 @@
 /**
-<<<<<<< HEAD
- * Tableau de bord : agrège les statistiques locales (IndexedDB) et l’état réseau.
-=======
  * Tableau de bord : agrège les statistiques locales (IndexedDB), l’état réseau et les raccourcis vers l’espace de travail.
->>>>>>> 7f4f399 (ok)
  */
 (function (global) {
   'use strict';
@@ -15,11 +11,6 @@
     return new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 }).format(n);
   }
 
-<<<<<<< HEAD
-  function renderStats(container, stats) {
-    container.innerHTML = `
-      <div class="grid-stats">
-=======
   function escapeHtml(s) {
     return String(s)
       .replace(/&/g, '&amp;')
@@ -129,7 +120,6 @@
       <div class="dash-block">
         <h2 class="dash-section-title">Indicateurs</h2>
         <div class="grid-stats">
->>>>>>> 7f4f399 (ok)
         <article class="stat-card">
           <div class="stat-label">Contacts (tous)</div>
           <div class="stat-value">${formatInt(stats.contactCount)}</div>
@@ -161,16 +151,10 @@
           <div class="stat-hint">sur ${formatInt(stats.gmailAccountCount)} configurés</div>
         </article>
       </div>
-<<<<<<< HEAD
-      <div class="panel">
-        <div class="panel-h">
-          <h2>Historique local</h2>
-=======
       </div>
       <div class="panel dash-panel-foot">
         <div class="panel-h">
           <h2>Historique d’envoi (local)</h2>
->>>>>>> 7f4f399 (ok)
           <span style="font-size:0.85rem;color:var(--text-muted)">${formatInt(stats.historyTotal)} entrées indexées</span>
         </div>
         <div class="panel-b">
@@ -180,22 +164,6 @@
       </div>`;
   }
 
-<<<<<<< HEAD
-  async function refreshDashboard() {
-    const root = document.getElementById('page-dashboard');
-    if (!root) return;
-    const stats = await db.getDashboardStats();
-
-    const online = net.isOnline();
-
-    root.innerHTML = `
-      ${!online ? `<div class="banner info" role="status"><div><h3>Mode hors ligne</h3><p>Vous pouvez préparer listes, brouillon e-mail et files d’attente. L’envoi SMTP / API et le scan IMAP nécessitent une connexion.</p></div></div>` : ''}
-      <div id="dash-stats-root"></div>
-    `;
-
-    const mount = document.getElementById('dash-stats-root');
-    renderStats(mount, stats);
-=======
   function renderProfilePanel(profileRaw) {
     const sum = profileSummaryLine(profileRaw);
     const inner = sum.ok
@@ -203,9 +171,10 @@
       : `<p class="dash-profile-line dash-profile-missing">Renseignez au moins le <strong>nom</strong> et l’<strong>e-mail</strong> dans Paramètres pour personnaliser les modèles.</p>`;
     return `
       <div class="panel dash-profile-panel">
-        <div class="panel-h"><h2>Profil expéditeur</h2></div>
+        <div class="panel-h"><h2>Profil actif (Paramètres)</h2></div>
         <div class="panel-b">
           ${inner}
+          <p class="editor-hint" style="margin:0.5rem 0 0.65rem 0;line-height:1.45">Pour l’envoi, l’<strong>Éditeur e-mail</strong> peut lier un <strong>autre profil au brouillon</strong> — la ligne « Profil (fusion) » sur <strong>Envoi (Blast)</strong> indique celui qui sera réellement fusionné.</p>
           <button type="button" class="btn btn-small dash-profile-btn" data-dash-page="settings">Ouvrir Paramètres</button>
         </div>
       </div>`;
@@ -258,7 +227,9 @@
     const online = net.isOnline();
     const [stats, profileRaw, logsAll] = await Promise.all([
       db.getDashboardStats(),
-      db.getMeta('user_profile'),
+      global.InvooSettings && typeof global.InvooSettings.getProfile === 'function'
+        ? global.InvooSettings.getProfile()
+        : db.getMeta('user_profile'),
       db.getAll(db.STORES.LOGS)
     ]);
 
@@ -302,20 +273,12 @@
   function dashboardVisible() {
     const p = document.getElementById('page-dashboard');
     return p && p.classList.contains('active');
->>>>>>> 7f4f399 (ok)
   }
 
   function wireDashboardRefresh() {
     global.addEventListener('invooblast:page', (e) => {
       if (e.detail && e.detail.page === 'dashboard') refreshDashboard();
     });
-<<<<<<< HEAD
-    global.addEventListener('online', () => refreshDashboard());
-    global.addEventListener('offline', () => refreshDashboard());
-  }
-
-   
-=======
     global.addEventListener('online', () => {
       if (dashboardVisible()) refreshDashboard();
     });
@@ -326,7 +289,8 @@
       'invooblast:profile-updated',
       'invooblast:draft-updated',
       'invooblast:lists-updated',
-      'invooblast:blast-settings-updated'
+      'invooblast:blast-settings-updated',
+      'invooblast:send-finished'
     ].forEach((ev) => {
       global.addEventListener(ev, () => {
         if (dashboardVisible()) refreshDashboard();
@@ -334,6 +298,5 @@
     });
   }
 
->>>>>>> 7f4f399 (ok)
   global.InvooDashboard = { refreshDashboard, wireDashboardRefresh };
 })(window);

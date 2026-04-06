@@ -294,8 +294,6 @@ a:hover {
   color: var(--text-secondary);
 }
 
-<<<<<<< HEAD
-=======
 /* Tableau de bord — intro, raccourcis, journal */
 .dash-intro {
   margin-bottom: 1.35rem;
@@ -496,6 +494,37 @@ a:hover {
   gap: 0.45rem;
   margin: 0.5rem 0 0 0;
 }
+.imap-export-panel {
+  margin-bottom: 0;
+}
+.imap-clean-stats-line {
+  margin: 0.5rem 0 0.65rem 0;
+  font-weight: 500;
+}
+.imap-export-actions {
+  margin-top: 0.25rem;
+}
+.imap-bounce-table-wrap {
+  margin: 0.5rem 0 0.75rem 0;
+}
+.imap-match-summary-block {
+  line-height: 1.55;
+  margin: 0.75rem 0 0.65rem 0;
+}
+.imap-bounce-db-table .imap-bounce-email {
+  font-family: ui-monospace, monospace;
+  font-size: 0.86rem;
+}
+.imap-bounce-db-table .imap-bounce-detail {
+  font-size: 0.86rem;
+  max-width: 22rem;
+}
+.imap-bounce-db-table .imap-bounce-lists {
+  font-size: 0.82rem;
+  max-width: 14rem;
+  word-break: break-word;
+}
+
 .imap-bounce-chip {
   display: inline-block;
   font-size: 0.8rem;
@@ -507,7 +536,6 @@ a:hover {
   font-family: ui-monospace, monospace;
 }
 
->>>>>>> 7f4f399 (ok)
 .panel {
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-subtle);
@@ -567,6 +595,33 @@ a:hover {
   filter: brightness(1.05);
 }
 
+/* Blast : bouton « Lancer l’envoi » pendant la campagne */
+.btn.primary.blast-send-busy {
+  cursor: wait;
+  opacity: 0.94;
+  position: relative;
+  padding-left: 2.2rem;
+}
+.btn.primary.blast-send-busy::before {
+  content: "";
+  position: absolute;
+  left: 0.72rem;
+  top: 50%;
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-top: -0.4rem;
+  box-sizing: border-box;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: invooblast-btn-spin 0.7s linear infinite;
+}
+@keyframes invooblast-btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Bouton visuellement atténué mais cliquable (ex. action pas encore implémentée → toast explicatif). */
 .btn.is-disabled {
   opacity: 0.55;
@@ -607,20 +662,6 @@ a:hover {
   right: 1.25rem;
   left: auto;
   max-width: min(420px, calc(100vw - 2rem));
-<<<<<<< HEAD
-  padding: 0.85rem 1rem;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-strong);
-  background: rgba(15, 23, 42, 0.96);
-  color: var(--text-primary);
-  font-size: 0.88rem;
-  line-height: 1.45;
-  box-shadow: var(--shadow-soft);
-}
-.app-toast.error {
-  border-color: rgba(248, 113, 113, 0.5);
-  background: rgba(127, 29, 29, 0.35);
-=======
   padding: 0.9rem 1.05rem 0.9rem 1rem;
   border-radius: var(--radius-md);
   border: 1px solid rgba(148, 163, 184, 0.22);
@@ -636,7 +677,6 @@ a:hover {
   border-left-color: #f87171;
   border-color: rgba(248, 113, 113, 0.4);
   background: rgba(45, 25, 30, 0.92);
->>>>>>> 7f4f399 (ok)
 }
 @media (max-width: 600px) {
   .app-toast {
@@ -780,8 +820,6 @@ input[type='file'].editor-input {
   }
 }
 
-<<<<<<< HEAD
-=======
 /* Panneau « Message » : hiérarchie visuelle et blocs soignés */
 .editor-toolbar-panel {
   box-shadow:
@@ -834,6 +872,96 @@ input[type='file'].editor-input {
   background: rgba(15, 23, 42, 0.72);
   border: 1px solid rgba(148, 163, 184, 0.22);
   color: #7dd3fc;
+}
+
+/* Parcours profil → CV → rédaction */
+.editor-context-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.editor-step-block {
+  padding: 1rem 1.05rem 1.05rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(129, 140, 248, 0.2);
+  background: rgba(30, 41, 59, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.editor-step-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin: 0 0 0.65rem;
+}
+
+.editor-step-title {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #a5b4fc;
+}
+
+.editor-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-right: 0.45rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: rgba(99, 102, 241, 0.35);
+  color: #e0e7ff;
+  vertical-align: middle;
+}
+
+.editor-context-summary {
+  margin: 0.75rem 0 0;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  background: rgba(15, 23, 42, 0.55);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.editor-context-summary strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.editor-settings-shortcut {
+  margin: 0.65rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.editor-settings-shortcut .btn {
+  font-size: 0.86rem;
+  padding: 0.35rem 0.75rem;
+}
+
+.editor-guide-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.15rem;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.editor-guide-list li {
+  margin: 0.25rem 0;
 }
 
 .editor-templates-block {
@@ -990,6 +1118,27 @@ input[type='file'].editor-input {
   margin-top: 0.75rem;
 }
 
+.editor-test-send-block {
+  margin-top: 0.35rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-subtle);
+}
+.editor-test-send-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  margin-top: 0.35rem;
+}
+.editor-test-send-row .editor-input {
+  flex: 1;
+  min-width: min(100%, 240px);
+  max-width: min(100%, 420px);
+}
+.editor-test-send-row .btn {
+  flex-shrink: 0;
+}
+
 .editor-preview-panel {
   border-color: rgba(129, 140, 248, 0.16);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
@@ -1027,7 +1176,6 @@ input[type='file'].editor-input {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
->>>>>>> 7f4f399 (ok)
 .editor-toolbar-panel .panel-b {
   padding: 1rem 1.15rem 1.25rem;
 }
@@ -1205,6 +1353,35 @@ input[type='file'].editor-input {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+}
+
+.settings-page-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.75rem;
+  align-items: center;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.86rem;
+}
+.settings-page-nav a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+.settings-page-nav a:hover {
+  text-decoration: underline;
+}
+
+.settings-block[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+.settings-pool-summary {
+  margin: 0 0 0.65rem 0;
+  line-height: 1.45;
 }
 
 .settings-block .panel-b {
@@ -1419,8 +1596,6 @@ input[type='file'].editor-input {
   padding-top: 0.5rem;
   border-top: 1px solid var(--border-subtle);
 }
-<<<<<<< HEAD
-=======
 
 /* Modale confirmation (InvooConfirm) */
 body.app-confirm-open {
@@ -1492,4 +1667,3 @@ body.app-confirm-open {
 .btn.danger:hover {
   filter: brightness(1.06);
 }
->>>>>>> 7f4f399 (ok)

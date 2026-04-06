@@ -84,14 +84,7 @@
     contacts: `<div id="lists-import-root"></div>`,
     editor: `<div id="email-editor-root"></div>`,
     blast: `<div id="blast-root"></div>`,
-<<<<<<< HEAD
-    imap: placeholderPage(
-      'IMAP & bounces',
-      `<p>Scan IMAP (30 jours) et nettoyage des listes : action réservée au mode en ligne. Hors ligne, cette page affiche un rappel explicite.</p>`
-    ),
-=======
     imap: `<div id="imap-root"></div>`,
->>>>>>> 7f4f399 (ok)
     settings: ''
   };
 

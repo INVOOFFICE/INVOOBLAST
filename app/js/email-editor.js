@@ -9,18 +9,16 @@
   const META_PURGED = 'invooblast_templates_purged_v1';
   /** Langue des modèles de base uniquement : 'fr' | 'en' */
   const META_BASE_LANG = 'email_editor_base_lang';
-<<<<<<< HEAD
-=======
   /** Modules personnalisés : [{ id, name, subject, replyTo, html, createdAt }] */
   const META_CUSTOM_MODULES = 'email_editor_custom_modules';
   const MAX_CUSTOM_MODULES = 40;
->>>>>>> 7f4f399 (ok)
 
   /** Valeurs de démonstration uniquement pour des variables absentes du profil (aperçu). */
   const PREVIEW_FALLBACK = {
     organisation: 'Organisation (exemple)',
     signature: 'L’équipe',
     email_contact: 'contact@exemple.org',
+    email_reply_to: 'reponses@exemple.org',
     lien_desinscription: 'https://exemple.org/desabonnement',
     nom_complet: 'Prénom Nom',
     lien_cv: 'https://exemple.org/cv.pdf',
@@ -30,11 +28,7 @@
 
   const DEFAULT_STAGE_SUBJECT = 'Demande de stage — {{prenom}} {{nom}} | Candidature spontanée';
 
-<<<<<<< HEAD
-  /** Modèle « demande de stage » — Gmail-friendly (tables + styles inline). CV : {{@cv_html}} depuis Paramètres. */
-=======
   /** Modèle « demande de stage » — style administratif sobre (tables + styles inline, compatible Gmail). */
->>>>>>> 7f4f399 (ok)
   const DEFAULT_STAGE_HTML = `<!DOCTYPE html>
 <html>
 <head>
@@ -42,27 +36,6 @@
 <meta name="viewport" content="width=device-width">
 <title>Demande de stage</title>
 </head>
-<<<<<<< HEAD
-<body style="margin:0;padding:0;background-color:#e8edf5;">
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#e8edf5;">
-<tr>
-<td align="center" style="padding:24px 12px;">
-<table width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:12px;border:1px solid #c7d2fe;">
-<tr>
-<td style="height:5px;line-height:5px;font-size:0;background-color:#2563eb;">&nbsp;</td>
-</tr>
-<tr>
-<td style="padding:32px 40px 28px;background-color:#f8fafc;border-bottom:1px solid #e2e8f0;">
-<span style="display:inline-block;padding:5px 14px;border-radius:999px;background-color:#dbeafe;color:#1e40af;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;font-family:Arial,Helvetica,sans-serif;">Candidature</span>
-<h1 style="margin:16px 0 0;font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:1.2;color:#0f172a;font-weight:700;">{{prenom}} {{nom}}</h1>
-<p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#1e293b;font-weight:600;">{{fonction}}</p>
-<p style="margin:8px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#64748b;">Demande de stage · Candidature spontanée</p>
-<p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#94a3b8;">{{societe}}</p>
-</td>
-</tr>
-<tr>
-<td style="padding:32px 40px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.75;color:#334155;">
-=======
 <body style="margin:0;padding:0;background-color:#eceff4;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#eceff4;">
 <tr>
@@ -82,25 +55,12 @@
 </tr>
 <tr>
 <td style="padding:28px 36px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.75;color:#374151;">
->>>>>>> 7f4f399 (ok)
 Madame, Monsieur,<br><br>
 Je vous contacte pour vous faire part de ma <strong>motivation</strong> à effectuer un <strong>stage</strong> au sein de votre organisation. Très intéressé par le domaine de <strong>{{domaine}}</strong>, je souhaite mettre mes acquis au service de vos équipes tout en développant mes compétences en contexte professionnel.<br><br>
 Rigoureux, à l’écoute et habitué au travail collaboratif, je suis prêt à m’investir sur les missions qui me seront confiées.
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:0 40px 28px;">
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-left:4px solid #2563eb;background-color:#f1f5f9;border-radius:0 10px 10px 0;">
-<tr>
-<td style="padding:22px 24px;font-family:Arial,Helvetica,sans-serif;">
-<p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:0.06em;">Atouts</p>
-<p style="margin:0 0 14px;font-size:14px;line-height:1.65;color:#475569;">Axes prioritaires : <strong style="color:#0f172a;">{{domaine}}</strong>.</p>
-<table cellpadding="0" cellspacing="0" role="presentation" style="font-size:14px;line-height:1.6;color:#475569;">
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#2563eb;font-weight:bold;">•</td><td style="padding:3px 0;">Motivation et fiabilité</td></tr>
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#2563eb;font-weight:bold;">•</td><td style="padding:3px 0;">Adaptation rapide aux outils et aux équipes</td></tr>
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#2563eb;font-weight:bold;">•</td><td style="padding:3px 0;">Envie d’apprendre et de progresser</td></tr>
-=======
 <td style="padding:0 36px 24px;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #e5e7eb;border-left:4px solid #2563eb;background-color:#f9fafb;border-radius:0 10px 10px 0;">
 <tr>
@@ -111,7 +71,6 @@ Rigoureux, à l’écoute et habitué au travail collaboratif, je suis prêt à 
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#2563eb;width:14px;">▸</td><td style="padding:4px 0;">Motivation et fiabilité</td></tr>
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#2563eb;">▸</td><td style="padding:4px 0;">Adaptation rapide aux outils et aux équipes</td></tr>
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#2563eb;">▸</td><td style="padding:4px 0;">Envie d’apprendre et de progresser</td></tr>
->>>>>>> 7f4f399 (ok)
 </table>
 </td>
 </tr>
@@ -119,13 +78,6 @@ Rigoureux, à l’écoute et habitué au travail collaboratif, je suis prêt à 
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:0 40px 24px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#475569;">
-<table cellpadding="0" cellspacing="0" role="presentation">
-<tr><td style="padding:0 12px 10px 0;vertical-align:top;width:22px;">📍</td><td style="padding:0 0 10px 0;"><strong style="color:#334155;">Mobilité</strong> · {{ville}}, {{pays}}</td></tr>
-<tr><td style="padding:0 12px 10px 0;vertical-align:top;">📚</td><td style="padding:0 0 10px 0;">Durée courte ou longue selon votre calendrier</td></tr>
-<tr><td style="padding:0 12px 0 0;vertical-align:top;">🌍</td><td style="padding:0;">Présentiel ou distanciel possible</td></tr>
-=======
 <td style="padding:0 36px 22px;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #e5e7eb;border-radius:8px;background-color:#ffffff;">
 <tr>
@@ -140,30 +92,10 @@ Rigoureux, à l’écoute et habitué au travail collaboratif, je suis prêt à 
 <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;">Modalités</td>
 <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#374151;">Présentiel ou distanciel possible</td>
 </tr>
->>>>>>> 7f4f399 (ok)
 </table>
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td align="center" style="padding:8px 40px 6px;">
-<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
-<tr>
-<td align="center" style="border-radius:10px;background-color:#2563eb;">
-<a href="#invoo-cv" style="display:inline-block;padding:15px 36px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;">Voir mon CV</a>
-</td>
-</tr>
-</table>
-<p style="margin:12px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#94a3b8;max-width:340px;margin-left:auto;margin-right:auto;">Le détail de mon parcours est inclus <strong>dans ce même e-mail</strong> (aucun site externe requis).</p>
-</td>
-</tr>
-<tr>
-<td align="center" style="padding:12px 40px 28px;">
-<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
-<tr>
-<td style="border-radius:10px;border:2px solid #22c55e;background-color:#ffffff;">
-<a href="{{whatsapp_lien}}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:12px 28px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#16a34a;text-decoration:none;">Message WhatsApp</a>
-=======
 <td align="center" style="padding:6px 36px 4px;">
 <table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
 <tr>
@@ -181,31 +113,17 @@ Rigoureux, à l’écoute et habitué au travail collaboratif, je suis prêt à 
 <tr>
 <td style="border-radius:8px;border:1px solid #059669;background-color:#ffffff;">
 <a href="{{whatsapp_lien}}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:11px 26px;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700;color:#047857;text-decoration:none;">Contacter par WhatsApp</a>
->>>>>>> 7f4f399 (ok)
 </td>
 </tr>
 </table>
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:24px 40px;background-color:#f8fafc;border-top:1px solid #e2e8f0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.65;color:#64748b;">
-<strong style="color:#0f172a;font-size:14px;">{{nom_complet}}</strong><br>
-<span style="color:#94a3b8;">{{adresse_ligne}}</span><br>
-{{code_postal}} {{ville}} — {{pays}}<br>
-<a href="mailto:{{email}}" style="color:#2563eb;text-decoration:none;">{{email}}</a><span style="color:#cbd5e1;"> · </span>{{telephone}}
-</td>
-</tr>
-<tr>
-<td style="padding:36px 40px 40px;background-color:#ffffff;border-top:4px solid #e2e8f0;">
-<p id="invoo-cv" style="margin:0 0 18px;font-family:Georgia,'Times New Roman',serif;font-size:20px;line-height:1.3;color:#0f172a;font-weight:700;">Curriculum vitæ</p>
-<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#334155;">
-=======
 <td style="padding:22px 36px;background-color:#f9fafb;border-top:1px solid #e5e7eb;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.65;color:#6b7280;">
 <strong style="color:#111827;font-size:13px;">{{nom_complet}}</strong><br>
 <span style="color:#9ca3af;">{{adresse_ligne}}</span><br>
 {{code_postal}} {{ville}} — {{pays}}<br>
-<a href="mailto:{{email}}" style="color:#1d4ed8;text-decoration:none;">{{email}}</a><span style="color:#d1d5db;"> · </span>{{telephone}}
+<a href="mailto:{{email_reply_to}}" style="color:#1d4ed8;text-decoration:none;">{{email_reply_to}}</a><span style="color:#d1d5db;"> · </span>{{telephone}}
 </td>
 </tr>
 <tr>
@@ -213,7 +131,6 @@ Rigoureux, à l’écoute et habitué au travail collaboratif, je suis prêt à 
 <p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;">Annexe</p>
 <p id="invoo-cv" style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.35;color:#111827;font-weight:700;">Curriculum vitæ</p>
 <div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#374151;">
->>>>>>> 7f4f399 (ok)
 {{@cv_html}}
 </div>
 </td>
@@ -228,11 +145,7 @@ Rigoureux, à l’écoute et habitué au travail collaboratif, je suis prêt à 
   const DEFAULT_JOB_SUBJECT =
     'Candidature spontanée — {{prenom}} {{nom}} | Poste CDI / CDD';
 
-<<<<<<< HEAD
-  /** Même structure que le modèle stage, orienté emploi salarié (CDI/CDD). */
-=======
   /** Emploi CDI/CDD — même squelette, accent ardoise « corporate ». */
->>>>>>> 7f4f399 (ok)
   const DEFAULT_JOB_HTML = `<!DOCTYPE html>
 <html>
 <head>
@@ -240,27 +153,6 @@ Rigoureux, à l’écoute et habitué au travail collaboratif, je suis prêt à 
 <meta name="viewport" content="width=device-width">
 <title>Candidature CDI / CDD</title>
 </head>
-<<<<<<< HEAD
-<body style="margin:0;padding:0;background-color:#e8edf5;">
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#e8edf5;">
-<tr>
-<td align="center" style="padding:24px 12px;">
-<table width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:12px;border:1px solid #c7d2fe;">
-<tr>
-<td style="height:5px;line-height:5px;font-size:0;background-color:#2563eb;">&nbsp;</td>
-</tr>
-<tr>
-<td style="padding:32px 40px 28px;background-color:#f8fafc;border-bottom:1px solid #e2e8f0;">
-<span style="display:inline-block;padding:5px 14px;border-radius:999px;background-color:#dbeafe;color:#1e40af;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;font-family:Arial,Helvetica,sans-serif;">CDI · CDD</span>
-<h1 style="margin:16px 0 0;font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:1.2;color:#0f172a;font-weight:700;">{{prenom}} {{nom}}</h1>
-<p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#1e293b;font-weight:600;">{{fonction}}</p>
-<p style="margin:8px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#64748b;">Modèle Travail (CDI/CDD) · Candidature spontanée professionnelle</p>
-<p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#94a3b8;">{{societe}}</p>
-</td>
-</tr>
-<tr>
-<td style="padding:32px 40px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.75;color:#334155;">
-=======
 <body style="margin:0;padding:0;background-color:#eceff4;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#eceff4;">
 <tr>
@@ -280,25 +172,12 @@ Rigoureux, à l’écoute et habitué au travail collaboratif, je suis prêt à 
 </tr>
 <tr>
 <td style="padding:28px 36px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.75;color:#374151;">
->>>>>>> 7f4f399 (ok)
 Madame, Monsieur,<br><br>
 Par la présente, je vous adresse une <strong>candidature spontanée</strong> pour des postes en entreprise au sein de votre organisation, en <strong>CDI ou CDD</strong>. Fort d’un <strong>vif intérêt</strong> pour le domaine de <strong>{{domaine}}</strong>, je souhaite mettre mon expertise et mon engagement au service de vos objectifs, dans un cadre exigeant et collaboratif.<br><br>
 Rigoureux, orienté résultats et à l’aise dans des environnements structurés, je suis disponible pour échanger sur vos besoins et la manière dont je peux contribuer à vos équipes.
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:0 40px 28px;">
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-left:4px solid #2563eb;background-color:#f1f5f9;border-radius:0 10px 10px 0;">
-<tr>
-<td style="padding:22px 24px;font-family:Arial,Helvetica,sans-serif;">
-<p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:0.06em;">Atouts professionnels</p>
-<p style="margin:0 0 14px;font-size:14px;line-height:1.65;color:#475569;">Compétences et savoir-faire privilégiés : <strong style="color:#0f172a;">{{domaine}}</strong>.</p>
-<table cellpadding="0" cellspacing="0" role="presentation" style="font-size:14px;line-height:1.6;color:#475569;">
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#2563eb;font-weight:bold;">•</td><td style="padding:3px 0;">Fiabilité, organisation et sens du détail</td></tr>
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#2563eb;font-weight:bold;">•</td><td style="padding:3px 0;">Capacité d’adaptation aux outils, processus et équipes</td></tr>
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#2563eb;font-weight:bold;">•</td><td style="padding:3px 0;">Esprit de synthèse et collaboration efficace</td></tr>
-=======
 <td style="padding:0 36px 24px;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #e5e7eb;border-left:4px solid #334155;background-color:#f9fafb;border-radius:0 10px 10px 0;">
 <tr>
@@ -309,7 +188,6 @@ Rigoureux, orienté résultats et à l’aise dans des environnements structuré
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#475569;width:14px;">▸</td><td style="padding:4px 0;">Fiabilité, organisation et sens du détail</td></tr>
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#475569;">▸</td><td style="padding:4px 0;">Adaptation aux outils, processus et équipes</td></tr>
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#475569;">▸</td><td style="padding:4px 0;">Esprit de synthèse et collaboration efficace</td></tr>
->>>>>>> 7f4f399 (ok)
 </table>
 </td>
 </tr>
@@ -317,13 +195,6 @@ Rigoureux, orienté résultats et à l’aise dans des environnements structuré
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:0 40px 24px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#475569;">
-<table cellpadding="0" cellspacing="0" role="presentation">
-<tr><td style="padding:0 12px 10px 0;vertical-align:top;width:22px;">📍</td><td style="padding:0 0 10px 0;"><strong style="color:#334155;">Mobilité</strong> · {{ville}}, {{pays}}</td></tr>
-<tr><td style="padding:0 12px 10px 0;vertical-align:top;">💼</td><td style="padding:0 0 10px 0;">Recherche d’emploi salarié : CDI ou CDD selon vos besoins</td></tr>
-<tr><td style="padding:0 12px 0 0;vertical-align:top;">🏢</td><td style="padding:0;">Présentiel, hybride ou télétravail selon votre politique</td></tr>
-=======
 <td style="padding:0 36px 22px;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #e5e7eb;border-radius:8px;background-color:#ffffff;">
 <tr>
@@ -338,30 +209,10 @@ Rigoureux, orienté résultats et à l’aise dans des environnements structuré
 <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;">Organisation</td>
 <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#374151;">Présentiel, hybride ou télétravail selon votre politique</td>
 </tr>
->>>>>>> 7f4f399 (ok)
 </table>
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td align="center" style="padding:8px 40px 6px;">
-<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
-<tr>
-<td align="center" style="border-radius:10px;background-color:#2563eb;">
-<a href="#invoo-cv" style="display:inline-block;padding:15px 36px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;">Voir mon CV</a>
-</td>
-</tr>
-</table>
-<p style="margin:12px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#94a3b8;max-width:340px;margin-left:auto;margin-right:auto;">Le détail de mon parcours est inclus <strong>dans ce même e-mail</strong> (aucun site externe requis).</p>
-</td>
-</tr>
-<tr>
-<td align="center" style="padding:12px 40px 28px;">
-<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
-<tr>
-<td style="border-radius:10px;border:2px solid #22c55e;background-color:#ffffff;">
-<a href="{{whatsapp_lien}}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:12px 28px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#16a34a;text-decoration:none;">Message WhatsApp</a>
-=======
 <td align="center" style="padding:6px 36px 4px;">
 <table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
 <tr>
@@ -379,31 +230,17 @@ Rigoureux, orienté résultats et à l’aise dans des environnements structuré
 <tr>
 <td style="border-radius:8px;border:1px solid #059669;background-color:#ffffff;">
 <a href="{{whatsapp_lien}}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:11px 26px;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700;color:#047857;text-decoration:none;">Contacter par WhatsApp</a>
->>>>>>> 7f4f399 (ok)
 </td>
 </tr>
 </table>
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:24px 40px;background-color:#f8fafc;border-top:1px solid #e2e8f0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.65;color:#64748b;">
-<strong style="color:#0f172a;font-size:14px;">{{nom_complet}}</strong><br>
-<span style="color:#94a3b8;">{{adresse_ligne}}</span><br>
-{{code_postal}} {{ville}} — {{pays}}<br>
-<a href="mailto:{{email}}" style="color:#2563eb;text-decoration:none;">{{email}}</a><span style="color:#cbd5e1;"> · </span>{{telephone}}
-</td>
-</tr>
-<tr>
-<td style="padding:36px 40px 40px;background-color:#ffffff;border-top:4px solid #e2e8f0;">
-<p id="invoo-cv" style="margin:0 0 18px;font-family:Georgia,'Times New Roman',serif;font-size:20px;line-height:1.3;color:#0f172a;font-weight:700;">Curriculum vitæ</p>
-<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#334155;">
-=======
 <td style="padding:22px 36px;background-color:#f9fafb;border-top:1px solid #e5e7eb;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.65;color:#6b7280;">
 <strong style="color:#111827;font-size:13px;">{{nom_complet}}</strong><br>
 <span style="color:#9ca3af;">{{adresse_ligne}}</span><br>
 {{code_postal}} {{ville}} — {{pays}}<br>
-<a href="mailto:{{email}}" style="color:#1d4ed8;text-decoration:none;">{{email}}</a><span style="color:#d1d5db;"> · </span>{{telephone}}
+<a href="mailto:{{email_reply_to}}" style="color:#1d4ed8;text-decoration:none;">{{email_reply_to}}</a><span style="color:#d1d5db;"> · </span>{{telephone}}
 </td>
 </tr>
 <tr>
@@ -411,7 +248,6 @@ Rigoureux, orienté résultats et à l’aise dans des environnements structuré
 <p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;">Annexe</p>
 <p id="invoo-cv" style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.35;color:#111827;font-weight:700;">Curriculum vitæ</p>
 <div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#374151;">
->>>>>>> 7f4f399 (ok)
 {{@cv_html}}
 </div>
 </td>
@@ -426,11 +262,7 @@ Rigoureux, orienté résultats et à l’aise dans des environnements structuré
   const DEFAULT_VOLUNTEER_SUBJECT =
     'Volontariat / mission — {{prenom}} {{nom}} | Candidature spontanée';
 
-<<<<<<< HEAD
-  /** Même structure : missions humanitaires, bénévolat international, ONG, etc. */
-=======
   /** Volontariat / ONG — accent vert sobre, mise en page alignée aux autres modèles. */
->>>>>>> 7f4f399 (ok)
   const DEFAULT_VOLUNTEER_HTML = `<!DOCTYPE html>
 <html>
 <head>
@@ -438,27 +270,6 @@ Rigoureux, orienté résultats et à l’aise dans des environnements structuré
 <meta name="viewport" content="width=device-width">
 <title>Volontariat &amp; mission solidaire</title>
 </head>
-<<<<<<< HEAD
-<body style="margin:0;padding:0;background-color:#e8edf5;">
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#e8edf5;">
-<tr>
-<td align="center" style="padding:24px 12px;">
-<table width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:12px;border:1px solid #c7d2fe;">
-<tr>
-<td style="height:5px;line-height:5px;font-size:0;background-color:#2563eb;">&nbsp;</td>
-</tr>
-<tr>
-<td style="padding:32px 40px 28px;background-color:#f8fafc;border-bottom:1px solid #e2e8f0;">
-<span style="display:inline-block;padding:5px 14px;border-radius:999px;background-color:#d1fae7;color:#047857;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;font-family:Arial,Helvetica,sans-serif;">Volontariat</span>
-<h1 style="margin:16px 0 0;font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:1.2;color:#0f172a;font-weight:700;">{{prenom}} {{nom}}</h1>
-<p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#1e293b;font-weight:600;">{{fonction}}</p>
-<p style="margin:8px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#64748b;">Modèle Volontariat · Missions humanitaires &amp; bénévolat international</p>
-<p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#94a3b8;">{{societe}}</p>
-</td>
-</tr>
-<tr>
-<td style="padding:32px 40px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.75;color:#334155;">
-=======
 <body style="margin:0;padding:0;background-color:#eceff4;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#eceff4;">
 <tr>
@@ -478,25 +289,12 @@ Rigoureux, orienté résultats et à l’aise dans des environnements structuré
 </tr>
 <tr>
 <td style="padding:28px 36px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.75;color:#374151;">
->>>>>>> 7f4f399 (ok)
 Madame, Monsieur,<br><br>
 Je vous adresse une <strong>candidature spontanée</strong> pour rejoindre vos actions en tant que <strong>volontaire</strong> ou <strong>bénévole</strong>, en France ou à l’international. Sensible aux enjeux humanitaires et fortement motivé par le domaine de <strong>{{domaine}}</strong>, je souhaite contribuer concrètement à vos missions sur le terrain ou en appui.<br><br>
 Ouvert d’esprit, à l’écoute et habitué à travailler en équipe dans des contextes variés, je m’engage avec sérieux, respect et disponibilité.
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:0 40px 28px;">
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-left:4px solid #059669;background-color:#ecfdf5;border-radius:0 10px 10px 0;">
-<tr>
-<td style="padding:22px 24px;font-family:Arial,Helvetica,sans-serif;">
-<p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#047857;text-transform:uppercase;letter-spacing:0.06em;">Engagement &amp; savoir-faire</p>
-<p style="margin:0 0 14px;font-size:14px;line-height:1.65;color:#475569;">Apports et centres d’intérêt : <strong style="color:#0f172a;">{{domaine}}</strong>.</p>
-<table cellpadding="0" cellspacing="0" role="presentation" style="font-size:14px;line-height:1.6;color:#475569;">
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#059669;font-weight:bold;">•</td><td style="padding:3px 0;">Sens du service, empathie et respect des populations accompagnées</td></tr>
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#059669;font-weight:bold;">•</td><td style="padding:3px 0;">Adaptabilité (multiculturel, conditions de terrain, contraintes logistiques)</td></tr>
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#059669;font-weight:bold;">•</td><td style="padding:3px 0;">Fiabilité, esprit de coopération et attitude constructive</td></tr>
-=======
 <td style="padding:0 36px 24px;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #d1fae5;border-left:4px solid #059669;background-color:#f0fdf4;border-radius:0 10px 10px 0;">
 <tr>
@@ -507,7 +305,6 @@ Ouvert d’esprit, à l’écoute et habitué à travailler en équipe dans des 
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#059669;width:14px;">▸</td><td style="padding:4px 0;">Sens du service, empathie et respect des publics accompagnés</td></tr>
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#059669;">▸</td><td style="padding:4px 0;">Adaptabilité (contextes multiculturels, terrain, logistique)</td></tr>
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#059669;">▸</td><td style="padding:4px 0;">Fiabilité, coopération et attitude constructive</td></tr>
->>>>>>> 7f4f399 (ok)
 </table>
 </td>
 </tr>
@@ -515,13 +312,6 @@ Ouvert d’esprit, à l’écoute et habitué à travailler en équipe dans des 
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:0 40px 24px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#475569;">
-<table cellpadding="0" cellspacing="0" role="presentation">
-<tr><td style="padding:0 12px 10px 0;vertical-align:top;width:22px;">📍</td><td style="padding:0 0 10px 0;"><strong style="color:#334155;">Mobilité</strong> · {{ville}}, {{pays}}</td></tr>
-<tr><td style="padding:0 12px 10px 0;vertical-align:top;">🌐</td><td style="padding:0 0 10px 0;">Disponible pour des missions en France ou à l’international selon vos programmes</td></tr>
-<tr><td style="padding:0 12px 0 0;vertical-align:top;">🤝</td><td style="padding:0;">Bénévolat de moyen / long terme ou missions ponctuelles, selon le besoin</td></tr>
-=======
 <td style="padding:0 36px 22px;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #e5e7eb;border-radius:8px;background-color:#ffffff;">
 <tr>
@@ -536,30 +326,10 @@ Ouvert d’esprit, à l’écoute et habitué à travailler en équipe dans des 
 <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;">Durée</td>
 <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#374151;">Moyen / long terme ou missions ponctuelles</td>
 </tr>
->>>>>>> 7f4f399 (ok)
 </table>
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td align="center" style="padding:8px 40px 6px;">
-<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
-<tr>
-<td align="center" style="border-radius:10px;background-color:#2563eb;">
-<a href="#invoo-cv" style="display:inline-block;padding:15px 36px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;">Voir mon CV</a>
-</td>
-</tr>
-</table>
-<p style="margin:12px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#94a3b8;max-width:340px;margin-left:auto;margin-right:auto;">Le détail de mon parcours est inclus <strong>dans ce même e-mail</strong> (aucun site externe requis).</p>
-</td>
-</tr>
-<tr>
-<td align="center" style="padding:12px 40px 28px;">
-<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
-<tr>
-<td style="border-radius:10px;border:2px solid #22c55e;background-color:#ffffff;">
-<a href="{{whatsapp_lien}}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:12px 28px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#16a34a;text-decoration:none;">Message WhatsApp</a>
-=======
 <td align="center" style="padding:6px 36px 4px;">
 <table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
 <tr>
@@ -577,31 +347,17 @@ Ouvert d’esprit, à l’écoute et habitué à travailler en équipe dans des 
 <tr>
 <td style="border-radius:8px;border:1px solid #059669;background-color:#ffffff;">
 <a href="{{whatsapp_lien}}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:11px 26px;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700;color:#047857;text-decoration:none;">Contacter par WhatsApp</a>
->>>>>>> 7f4f399 (ok)
 </td>
 </tr>
 </table>
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:24px 40px;background-color:#f8fafc;border-top:1px solid #e2e8f0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.65;color:#64748b;">
-<strong style="color:#0f172a;font-size:14px;">{{nom_complet}}</strong><br>
-<span style="color:#94a3b8;">{{adresse_ligne}}</span><br>
-{{code_postal}} {{ville}} — {{pays}}<br>
-<a href="mailto:{{email}}" style="color:#2563eb;text-decoration:none;">{{email}}</a><span style="color:#cbd5e1;"> · </span>{{telephone}}
-</td>
-</tr>
-<tr>
-<td style="padding:36px 40px 40px;background-color:#ffffff;border-top:4px solid #e2e8f0;">
-<p id="invoo-cv" style="margin:0 0 18px;font-family:Georgia,'Times New Roman',serif;font-size:20px;line-height:1.3;color:#0f172a;font-weight:700;">Curriculum vitæ</p>
-<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#334155;">
-=======
 <td style="padding:22px 36px;background-color:#f9fafb;border-top:1px solid #e5e7eb;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.65;color:#6b7280;">
 <strong style="color:#111827;font-size:13px;">{{nom_complet}}</strong><br>
 <span style="color:#9ca3af;">{{adresse_ligne}}</span><br>
 {{code_postal}} {{ville}} — {{pays}}<br>
-<a href="mailto:{{email}}" style="color:#1d4ed8;text-decoration:none;">{{email}}</a><span style="color:#d1d5db;"> · </span>{{telephone}}
+<a href="mailto:{{email_reply_to}}" style="color:#1d4ed8;text-decoration:none;">{{email_reply_to}}</a><span style="color:#d1d5db;"> · </span>{{telephone}}
 </td>
 </tr>
 <tr>
@@ -609,7 +365,6 @@ Ouvert d’esprit, à l’écoute et habitué à travailler en équipe dans des 
 <p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;">Annexe</p>
 <p id="invoo-cv" style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.35;color:#111827;font-weight:700;">Curriculum vitæ</p>
 <div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#374151;">
->>>>>>> 7f4f399 (ok)
 {{@cv_html}}
 </div>
 </td>
@@ -631,27 +386,6 @@ Ouvert d’esprit, à l’écoute et habitué à travailler en équipe dans des 
 <meta name="viewport" content="width=device-width">
 <title>Internship request</title>
 </head>
-<<<<<<< HEAD
-<body style="margin:0;padding:0;background-color:#e8edf5;">
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#e8edf5;">
-<tr>
-<td align="center" style="padding:24px 12px;">
-<table width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:12px;border:1px solid #c7d2fe;">
-<tr>
-<td style="height:5px;line-height:5px;font-size:0;background-color:#2563eb;">&nbsp;</td>
-</tr>
-<tr>
-<td style="padding:32px 40px 28px;background-color:#f8fafc;border-bottom:1px solid #e2e8f0;">
-<span style="display:inline-block;padding:5px 14px;border-radius:999px;background-color:#dbeafe;color:#1e40af;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;font-family:Arial,Helvetica,sans-serif;">Application</span>
-<h1 style="margin:16px 0 0;font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:1.2;color:#0f172a;font-weight:700;">{{prenom}} {{nom}}</h1>
-<p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#1e293b;font-weight:600;">{{fonction}}</p>
-<p style="margin:8px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#64748b;">Internship request · Unsolicited application</p>
-<p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#94a3b8;">{{societe}}</p>
-</td>
-</tr>
-<tr>
-<td style="padding:32px 40px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.75;color:#334155;">
-=======
 <body style="margin:0;padding:0;background-color:#eceff4;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#eceff4;">
 <tr>
@@ -671,25 +405,12 @@ Ouvert d’esprit, à l’écoute et habitué à travailler en équipe dans des 
 </tr>
 <tr>
 <td style="padding:28px 36px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.75;color:#374151;">
->>>>>>> 7f4f399 (ok)
 Dear Sir or Madam,<br><br>
 I am writing to express my <strong>interest</strong> in completing an <strong>internship</strong> with your organisation. I am particularly drawn to <strong>{{domaine}}</strong> and would welcome the opportunity to contribute to your teams while building professional skills in a real workplace setting.<br><br>
 I am diligent, collaborative, and comfortable adapting to new tools and teams.
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:0 40px 28px;">
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-left:4px solid #2563eb;background-color:#f1f5f9;border-radius:0 10px 10px 0;">
-<tr>
-<td style="padding:22px 24px;font-family:Arial,Helvetica,sans-serif;">
-<p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:0.06em;">Strengths</p>
-<p style="margin:0 0 14px;font-size:14px;line-height:1.65;color:#475569;">Key focus areas: <strong style="color:#0f172a;">{{domaine}}</strong>.</p>
-<table cellpadding="0" cellspacing="0" role="presentation" style="font-size:14px;line-height:1.6;color:#475569;">
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#2563eb;font-weight:bold;">•</td><td style="padding:3px 0;">Motivation and reliability</td></tr>
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#2563eb;font-weight:bold;">•</td><td style="padding:3px 0;">Quick learner with tools and teamwork</td></tr>
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#2563eb;font-weight:bold;">•</td><td style="padding:3px 0;">Eager to learn and grow</td></tr>
-=======
 <td style="padding:0 36px 24px;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #e5e7eb;border-left:4px solid #2563eb;background-color:#f9fafb;border-radius:0 10px 10px 0;">
 <tr>
@@ -700,7 +421,6 @@ I am diligent, collaborative, and comfortable adapting to new tools and teams.
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#2563eb;width:14px;">▸</td><td style="padding:4px 0;">Motivation and reliability</td></tr>
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#2563eb;">▸</td><td style="padding:4px 0;">Quick learner with tools and teamwork</td></tr>
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#2563eb;">▸</td><td style="padding:4px 0;">Eager to learn and grow</td></tr>
->>>>>>> 7f4f399 (ok)
 </table>
 </td>
 </tr>
@@ -708,13 +428,6 @@ I am diligent, collaborative, and comfortable adapting to new tools and teams.
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:0 40px 24px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#475569;">
-<table cellpadding="0" cellspacing="0" role="presentation">
-<tr><td style="padding:0 12px 10px 0;vertical-align:top;width:22px;">📍</td><td style="padding:0 0 10px 0;"><strong style="color:#334155;">Location</strong> · {{ville}}, {{pays}}</td></tr>
-<tr><td style="padding:0 12px 10px 0;vertical-align:top;">📚</td><td style="padding:0 0 10px 0;">Short or long placement, depending on your schedule</td></tr>
-<tr><td style="padding:0 12px 0 0;vertical-align:top;">🌍</td><td style="padding:0;">On-site or remote possible</td></tr>
-=======
 <td style="padding:0 36px 22px;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #e5e7eb;border-radius:8px;background-color:#ffffff;">
 <tr>
@@ -729,30 +442,10 @@ I am diligent, collaborative, and comfortable adapting to new tools and teams.
 <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;">Format</td>
 <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#374151;">On-site or remote where appropriate</td>
 </tr>
->>>>>>> 7f4f399 (ok)
 </table>
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td align="center" style="padding:8px 40px 6px;">
-<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
-<tr>
-<td align="center" style="border-radius:10px;background-color:#2563eb;">
-<a href="#invoo-cv" style="display:inline-block;padding:15px 36px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;">View my CV</a>
-</td>
-</tr>
-</table>
-<p style="margin:12px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#94a3b8;max-width:340px;margin-left:auto;margin-right:auto;">My background is included <strong>in this same email</strong> (no external website required).</p>
-</td>
-</tr>
-<tr>
-<td align="center" style="padding:12px 40px 28px;">
-<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
-<tr>
-<td style="border-radius:10px;border:2px solid #22c55e;background-color:#ffffff;">
-<a href="{{whatsapp_lien}}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:12px 28px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#16a34a;text-decoration:none;">WhatsApp message</a>
-=======
 <td align="center" style="padding:6px 36px 4px;">
 <table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
 <tr>
@@ -770,31 +463,17 @@ I am diligent, collaborative, and comfortable adapting to new tools and teams.
 <tr>
 <td style="border-radius:8px;border:1px solid #059669;background-color:#ffffff;">
 <a href="{{whatsapp_lien}}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:11px 26px;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700;color:#047857;text-decoration:none;">Contact via WhatsApp</a>
->>>>>>> 7f4f399 (ok)
 </td>
 </tr>
 </table>
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:24px 40px;background-color:#f8fafc;border-top:1px solid #e2e8f0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.65;color:#64748b;">
-<strong style="color:#0f172a;font-size:14px;">{{nom_complet}}</strong><br>
-<span style="color:#94a3b8;">{{adresse_ligne}}</span><br>
-{{code_postal}} {{ville}} — {{pays}}<br>
-<a href="mailto:{{email}}" style="color:#2563eb;text-decoration:none;">{{email}}</a><span style="color:#cbd5e1;"> · </span>{{telephone}}
-</td>
-</tr>
-<tr>
-<td style="padding:36px 40px 40px;background-color:#ffffff;border-top:4px solid #e2e8f0;">
-<p id="invoo-cv" style="margin:0 0 18px;font-family:Georgia,'Times New Roman',serif;font-size:20px;line-height:1.3;color:#0f172a;font-weight:700;">Curriculum vitae</p>
-<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#334155;">
-=======
 <td style="padding:22px 36px;background-color:#f9fafb;border-top:1px solid #e5e7eb;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.65;color:#6b7280;">
 <strong style="color:#111827;font-size:13px;">{{nom_complet}}</strong><br>
 <span style="color:#9ca3af;">{{adresse_ligne}}</span><br>
 {{code_postal}} {{ville}} — {{pays}}<br>
-<a href="mailto:{{email}}" style="color:#1d4ed8;text-decoration:none;">{{email}}</a><span style="color:#d1d5db;"> · </span>{{telephone}}
+<a href="mailto:{{email_reply_to}}" style="color:#1d4ed8;text-decoration:none;">{{email_reply_to}}</a><span style="color:#d1d5db;"> · </span>{{telephone}}
 </td>
 </tr>
 <tr>
@@ -802,7 +481,6 @@ I am diligent, collaborative, and comfortable adapting to new tools and teams.
 <p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;">Appendix</p>
 <p id="invoo-cv" style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.35;color:#111827;font-weight:700;">Curriculum vitae</p>
 <div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#374151;">
->>>>>>> 7f4f399 (ok)
 {{@cv_html}}
 </div>
 </td>
@@ -824,27 +502,6 @@ I am diligent, collaborative, and comfortable adapting to new tools and teams.
 <meta name="viewport" content="width=device-width">
 <title>Job application (permanent / fixed-term)</title>
 </head>
-<<<<<<< HEAD
-<body style="margin:0;padding:0;background-color:#e8edf5;">
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#e8edf5;">
-<tr>
-<td align="center" style="padding:24px 12px;">
-<table width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:12px;border:1px solid #c7d2fe;">
-<tr>
-<td style="height:5px;line-height:5px;font-size:0;background-color:#2563eb;">&nbsp;</td>
-</tr>
-<tr>
-<td style="padding:32px 40px 28px;background-color:#f8fafc;border-bottom:1px solid #e2e8f0;">
-<span style="display:inline-block;padding:5px 14px;border-radius:999px;background-color:#dbeafe;color:#1e40af;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;font-family:Arial,Helvetica,sans-serif;">Permanent · Fixed-term</span>
-<h1 style="margin:16px 0 0;font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:1.2;color:#0f172a;font-weight:700;">{{prenom}} {{nom}}</h1>
-<p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#1e293b;font-weight:600;">{{fonction}}</p>
-<p style="margin:8px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#64748b;">Work template (permanent / fixed-term) · Professional unsolicited application</p>
-<p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#94a3b8;">{{societe}}</p>
-</td>
-</tr>
-<tr>
-<td style="padding:32px 40px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.75;color:#334155;">
-=======
 <body style="margin:0;padding:0;background-color:#eceff4;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#eceff4;">
 <tr>
@@ -864,25 +521,12 @@ I am diligent, collaborative, and comfortable adapting to new tools and teams.
 </tr>
 <tr>
 <td style="padding:28px 36px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.75;color:#374151;">
->>>>>>> 7f4f399 (ok)
 Dear Sir or Madam,<br><br>
 Please consider this <strong>unsolicited application</strong> for salaried positions (<strong>permanent or fixed-term</strong>) within your organisation. I have a strong interest in <strong>{{domaine}}</strong> and would like to bring my skills and commitment to your objectives in a structured, collaborative environment.<br><br>
 I am detail-oriented, results-minded, and comfortable in professional settings; I would welcome a conversation about your needs and how I can support your teams.
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:0 40px 28px;">
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-left:4px solid #2563eb;background-color:#f1f5f9;border-radius:0 10px 10px 0;">
-<tr>
-<td style="padding:22px 24px;font-family:Arial,Helvetica,sans-serif;">
-<p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:0.06em;">Professional strengths</p>
-<p style="margin:0 0 14px;font-size:14px;line-height:1.65;color:#475569;">Skills and expertise: <strong style="color:#0f172a;">{{domaine}}</strong>.</p>
-<table cellpadding="0" cellspacing="0" role="presentation" style="font-size:14px;line-height:1.6;color:#475569;">
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#2563eb;font-weight:bold;">•</td><td style="padding:3px 0;">Reliability, organisation, and attention to detail</td></tr>
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#2563eb;font-weight:bold;">•</td><td style="padding:3px 0;">Adapting to tools, processes, and teams</td></tr>
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#2563eb;font-weight:bold;">•</td><td style="padding:3px 0;">Clear communication and effective collaboration</td></tr>
-=======
 <td style="padding:0 36px 24px;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #e5e7eb;border-left:4px solid #334155;background-color:#f9fafb;border-radius:0 10px 10px 0;">
 <tr>
@@ -893,7 +537,6 @@ I am detail-oriented, results-minded, and comfortable in professional settings; 
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#475569;width:14px;">▸</td><td style="padding:4px 0;">Reliability, organisation, attention to detail</td></tr>
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#475569;">▸</td><td style="padding:4px 0;">Adaptation to tools, processes, and teams</td></tr>
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#475569;">▸</td><td style="padding:4px 0;">Clear communication and collaboration</td></tr>
->>>>>>> 7f4f399 (ok)
 </table>
 </td>
 </tr>
@@ -901,13 +544,6 @@ I am detail-oriented, results-minded, and comfortable in professional settings; 
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:0 40px 24px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#475569;">
-<table cellpadding="0" cellspacing="0" role="presentation">
-<tr><td style="padding:0 12px 10px 0;vertical-align:top;width:22px;">📍</td><td style="padding:0 0 10px 0;"><strong style="color:#334155;">Location</strong> · {{ville}}, {{pays}}</td></tr>
-<tr><td style="padding:0 12px 10px 0;vertical-align:top;">💼</td><td style="padding:0 0 10px 0;">Seeking employment: permanent or fixed-term, as required</td></tr>
-<tr><td style="padding:0 12px 0 0;vertical-align:top;">🏢</td><td style="padding:0;">On-site, hybrid, or remote depending on your policy</td></tr>
-=======
 <td style="padding:0 36px 22px;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #e5e7eb;border-radius:8px;background-color:#ffffff;">
 <tr>
@@ -922,30 +558,10 @@ I am detail-oriented, results-minded, and comfortable in professional settings; 
 <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;">Workplace</td>
 <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#374151;">On-site, hybrid, or remote per your policy</td>
 </tr>
->>>>>>> 7f4f399 (ok)
 </table>
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td align="center" style="padding:8px 40px 6px;">
-<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
-<tr>
-<td align="center" style="border-radius:10px;background-color:#2563eb;">
-<a href="#invoo-cv" style="display:inline-block;padding:15px 36px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;">View my CV</a>
-</td>
-</tr>
-</table>
-<p style="margin:12px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#94a3b8;max-width:340px;margin-left:auto;margin-right:auto;">My background is included <strong>in this same email</strong> (no external website required).</p>
-</td>
-</tr>
-<tr>
-<td align="center" style="padding:12px 40px 28px;">
-<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
-<tr>
-<td style="border-radius:10px;border:2px solid #22c55e;background-color:#ffffff;">
-<a href="{{whatsapp_lien}}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:12px 28px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#16a34a;text-decoration:none;">WhatsApp message</a>
-=======
 <td align="center" style="padding:6px 36px 4px;">
 <table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
 <tr>
@@ -963,31 +579,17 @@ I am detail-oriented, results-minded, and comfortable in professional settings; 
 <tr>
 <td style="border-radius:8px;border:1px solid #059669;background-color:#ffffff;">
 <a href="{{whatsapp_lien}}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:11px 26px;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700;color:#047857;text-decoration:none;">Contact via WhatsApp</a>
->>>>>>> 7f4f399 (ok)
 </td>
 </tr>
 </table>
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:24px 40px;background-color:#f8fafc;border-top:1px solid #e2e8f0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.65;color:#64748b;">
-<strong style="color:#0f172a;font-size:14px;">{{nom_complet}}</strong><br>
-<span style="color:#94a3b8;">{{adresse_ligne}}</span><br>
-{{code_postal}} {{ville}} — {{pays}}<br>
-<a href="mailto:{{email}}" style="color:#2563eb;text-decoration:none;">{{email}}</a><span style="color:#cbd5e1;"> · </span>{{telephone}}
-</td>
-</tr>
-<tr>
-<td style="padding:36px 40px 40px;background-color:#ffffff;border-top:4px solid #e2e8f0;">
-<p id="invoo-cv" style="margin:0 0 18px;font-family:Georgia,'Times New Roman',serif;font-size:20px;line-height:1.3;color:#0f172a;font-weight:700;">Curriculum vitae</p>
-<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#334155;">
-=======
 <td style="padding:22px 36px;background-color:#f9fafb;border-top:1px solid #e5e7eb;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.65;color:#6b7280;">
 <strong style="color:#111827;font-size:13px;">{{nom_complet}}</strong><br>
 <span style="color:#9ca3af;">{{adresse_ligne}}</span><br>
 {{code_postal}} {{ville}} — {{pays}}<br>
-<a href="mailto:{{email}}" style="color:#1d4ed8;text-decoration:none;">{{email}}</a><span style="color:#d1d5db;"> · </span>{{telephone}}
+<a href="mailto:{{email_reply_to}}" style="color:#1d4ed8;text-decoration:none;">{{email_reply_to}}</a><span style="color:#d1d5db;"> · </span>{{telephone}}
 </td>
 </tr>
 <tr>
@@ -995,7 +597,6 @@ I am detail-oriented, results-minded, and comfortable in professional settings; 
 <p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;">Appendix</p>
 <p id="invoo-cv" style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.35;color:#111827;font-weight:700;">Curriculum vitae</p>
 <div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#374151;">
->>>>>>> 7f4f399 (ok)
 {{@cv_html}}
 </div>
 </td>
@@ -1017,27 +618,6 @@ I am detail-oriented, results-minded, and comfortable in professional settings; 
 <meta name="viewport" content="width=device-width">
 <title>Volunteering &amp; solidarity mission</title>
 </head>
-<<<<<<< HEAD
-<body style="margin:0;padding:0;background-color:#e8edf5;">
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#e8edf5;">
-<tr>
-<td align="center" style="padding:24px 12px;">
-<table width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:12px;border:1px solid #c7d2fe;">
-<tr>
-<td style="height:5px;line-height:5px;font-size:0;background-color:#2563eb;">&nbsp;</td>
-</tr>
-<tr>
-<td style="padding:32px 40px 28px;background-color:#f8fafc;border-bottom:1px solid #e2e8f0;">
-<span style="display:inline-block;padding:5px 14px;border-radius:999px;background-color:#d1fae7;color:#047857;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;font-family:Arial,Helvetica,sans-serif;">Volunteering</span>
-<h1 style="margin:16px 0 0;font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:1.2;color:#0f172a;font-weight:700;">{{prenom}} {{nom}}</h1>
-<p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#1e293b;font-weight:600;">{{fonction}}</p>
-<p style="margin:8px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#64748b;">Volunteering template · Humanitarian &amp; international volunteering</p>
-<p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#94a3b8;">{{societe}}</p>
-</td>
-</tr>
-<tr>
-<td style="padding:32px 40px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.75;color:#334155;">
-=======
 <body style="margin:0;padding:0;background-color:#eceff4;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#eceff4;">
 <tr>
@@ -1057,25 +637,12 @@ I am detail-oriented, results-minded, and comfortable in professional settings; 
 </tr>
 <tr>
 <td style="padding:28px 36px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.75;color:#374151;">
->>>>>>> 7f4f399 (ok)
 Dear Sir or Madam,<br><br>
 I am applying to support your work as a <strong>volunteer</strong>, in France or abroad. I care deeply about humanitarian issues and am especially motivated by <strong>{{domaine}}</strong>; I hope to contribute meaningfully to your programmes in the field or in support roles.<br><br>
 I am open-minded, a good listener, and used to teamwork across diverse contexts; I engage with seriousness, respect, and availability.
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:0 40px 28px;">
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-left:4px solid #059669;background-color:#ecfdf5;border-radius:0 10px 10px 0;">
-<tr>
-<td style="padding:22px 24px;font-family:Arial,Helvetica,sans-serif;">
-<p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#047857;text-transform:uppercase;letter-spacing:0.06em;">Engagement &amp; skills</p>
-<p style="margin:0 0 14px;font-size:14px;line-height:1.65;color:#475569;">What I bring and care about: <strong style="color:#0f172a;">{{domaine}}</strong>.</p>
-<table cellpadding="0" cellspacing="0" role="presentation" style="font-size:14px;line-height:1.6;color:#475569;">
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#059669;font-weight:bold;">•</td><td style="padding:3px 0;">Service mindset, empathy, respect for the people you serve</td></tr>
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#059669;font-weight:bold;">•</td><td style="padding:3px 0;">Adaptability (multicultural settings, field conditions, logistics)</td></tr>
-<tr><td style="padding:3px 10px 3px 0;vertical-align:top;color:#059669;font-weight:bold;">•</td><td style="padding:3px 0;">Reliability, cooperation, and a constructive attitude</td></tr>
-=======
 <td style="padding:0 36px 24px;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #d1fae5;border-left:4px solid #059669;background-color:#f0fdf4;border-radius:0 10px 10px 0;">
 <tr>
@@ -1086,7 +653,6 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#059669;width:14px;">▸</td><td style="padding:4px 0;">Service mindset, empathy, respect for communities</td></tr>
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#059669;">▸</td><td style="padding:4px 0;">Adaptability (multicultural contexts, field work, logistics)</td></tr>
 <tr><td style="padding:4px 10px 4px 0;vertical-align:top;color:#059669;">▸</td><td style="padding:4px 0;">Reliability, cooperation, constructive attitude</td></tr>
->>>>>>> 7f4f399 (ok)
 </table>
 </td>
 </tr>
@@ -1094,13 +660,6 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:0 40px 24px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#475569;">
-<table cellpadding="0" cellspacing="0" role="presentation">
-<tr><td style="padding:0 12px 10px 0;vertical-align:top;width:22px;">📍</td><td style="padding:0 0 10px 0;"><strong style="color:#334155;">Location</strong> · {{ville}}, {{pays}}</td></tr>
-<tr><td style="padding:0 12px 10px 0;vertical-align:top;">🌐</td><td style="padding:0 0 10px 0;">Available for assignments in France or internationally, per your programmes</td></tr>
-<tr><td style="padding:0 12px 0 0;vertical-align:top;">🤝</td><td style="padding:0;">Medium/long-term volunteering or short missions, as needed</td></tr>
-=======
 <td style="padding:0 36px 22px;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid #e5e7eb;border-radius:8px;background-color:#ffffff;">
 <tr>
@@ -1115,30 +674,10 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
 <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em;vertical-align:top;">Duration</td>
 <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#374151;">Medium/long-term or short missions</td>
 </tr>
->>>>>>> 7f4f399 (ok)
 </table>
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td align="center" style="padding:8px 40px 6px;">
-<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
-<tr>
-<td align="center" style="border-radius:10px;background-color:#2563eb;">
-<a href="#invoo-cv" style="display:inline-block;padding:15px 36px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;">View my CV</a>
-</td>
-</tr>
-</table>
-<p style="margin:12px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#94a3b8;max-width:340px;margin-left:auto;margin-right:auto;">My background is included <strong>in this same email</strong> (no external website required).</p>
-</td>
-</tr>
-<tr>
-<td align="center" style="padding:12px 40px 28px;">
-<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
-<tr>
-<td style="border-radius:10px;border:2px solid #22c55e;background-color:#ffffff;">
-<a href="{{whatsapp_lien}}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:12px 28px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#16a34a;text-decoration:none;">WhatsApp message</a>
-=======
 <td align="center" style="padding:6px 36px 4px;">
 <table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
 <tr>
@@ -1156,31 +695,17 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
 <tr>
 <td style="border-radius:8px;border:1px solid #059669;background-color:#ffffff;">
 <a href="{{whatsapp_lien}}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:11px 26px;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700;color:#047857;text-decoration:none;">Contact via WhatsApp</a>
->>>>>>> 7f4f399 (ok)
 </td>
 </tr>
 </table>
 </td>
 </tr>
 <tr>
-<<<<<<< HEAD
-<td style="padding:24px 40px;background-color:#f8fafc;border-top:1px solid #e2e8f0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.65;color:#64748b;">
-<strong style="color:#0f172a;font-size:14px;">{{nom_complet}}</strong><br>
-<span style="color:#94a3b8;">{{adresse_ligne}}</span><br>
-{{code_postal}} {{ville}} — {{pays}}<br>
-<a href="mailto:{{email}}" style="color:#2563eb;text-decoration:none;">{{email}}</a><span style="color:#cbd5e1;"> · </span>{{telephone}}
-</td>
-</tr>
-<tr>
-<td style="padding:36px 40px 40px;background-color:#ffffff;border-top:4px solid #e2e8f0;">
-<p id="invoo-cv" style="margin:0 0 18px;font-family:Georgia,'Times New Roman',serif;font-size:20px;line-height:1.3;color:#0f172a;font-weight:700;">Curriculum vitae</p>
-<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#334155;">
-=======
 <td style="padding:22px 36px;background-color:#f9fafb;border-top:1px solid #e5e7eb;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.65;color:#6b7280;">
 <strong style="color:#111827;font-size:13px;">{{nom_complet}}</strong><br>
 <span style="color:#9ca3af;">{{adresse_ligne}}</span><br>
 {{code_postal}} {{ville}} — {{pays}}<br>
-<a href="mailto:{{email}}" style="color:#1d4ed8;text-decoration:none;">{{email}}</a><span style="color:#d1d5db;"> · </span>{{telephone}}
+<a href="mailto:{{email_reply_to}}" style="color:#1d4ed8;text-decoration:none;">{{email_reply_to}}</a><span style="color:#d1d5db;"> · </span>{{telephone}}
 </td>
 </tr>
 <tr>
@@ -1188,7 +713,6 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
 <p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;">Appendix</p>
 <p id="invoo-cv" style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.35;color:#111827;font-weight:700;">Curriculum vitae</p>
 <div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.65;color:#374151;">
->>>>>>> 7f4f399 (ok)
 {{@cv_html}}
 </div>
 </td>
@@ -1266,6 +790,8 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
     '<div style="padding:18px;background:#fffbeb;border:1px dashed #f59e0b;border-radius:10px;color:#92400e;font-size:13px;line-height:1.5;font-family:Segoe UI,Roboto,Arial,sans-serif;">Add your <strong>CV as HTML</strong> under <strong>Settings → Profile</strong>. It will appear here, with no external link.</div>';
 
   /**
+   * Fusion finale (envoi Blast, etc.) : variable absente ou vide → rien (pas de texte type [adresse_ligne]).
+   * L’aperçu dans l’éditeur utilise {@link applyVarsPreview}, qui peut signaler les trous.
    * @param {Record<string, string>|null|undefined} raw — clés injectées sans échappement (ex. {{@cv_html}}), réservé au profil local assaini.
    */
   function applyVars(html, data, raw) {
@@ -1284,8 +810,38 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
     }
     out = out.replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (_, key) => {
       const v = map[key];
-      if (v == null || v === '') return `[${key}]`;
-      return escHtml(v);
+      if (v == null) return '';
+      const s = String(v);
+      if (s.trim() === '') return '';
+      return escHtml(s);
+    });
+    return out;
+  }
+
+  /**
+   * Fusion pour objet et Reply-To : valeurs injectées sans échappement HTML.
+   * Sinon & et guillemets (ex. "Nom" &lt;mail@x.com&gt;) corrompent les en-têtes SMTP.
+   */
+  function applyVarsHeaders(text, data, raw) {
+    const rawMap = raw && typeof raw === 'object' ? raw : null;
+    let out = String(text);
+    out = out.replace(/\{\{\@\s*([a-zA-Z0-9_]+)\s*\}\}/g, (_, key) => {
+      const v = rawMap && rawMap[key] != null ? rawMap[key] : '';
+      if (v === '' || v === null) return '';
+      return String(v);
+    });
+    let map = data || {};
+    const waSend = map.whatsapp_lien || map.whatsapp_link;
+    if (waSend) {
+      const s = String(waSend);
+      map = { ...map, whatsapp_lien: s, whatsapp_link: s };
+    }
+    out = out.replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (_, key) => {
+      const v = map[key];
+      if (v == null) return '';
+      const s = String(v);
+      if (s.trim() === '') return '';
+      return s;
     });
     return out;
   }
@@ -1355,28 +911,91 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
   async function loadDraft() {
     const d = await db.getMeta(META_DRAFT);
     if (!d || typeof d !== 'object') {
-      return { subject: DEFAULT_STAGE_SUBJECT, replyTo: '', html: DEFAULT_STAGE_HTML };
+      return {
+        subject: DEFAULT_STAGE_SUBJECT,
+        replyTo: '',
+        html: DEFAULT_STAGE_HTML,
+        draftProfileId: undefined
+      };
     }
     return {
       subject: d.subject == null ? '' : String(d.subject),
       replyTo: d.replyTo == null ? '' : String(d.replyTo),
-      html: d.html == null ? '' : String(d.html)
+      html: d.html == null ? '' : String(d.html),
+      draftProfileId:
+        d.draftProfileId != null && String(d.draftProfileId).trim()
+          ? String(d.draftProfileId).trim()
+          : undefined
     };
   }
 
-  async function saveDraft(subject, replyTo, html) {
-    await db.setMeta(META_DRAFT, {
+  /**
+   * Profil utilisé pour l’aperçu et le Blast : celui enregistré dans le brouillon, sinon le profil actif global (Paramètres).
+   */
+  async function getProfileForDraft() {
+    const d = await loadDraft();
+    const pid = d.draftProfileId != null ? String(d.draftProfileId).trim() : '';
+    if (pid && global.InvooSettings && typeof global.InvooSettings.getProfileById === 'function') {
+      const p = await global.InvooSettings.getProfileById(pid);
+      if (p) return p;
+    }
+    if (global.InvooSettings && typeof global.InvooSettings.getProfile === 'function') {
+      return global.InvooSettings.getProfile();
+    }
+    return (await db.getMeta('user_profile')) || {};
+  }
+
+  async function saveDraft(subject, replyTo, html, opts) {
+    const prevRaw = await db.getMeta(META_DRAFT);
+    const prev = prevRaw && typeof prevRaw === 'object' ? prevRaw : {};
+    let draftProfileId = prev.draftProfileId;
+    if (opts && Object.prototype.hasOwnProperty.call(opts, 'draftProfileId')) {
+      const v = opts.draftProfileId;
+      if (v == null || String(v).trim() === '') draftProfileId = undefined;
+      else draftProfileId = String(v).trim();
+    }
+    const row = {
       subject,
       replyTo,
       html,
       updatedAt: Date.now()
-    });
-    await db.appendLog('info', 'Brouillon e-mail enregistré.', {});
+    };
+    if (draftProfileId) row.draftProfileId = draftProfileId;
+    await db.setMeta(META_DRAFT, row);
+    if (!opts || !opts.silent) {
+      await db.appendLog('info', 'Brouillon e-mail enregistré.', {});
+    }
     global.dispatchEvent(new CustomEvent('invooblast:draft-updated'));
   }
 
-<<<<<<< HEAD
-=======
+  /**
+   * Enregistre en IndexedDB le contenu actuel des champs de l’éditeur (si celui-ci est monté).
+   * Sans cet appel, un objet ou un corps modifiés à l’écran mais jamais cliqués sur « Enregistrer le brouillon »
+   * ne seraient pas ceux utilisés par l’envoi Blast (qui lit le brouillon en base).
+   */
+  async function persistDraftFromEditorDom() {
+    const root = document.getElementById('email-editor-root');
+    if (!root || root.dataset.mounted !== '1') return;
+    const subjectEl = root.querySelector('#ed-subject');
+    const replyEl = root.querySelector('#ed-replyto');
+    const ta = root.querySelector('#ed-html');
+    if (!subjectEl || !ta) return;
+    await saveDraft(subjectEl.value, replyEl ? replyEl.value : '', ta.value, { silent: true });
+  }
+
+  /** Même ordre que le moteur Blast (principaux puis secours). */
+  function buildTestAccountPool(rows, cfg) {
+    const active = rows.filter((a) => !a.disabled);
+    const fb = active.filter((a) => a.isFallback);
+    const main = active.filter((a) => !a.isFallback);
+    const sortE = (a, b) => String(a.email).localeCompare(String(b.email), 'fr');
+    let order = [...main.sort(sortE), ...fb.sort(sortE)];
+    if (cfg && cfg.useFallbackRelay === false) {
+      order = main.sort(sortE);
+    }
+    return order;
+  }
+
   async function getCustomModules() {
     const raw = await db.getMeta(META_CUSTOM_MODULES);
     if (!Array.isArray(raw)) return [];
@@ -1387,48 +1006,62 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
     await db.setMeta(META_CUSTOM_MODULES, list);
   }
 
->>>>>>> 7f4f399 (ok)
   function mountEditorHtml(root) {
     root.innerHTML = `
 <div class="email-editor-layout">
   <div class="editor-column">
     <div class="panel editor-toolbar-panel">
       <div class="panel-h">
-        <h2>Message</h2>
+        <h2>Éditeur e-mail</h2>
         <div class="row-actions">
           <button type="button" class="btn primary" id="ed-save">Enregistrer le brouillon</button>
         </div>
       </div>
       <div class="panel-b editor-toolbar-body">
-<<<<<<< HEAD
-        <p class="editor-hint">Variables classiques : <code>{{prenom}}</code>, <code>{{nom}}</code>, <code>{{nom_complet}}</code>, <code>{{domaine}}</code>, etc. (voir Profil). <strong>CV intégré :</strong> <code>{{@cv_html}}</code> — HTML collé dans Paramètres (ancre <code>#invoo-cv</code>). WhatsApp : <code>{{whatsapp_lien}}</code> ou <code>{{whatsapp_link}}</code> (même valeur, téléphone du profil).</p>
-        <label class="editor-label">Modèles de base</label>
-        <div class="row-actions" style="flex-wrap:wrap;align-items:center;gap:0.65rem;margin:4px 0 8px">
-          <span class="editor-hint" style="margin:0">Langue des modèles (Stage, Travail, Volontariat) :</span>
-          <select id="ed-tpl-lang" class="editor-input ed-tpl-lang-select" aria-label="Langue des modèles de base">
-            <option value="fr">Français</option>
-            <option value="en">English</option>
-          </select>
-        </div>
-        <div class="row-actions" style="flex-wrap:wrap;gap:0.5rem;margin-top:4px">
-          <button type="button" class="btn" id="ed-tpl-stage" title="Insère le modèle demande de stage">Stage</button>
-          <button type="button" class="btn" id="ed-tpl-job" title="Insère le modèle CDI/CDD">Travail (CDI/CDD)</button>
-          <button type="button" class="btn" id="ed-tpl-volunteer" title="Insère le modèle volontariat / humanitaire">Volontariat</button>
-        </div>
-        <p class="editor-hint">Les boutons Stage / Travail / Volontariat insèrent la variante FR ou EN. Si le brouillon est encore un de ces modèles sans modification, changer la langue <strong>met à jour le HTML, l’objet et l’aperçu</strong>. Sinon, seul l’aperçu (ex. texte d’aide CV vide) suit la langue.</p>
-=======
         <div class="editor-message-intro">
-          <p class="editor-hint">Variables classiques : <code>{{prenom}}</code>, <code>{{nom}}</code>, <code>{{nom_complet}}</code>, <code>{{domaine}}</code>, etc. (voir Profil). <strong>CV intégré :</strong> <code>{{@cv_html}}</code> — HTML défini dans Paramètres (ancre <code>#invoo-cv</code>) ; vous pouvez aussi <strong>choisir quel CV</strong> utiliser ci‑dessous. WhatsApp : <code>{{whatsapp_lien}}</code> ou <code>{{whatsapp_link}}</code> (même valeur, téléphone du profil).</p>
+          <p class="editor-hint" style="margin:0"><strong>Profil lié au brouillon :</strong> le menu « profil » ci‑dessous choisit <strong>quel identité / CV</strong> servent à l’<strong>aperçu</strong> et à l’<strong>envoi Blast</strong> pour <em>ce message</em>. Cela <strong>ne change pas</strong> le profil affiché par défaut dans Paramètres ou le tableau de bord.</p>
+          <ul class="editor-guide-list">
+            <li><strong>Profil (brouillon)</strong> : enregistré dans le brouillon avec l’objet et le HTML — variables <code>{{prenom}}</code>, <code>{{domaine}}</code>, etc.</li>
+            <li><strong>CV</strong> : variante <code>{{@cv_html}}</code> du <em>même</em> profil que le brouillon (modifiable ici ou dans Paramètres).</li>
+            <li><strong>Listes</strong> : à l’envoi, chaque ligne de contact peut surcharger une variable si la colonne porte le même nom.</li>
+          </ul>
         </div>
-        <div class="editor-cv-block">
-          <label class="editor-label" for="ed-cv-active">CV pour {{@cv_html}} (aperçu et envoi Blast)</label>
-          <select id="ed-cv-active" class="editor-input" style="max-width:min(100%,480px)" aria-describedby="ed-cv-hint"></select>
-          <p id="ed-cv-hint" class="editor-hint" style="margin-top:6px">Même liste que dans Paramètres. Chaque changement est enregistré tout de suite.</p>
+
+        <div class="editor-context-stack">
+          <div class="editor-step-block" id="ed-step-profile">
+            <div class="editor-step-head">
+              <h3 class="editor-step-title"><span class="editor-step-num" aria-hidden="true">1</span>Quel profil pour ce message ?</h3>
+            </div>
+            <label class="editor-label" for="ed-profile-active">Profil pour ce brouillon (aperçu + Blast)</label>
+            <select id="ed-profile-active" class="editor-input" style="max-width:min(100%,480px)" aria-describedby="ed-profile-hint"></select>
+            <p id="ed-profile-hint" class="editor-hint" style="margin-top:8px">Le choix est <strong>enregistré dans le brouillon</strong> (avec la sauvegarde JSON). Tant que vous ne changez pas ce menu, Blast utilisera toujours ce profil pour fusionner ce message. Pour éditer les textes (identité, HTML des CV), ouvrez <strong>Paramètres</strong>.</p>
+          </div>
+
+          <div class="editor-step-block" id="ed-step-cv">
+            <div class="editor-step-head">
+              <h3 class="editor-step-title"><span class="editor-step-num" aria-hidden="true">2</span>Quel CV insérer dans l’e-mail ?</h3>
+            </div>
+            <label class="editor-label" for="ed-cv-active">Variante de CV pour <code>{{@cv_html}}</code></label>
+            <select id="ed-cv-active" class="editor-input" style="max-width:min(100%,480px)" aria-describedby="ed-cv-hint"></select>
+            <p id="ed-cv-hint" class="editor-hint" style="margin-top:8px">Variantes du <strong>profil du brouillon</strong> (étape 1). Le CV sélectionné est enregistré sur ce profil dans la base locale (identique à Paramètres pour ce profil).</p>
+          </div>
+
+          <div class="editor-step-block editor-step-context">
+            <div class="editor-step-head">
+              <h3 class="editor-step-title"><span class="editor-step-num" aria-hidden="true">3</span>Rappel — ce qui part en fusion</h3>
+            </div>
+            <p id="ed-context-summary" class="editor-context-summary" role="status" aria-live="polite">Chargement du contexte…</p>
+            <div class="editor-settings-shortcut">
+              <button type="button" class="btn" id="ed-open-settings-profile" title="Ouvre l’onglet Paramètres">Modifier les profils ou les CV dans Paramètres</button>
+              <span class="editor-hint" style="margin:0">Ajouter un profil, éditer le HTML d’un CV, adresse…</span>
+            </div>
+          </div>
         </div>
+
         <div class="editor-templates-block">
-          <label class="editor-label">Modèles de base</label>
+          <label class="editor-label">Modèles de base (contenu du message)</label>
           <div class="editor-lang-row">
-            <span class="editor-hint editor-lang-hint">Langue des modèles (Stage, Travail, Volontariat) :</span>
+            <span class="editor-hint editor-lang-hint">Langue des modèles (Stage, Travail, Volontariat) — par défaut selon le <strong>profil du brouillon</strong> (réglable dans Paramètres) :</span>
             <select id="ed-tpl-lang" class="editor-input ed-tpl-lang-select" aria-label="Langue des modèles de base">
               <option value="fr">Français</option>
               <option value="en">English</option>
@@ -1451,7 +1084,8 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
           <div id="ed-custom-modules-list" class="editor-custom-modules-list" aria-live="polite"></div>
         </div>
         <div class="editor-compose-fields">
->>>>>>> 7f4f399 (ok)
+        <p class="editor-label" style="margin-top:0;font-weight:700;letter-spacing:0.02em">Rédaction du brouillon</p>
+        <p class="editor-hint" style="margin:-0.35rem 0 0.75rem">C’est ce contenu qui est fusionné puis envoyé par Blast. Le bouton <strong>Enregistrer le brouillon</strong> le fixe dans IndexedDB ; si vous lancez l’envoi depuis <strong>Envoi (Blast)</strong>, l’app <strong>synchronise d’abord automatiquement</strong> les champs visibles ici (objet inclus), même sans avoir cliqué sur Enregistrer.</p>
         <label class="editor-label">Objet e-mail</label>
         <input type="text" id="ed-subject" class="editor-input" placeholder="Objet (variables {{...}} acceptées)" autocomplete="off"/>
         <label class="editor-label">Reply-To (optionnel)</label>
@@ -1460,34 +1094,29 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
         <textarea id="ed-html" class="editor-textarea" rows="16" spellcheck="false"></textarea>
         <p class="editor-label">Variables détectées</p>
         <div id="ed-var-chips" class="var-chips"></div>
-<<<<<<< HEAD
-        <div class="row-actions" style="margin-top:10px">
-=======
         <div class="row-actions editor-compose-actions">
->>>>>>> 7f4f399 (ok)
           <button type="button" class="btn" id="ed-preview-refresh">Actualiser l’aperçu</button>
           <button type="button" class="btn" id="ed-lint">Indicateur anti-spam</button>
         </div>
         <div id="ed-lint-out" class="ed-lint-out" hidden></div>
-<<<<<<< HEAD
-=======
+        <div class="editor-test-send-block">
+          <p class="editor-label" style="margin-top:1.1rem">E-mail de test (rendu réel)</p>
+          <p class="editor-hint" style="margin:-0.35rem 0 0.65rem">Envoie <strong>une fois</strong> le brouillon fusionné (profil du menu ci‑dessus + exemple de ligne « liste » : Marie Martin, Société Exemple) via votre <strong>relais</strong> et le <strong>premier compte actif</strong> du pool Gmail. L’objet est préfixé <code>[Test]</code> pour le repérer. Vérifiez le message sur <strong>webmail + mobile</strong> : le rendu peut différer de l’iframe d’aperçu.</p>
+          <div class="editor-test-send-row">
+            <input type="email" id="ed-test-to" class="editor-input" placeholder="Adresse qui recevra le test" autocomplete="email"/>
+            <button type="button" class="btn primary" id="ed-test-send">Envoyer le test</button>
+          </div>
+          <p id="ed-test-status" class="editor-hint" style="margin-top:0.5rem" aria-live="polite"></p>
         </div>
->>>>>>> 7f4f399 (ok)
+        </div>
       </div>
     </div>
   </div>
   <div class="editor-column editor-preview-column">
-<<<<<<< HEAD
-    <div class="panel">
-      <div class="panel-h">
-        <h2>Aperçu (profil + CV intégré)</h2>
-        <span class="editor-hint" style="margin:0">Rendu e-mail Gmail-friendly</span>
-=======
     <div class="panel editor-preview-panel">
       <div class="panel-h">
         <h2>Aperçu</h2>
-        <span class="editor-preview-tag">Profil + CV</span>
->>>>>>> 7f4f399 (ok)
+        <span class="editor-preview-tag" id="ed-preview-context-tag">—</span>
       </div>
       <div class="panel-b editor-preview-wrap">
         <div class="editor-preview-chrome" aria-hidden="true">
@@ -1504,7 +1133,10 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
   }
 
   async function buildPreviewData() {
-    const prof = (await db.getMeta('user_profile')) || {};
+    let prof = await getProfileForDraft();
+    if (!prof || typeof prof !== 'object') {
+      prof = (await db.getMeta('user_profile')) || {};
+    }
     let fromProfile = {};
     const merge = global.InvooEmailMerge;
     if (merge && typeof merge.profileToTemplateFields === 'function') {
@@ -1524,7 +1156,10 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
   }
 
   async function buildPreviewRaw() {
-    const prof = (await db.getMeta('user_profile')) || {};
+    let prof = await getProfileForDraft();
+    if (!prof || typeof prof !== 'object') {
+      prof = (await db.getMeta('user_profile')) || {};
+    }
     const merge = global.InvooEmailMerge;
     let cv = '';
     if (merge && typeof merge.profileCvRawHtml === 'function') {
@@ -1550,10 +1185,16 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
     if (!frame) return;
     const data = await buildPreviewData();
     const raw = await buildPreviewRaw();
+    const prof = await getProfileForDraft();
+    const merge = global.InvooEmailMerge;
+    let src = String(html || '');
+    if (merge && typeof merge.stripCvButtonIfNoCvPortfolioUrl === 'function') {
+      src = merge.stripCvButtonIfNoCvPortfolioUrl(src, prof);
+    }
     const langSel = document.querySelector('#email-editor-root #ed-tpl-lang');
     const previewLang = langSel && langSel.value === 'en' ? 'en' : 'fr';
     frame.onload = () => fitPreviewFrame(frame);
-    frame.srcdoc = applyVarsPreview(html, data, raw, { previewLang });
+    frame.srcdoc = applyVarsPreview(src, data, raw, { previewLang });
     setTimeout(() => fitPreviewFrame(frame), 120);
   }
 
@@ -1571,16 +1212,112 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
     const btnTplJob = root.querySelector('#ed-tpl-job');
     const btnTplVolunteer = root.querySelector('#ed-tpl-volunteer');
     const selTplLang = root.querySelector('#ed-tpl-lang');
-<<<<<<< HEAD
-=======
     const customName = root.querySelector('#ed-custom-name');
     const btnCustomSave = root.querySelector('#ed-custom-save');
     const customList = root.querySelector('#ed-custom-modules-list');
+    const selProfile = root.querySelector('#ed-profile-active');
     const selCv = root.querySelector('#ed-cv-active');
+    const previewTag = root.querySelector('#ed-preview-context-tag');
+    const btnOpenSettingsProfile = root.querySelector('#ed-open-settings-profile');
+
+    let lastGoodProfileId = '';
+    let lastGoodCvId = '';
+
+    function showEdToast(msg, isErr) {
+      const app = global.InvooApp;
+      if (app && app.showToast) app.showToast(msg, !!isErr);
+      else if (isErr) console.error(msg);
+      else console.info(msg);
+    }
+
+    async function updateEditorContextSummary() {
+      const el = root.querySelector('#ed-context-summary');
+      if (!el) return;
+      if (!global.InvooSettings || typeof global.InvooSettings.getProfile !== 'function') {
+        el.textContent =
+          'Profil : indisponible (rechargez la page). Les variables du brouillon utiliseront le dernier profil connu ou les listes importées seules.';
+        if (previewTag) previewTag.textContent = '—';
+        return;
+      }
+      try {
+        const p = await getProfileForDraft();
+        const globalP = await global.InvooSettings.getProfile();
+        const same =
+          p &&
+          globalP &&
+          p.id != null &&
+          globalP.id != null &&
+          String(p.id) === String(globalP.id);
+        const pLabel =
+          p.profileLabel != null && String(p.profileLabel).trim()
+            ? String(p.profileLabel).trim()
+            : [p.firstName, p.lastName].filter(Boolean).join(' ').trim() || 'Profil';
+        const variants = Array.isArray(p.cvHtmlVariants) ? p.cvHtmlVariants : [];
+        const cvPick =
+          variants.find((v) => v && String(v.id) === String(p.selectedCvHtmlId)) || variants[0];
+        const cvLabel =
+          cvPick && cvPick.label != null && String(cvPick.label).trim()
+            ? String(cvPick.label).trim()
+            : 'CV';
+        const gLabel =
+          globalP &&
+          (globalP.profileLabel != null && String(globalP.profileLabel).trim()
+            ? String(globalP.profileLabel).trim()
+            : [globalP.firstName, globalP.lastName].filter(Boolean).join(' ').trim() || 'Profil');
+        let html = `Ce brouillon fusionne avec le profil <strong>${escHtml(pLabel)}</strong> et le CV <strong>${escHtml(cvLabel)}</strong> (aperçu et Blast). Une colonne de liste <strong>non vide</strong> peut remplacer la même variable ; une cellule vide laisse la valeur du profil.`;
+        if (!same && globalP) {
+          html += ` <span style="opacity:0.88">Profil par défaut de l’app (Paramètres / tableau de bord) : <strong>${escHtml(gLabel)}</strong> — inchangé.</span>`;
+        }
+        el.innerHTML = html;
+        if (previewTag) {
+          const shortP = pLabel.length > 22 ? `${pLabel.slice(0, 20)}…` : pLabel;
+          const shortC = cvLabel.length > 18 ? `${cvLabel.slice(0, 16)}…` : cvLabel;
+          previewTag.textContent = `${shortP} · ${shortC}`;
+        }
+      } catch (e) {
+        el.textContent = 'Impossible de lire le profil. Vérifiez Paramètres ou rechargez la page.';
+        if (previewTag) previewTag.textContent = '—';
+      }
+    }
+
+    async function refreshProfileSelect() {
+      if (!selProfile || !global.InvooSettings || typeof global.InvooSettings.listProfiles !== 'function')
+        return;
+      const rows = await global.InvooSettings.listProfiles();
+      const d = await loadDraft();
+      const globalP = await global.InvooSettings.getProfile();
+      const globalId = globalP && globalP.id != null ? String(globalP.id) : '';
+      let want = d.draftProfileId != null ? String(d.draftProfileId).trim() : '';
+      if (want && !rows.some((r) => String(r.id) === want)) {
+        await saveDraft(d.subject, d.replyTo, d.html, { draftProfileId: null, silent: true });
+        want = '';
+      }
+      if (!want) {
+        want =
+          globalId && rows.some((r) => String(r.id) === globalId)
+            ? globalId
+            : rows[0]?.id
+              ? String(rows[0].id)
+              : '';
+      }
+      const opts = rows
+        .map((r) => {
+          const val = String(r.id).replace(/"/g, '&quot;');
+          return `<option value="${val}">${escHtml(r.label)}</option>`;
+        })
+        .join('');
+      selProfile.innerHTML = opts || '<option value="">—</option>';
+      if (want && rows.some((r) => String(r.id) === want)) {
+        selProfile.value = want;
+        lastGoodProfileId = want;
+      } else if (rows.length && rows[0].id) {
+        lastGoodProfileId = String(rows[0].id);
+      }
+    }
 
     async function refreshCvSelect() {
-      if (!selCv || !global.InvooSettings || typeof global.InvooSettings.getProfile !== 'function') return;
-      const p = await global.InvooSettings.getProfile();
+      if (!selCv || !global.InvooSettings) return;
+      const p = await getProfileForDraft();
       const variants = Array.isArray(p.cvHtmlVariants) ? p.cvHtmlVariants : [];
       const opts = variants
         .map((v) => {
@@ -1594,7 +1331,12 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
         p.selectedCvHtmlId && variants.some((x) => x.id === p.selectedCvHtmlId)
           ? p.selectedCvHtmlId
           : variants[0]?.id;
-      if (want && variants.some((x) => x.id === want)) selCv.value = want;
+      if (want && variants.some((x) => x.id === want)) {
+        selCv.value = want;
+        lastGoodCvId = want;
+      } else if (variants[0]?.id) {
+        lastGoodCvId = variants[0].id;
+      }
     }
 
     async function refreshCustomModulesList() {
@@ -1623,11 +1365,80 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
       customList.innerHTML = rows;
     }
 
+    if (btnOpenSettingsProfile) {
+      btnOpenSettingsProfile.addEventListener('click', () => {
+        const nav = global.InvooNavigation;
+        if (nav && typeof nav.setActivePage === 'function') nav.setActivePage('settings');
+        else showEdToast('Navigation indisponible.', true);
+      });
+    }
+
+    if (selProfile) {
+      selProfile.addEventListener('change', async () => {
+        const desired = selProfile.value;
+        try {
+          await saveDraft(subject.value, replyTo.value, ta.value, {
+            draftProfileId: desired,
+            silent: true
+          });
+          let sub = subject.value;
+          let rt = replyTo.value;
+          if (global.InvooSettings && typeof global.InvooSettings.getProfileById === 'function') {
+            const np = await global.InvooSettings.getProfileById(desired);
+            if (np) {
+              if (!String(sub || '').trim() && String(np.emailSubject || '').trim()) {
+                sub = String(np.emailSubject);
+              }
+              if (!String(rt || '').trim() && String(np.emailReplyTo || '').trim()) {
+                rt = String(np.emailReplyTo);
+              }
+            }
+          }
+          subject.value = sub;
+          replyTo.value = rt;
+          await saveDraft(sub, rt, ta.value, { draftProfileId: desired, silent: true });
+          lastGoodProfileId = desired;
+          await refreshCvSelect();
+          await syncTemplateLangFromDraftProfile();
+          await updateEditorContextSummary();
+          await updatePreview(frame, ta.value);
+        } catch (e) {
+          if (lastGoodProfileId && [...selProfile.options].some((o) => o.value === lastGoodProfileId)) {
+            selProfile.value = lastGoodProfileId;
+          }
+          showEdToast(e.message || String(e), true);
+        }
+      });
+    }
+
     if (selCv) {
-      selCv.addEventListener('change', () => {
+      selCv.addEventListener('change', async () => {
         const fn = global.InvooSettings && global.InvooSettings.setSelectedCvHtmlId;
         if (typeof fn !== 'function') return;
-        fn(selCv.value).catch(console.error);
+        const desired = selCv.value;
+        const d = await loadDraft();
+        const profileForCv =
+          d.draftProfileId != null && String(d.draftProfileId).trim()
+            ? String(d.draftProfileId).trim()
+            : undefined;
+        try {
+          const ok = await fn(desired, profileForCv);
+          if (!ok) {
+            if (lastGoodCvId && [...selCv.options].some((o) => o.value === lastGoodCvId)) {
+              selCv.value = lastGoodCvId;
+            }
+            showEdToast('Ce CV n’existe pas pour ce profil — choix réinitialisé.', true);
+            return;
+          }
+          lastGoodCvId = desired;
+          await updateEditorContextSummary();
+          await updatePreview(frame, ta.value);
+        } catch (e) {
+          if (lastGoodCvId && [...selCv.options].some((o) => o.value === lastGoodCvId)) {
+            selCv.value = lastGoodCvId;
+          }
+          showEdToast(e.message || String(e), true);
+        }
       });
     }
 
@@ -1728,7 +1539,6 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
         if (app && app.showToast) app.showToast('Module enregistré. Vous pouvez le réutiliser avec « Utiliser ».', false);
       });
     }
->>>>>>> 7f4f399 (ok)
 
     function tplLang() {
       return normalizeBaseLang(selTplLang && selTplLang.value);
@@ -1738,31 +1548,33 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
       renderVarChips(chips, extractVars(ta.value));
     }
 
+    /** Aligne la langue des modèles sur le profil du brouillon (Paramètres → ce profil). */
+    async function syncTemplateLangFromDraftProfile() {
+      if (!selTplLang || !subject || !ta) return;
+      const prof = await getProfileForDraft();
+      const lang = prof && prof.preferredTemplateLang === 'en' ? 'en' : 'fr';
+      if (selTplLang.value === lang) return;
+      selTplLang.value = lang;
+      await db.setMeta(META_BASE_LANG, lang);
+      swapDraftToTemplateLanguage(lang, subject, ta);
+      onTyping();
+      await saveDraft(subject.value, replyTo.value, ta.value, { silent: true });
+      await updatePreview(frame, ta.value);
+    }
+
     if (selTplLang) {
       selTplLang.addEventListener('change', () => {
         const lang = tplLang();
         db.setMeta(META_BASE_LANG, lang).catch(console.error);
         swapDraftToTemplateLanguage(lang, subject, ta);
         onTyping();
-<<<<<<< HEAD
-=======
         saveDraft(subject.value, replyTo.value, ta.value).catch(console.error);
->>>>>>> 7f4f399 (ok)
         updatePreview(frame, ta.value).catch(console.error);
       });
     }
 
     ta.addEventListener('input', onTyping);
 
-<<<<<<< HEAD
-    function applyBaseTemplate(subjectTpl, htmlTpl) {
-      const hasContent =
-        (ta.value || '').trim().length > 0 || (subject.value || '').trim().length > 0;
-      if (hasContent) {
-        const ok = global.confirm(
-          'Remplacer l’objet et le corps HTML par ce modèle ? Le contenu actuel sera perdu si vous n’avez pas enregistré.'
-        );
-=======
     async function applyBaseTemplate(subjectTpl, htmlTpl) {
       const hasContent =
         (ta.value || '').trim().length > 0 || (subject.value || '').trim().length > 0;
@@ -1779,48 +1591,20 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
           : global.confirm(
               'Remplacer l’objet et le corps HTML par ce modèle ? Le contenu actuel sera perdu si vous n’avez pas enregistré.'
             );
->>>>>>> 7f4f399 (ok)
         if (!ok) return;
       }
       subject.value = subjectTpl;
       ta.value = htmlTpl;
       onTyping();
-<<<<<<< HEAD
-=======
       try {
         await saveDraft(subject.value, replyTo.value, ta.value);
       } catch (e) {
         console.error(e);
       }
->>>>>>> 7f4f399 (ok)
       updatePreview(frame, ta.value).catch(console.error);
     }
 
     if (btnTplStage) {
-<<<<<<< HEAD
-      btnTplStage.addEventListener('click', () =>
-        applyBaseTemplate(
-          tplLang() === 'en' ? DEFAULT_STAGE_SUBJECT_EN : DEFAULT_STAGE_SUBJECT,
-          tplLang() === 'en' ? DEFAULT_STAGE_HTML_EN : DEFAULT_STAGE_HTML
-        )
-      );
-    }
-    if (btnTplJob) {
-      btnTplJob.addEventListener('click', () =>
-        applyBaseTemplate(
-          tplLang() === 'en' ? DEFAULT_JOB_SUBJECT_EN : DEFAULT_JOB_SUBJECT,
-          tplLang() === 'en' ? DEFAULT_JOB_HTML_EN : DEFAULT_JOB_HTML
-        )
-      );
-    }
-    if (btnTplVolunteer) {
-      btnTplVolunteer.addEventListener('click', () =>
-        applyBaseTemplate(
-          tplLang() === 'en' ? DEFAULT_VOLUNTEER_SUBJECT_EN : DEFAULT_VOLUNTEER_SUBJECT,
-          tplLang() === 'en' ? DEFAULT_VOLUNTEER_HTML_EN : DEFAULT_VOLUNTEER_HTML
-        )
-      );
-=======
       btnTplStage.addEventListener('click', () => {
         applyBaseTemplate(
           tplLang() === 'en' ? DEFAULT_STAGE_SUBJECT_EN : DEFAULT_STAGE_SUBJECT,
@@ -1843,7 +1627,6 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
           tplLang() === 'en' ? DEFAULT_VOLUNTEER_HTML_EN : DEFAULT_VOLUNTEER_HTML
         ).catch(console.error);
       });
->>>>>>> 7f4f399 (ok)
     }
 
     btnPrev.addEventListener('click', () => updatePreview(frame, ta.value).catch(console.error));
@@ -1862,13 +1645,172 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
           lintOut.hidden = false;
           lintOut.className = 'ed-lint-out ed-lint-ok';
           lintOut.textContent =
-            'Aucun problème évident détecté (analyse simple). Pensez à l’en-tête List-Unsubscribe côté envoi et au consentement des destinataires.';
+            'Aucun problème évident détecté (analyse simple). Utilisez « Envoyer le test » pour voir le rendu dans une vraie boîte (Gmail, etc.). Pensez au consentement des destinataires.';
           return;
         }
         lintOut.hidden = false;
         lintOut.className = 'ed-lint-out ed-lint-warn';
         lintOut.innerHTML = '<strong>Points à revoir :</strong><ul>' + warnings.map((w) => `<li>${escHtml(w)}</li>`).join('') + '</ul>';
       });
+    }
+
+    const btnTestSend = root.querySelector('#ed-test-send');
+    const inputTestTo = root.querySelector('#ed-test-to');
+    const testStatus = root.querySelector('#ed-test-status');
+
+    async function sendTestEmail() {
+      const netNow = global.InvooNetwork;
+      const relayNow = global.InvooSmtpRelayClient;
+      const settingsNow = global.InvooSettings;
+      const gmailNow = global.InvooGmailAccountStore;
+
+      const toAddr = inputTestTo ? String(inputTestTo.value || '').trim().toLowerCase() : '';
+      if (testStatus) testStatus.textContent = '';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(toAddr)) {
+        showEdToast('Indiquez une adresse e-mail de test valide.', true);
+        if (inputTestTo) inputTestTo.focus();
+        return;
+      }
+      if (!netNow || typeof netNow.requireOnline !== 'function') {
+        showEdToast('Réseau indisponible (rechargez la page).', true);
+        return;
+      }
+      if (!relayNow || typeof relayNow.relaySendMail !== 'function') {
+        showEdToast('Client relais SMTP indisponible. Rechargez la page après mise à jour de l’app.', true);
+        return;
+      }
+      if (!settingsNow || typeof settingsNow.getBlastConfig !== 'function' || !gmailNow) {
+        showEdToast('Paramètres ou pool Gmail indisponibles.', true);
+        return;
+      }
+      const merge = global.InvooEmailMerge;
+      if (!merge || typeof merge.mergeWithProfileAndContact !== 'function') {
+        showEdToast('Module de fusion e-mail indisponible.', true);
+        return;
+      }
+
+      if (btnTestSend) btnTestSend.disabled = true;
+      try {
+        await netNow.requireOnline('Envoi du test : connexion Internet requise.');
+        if (global.InvooCryptoVault && typeof global.InvooCryptoVault.ensureUnlockedForDevice === 'function') {
+          await global.InvooCryptoVault.ensureUnlockedForDevice();
+        }
+
+        await persistDraftFromEditorDom();
+
+        const draft = await loadDraft();
+        let profileForSend = null;
+        const dpid = draft.draftProfileId != null ? String(draft.draftProfileId).trim() : '';
+        if (dpid && settingsNow && typeof settingsNow.getProfileById === 'function') {
+          profileForSend = await settingsNow.getProfileById(dpid);
+        }
+        if (!profileForSend && settingsNow && typeof settingsNow.getProfile === 'function') {
+          profileForSend = await settingsNow.getProfile();
+        }
+
+        const templateRow = await getDraftAsTemplateRow();
+        if (!String(templateRow.subject || '').trim()) {
+          showEdToast('Objet vide — renseignez l’objet ou le profil (Objet e-mail).', true);
+          return;
+        }
+        if (!String(templateRow.html || '').trim()) {
+          showEdToast('Corps du message vide.', true);
+          return;
+        }
+
+        const testContact = {
+          id: '__editor_test_row__',
+          email: toAddr,
+          fields: {
+            prenom: 'Marie',
+            nom: 'Martin',
+            societe: 'Société Exemple SA',
+            organisation: 'Organisation Exemple'
+          }
+        };
+        const merged = await merge.mergeWithProfileAndContact(templateRow, testContact, profileForSend);
+        const testSubject = `[Test] ${String(merged.subject || '').trim()}`;
+
+        const cfg = await settingsNow.getBlastConfig();
+        const relayUrl = relayNow.normalizeBaseUrl(cfg.smtpRelayUrl);
+        const apiKey = cfg.smtpRelayApiKey != null ? String(cfg.smtpRelayApiKey) : '';
+
+        if (relayNow.mixedContentBlocksFetch && relayNow.mixedContentBlocksFetch(relayUrl)) {
+          showEdToast(
+            'HTTPS + relais en http:// : impossible depuis ce site. Utilisez localhost ou un relais HTTPS.',
+            true
+          );
+          return;
+        }
+
+        const health = await relayNow.relayHealth(relayUrl, apiKey);
+        if (!health.ok) {
+          showEdToast(health.message || 'Relais injoignable. Lancez le serveur dans server/.', true);
+          return;
+        }
+        const base = health.resolvedBase || relayUrl;
+
+        const rows = await gmailNow.listAccounts();
+        const pool = buildTestAccountPool(rows, cfg);
+        if (!pool.length) {
+          showEdToast('Aucun compte Gmail actif dans le pool (Paramètres).', true);
+          return;
+        }
+        const account = pool[0];
+        const auth = await gmailNow.getSmtpAuth(account.id);
+        if (!auth) {
+          showEdToast('Impossible de lire les identifiants du compte d’envoi (coffre ou compte désactivé).', true);
+          return;
+        }
+
+        const payload = {
+          auth,
+          from: auth.user,
+          to: toAddr,
+          subject: testSubject,
+          html: merged.html
+        };
+        if (merged.replyTo) payload.replyTo = merged.replyTo;
+        if (cfg.listUnsubscribeHeader) payload.listUnsubscribeHeader = true;
+        if (cfg.plainTextAlternative) payload.plainTextAlternative = true;
+
+        if (testStatus) testStatus.textContent = `Envoi via ${auth.user}…`;
+        await relayNow.relaySendMail(base, payload, apiKey);
+        await gmailNow.recordSendOutcome(account.id, {
+          ok: true,
+          disableOnError: cfg.disableOnError !== false
+        });
+        await db.appendLog('info', 'E-mail de test envoyé depuis l’éditeur.', {
+          to: toAddr,
+          from: auth.user
+        });
+        showEdToast(`Test envoyé vers ${toAddr} (expéditeur : ${auth.user}).`);
+        if (testStatus) testStatus.textContent = `Envoyé — vérifiez la boîte ${toAddr} (web + mobile). Expéditeur : ${auth.user}.`;
+        global.dispatchEvent(new CustomEvent('invooblast:blast-settings-updated'));
+      } catch (e) {
+        const msg = e && e.message ? String(e.message) : String(e);
+        showEdToast(msg, true);
+        if (testStatus) testStatus.textContent = '';
+        try {
+          const cfg = await settingsNow.getBlastConfig();
+          const rows = await gmailNow.listAccounts();
+          const pool = buildTestAccountPool(rows, cfg);
+          const account = pool[0];
+          if (account && gmailNow.recordSendOutcome) {
+            await gmailNow.recordSendOutcome(account.id, {
+              ok: false,
+              errorMessage: msg,
+              disableOnError: false
+            });
+          }
+        } catch (_) {}
+      } finally {
+        if (btnTestSend) btnTestSend.disabled = false;
+      }
+    }
+
+    if (btnTestSend) {
+      btnTestSend.addEventListener('click', () => sendTestEmail().catch((e) => showEdToast(e.message || String(e), true)));
     }
 
     btnSave.addEventListener('click', async () => {
@@ -1887,35 +1829,63 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
     });
 
     ensureLegacyTemplatesCleared()
-      .then(() => Promise.all([loadDraft(), db.getMeta(META_BASE_LANG)]))
-      .then(([d, savedLang]) => {
-        if (selTplLang) selTplLang.value = normalizeBaseLang(savedLang) === 'en' ? 'en' : 'fr';
-        subject.value = d.subject;
-        replyTo.value = d.replyTo;
+      .then(() => loadDraft())
+      .then(async (d) => {
+        let subj = d.subject;
+        let rto = d.replyTo;
+        const prof = await getProfileForDraft();
+        if (!String(subj || '').trim() && prof && String(prof.emailSubject || '').trim()) {
+          subj = String(prof.emailSubject);
+        }
+        if (!String(rto || '').trim() && prof && String(prof.emailReplyTo || '').trim()) {
+          rto = String(prof.emailReplyTo);
+        }
+        subject.value = subj;
+        replyTo.value = rto;
         ta.value = d.html;
-        swapDraftToTemplateLanguage(selTplLang ? selTplLang.value : 'fr', subject, ta);
+        if (
+          String(subj || '') !== String(d.subject || '') ||
+          String(rto || '') !== String(d.replyTo || '')
+        ) {
+          await saveDraft(subj, rto, d.html, { silent: true });
+        }
+        const lang = prof && prof.preferredTemplateLang === 'en' ? 'en' : 'fr';
+        if (selTplLang) selTplLang.value = lang;
+        await db.setMeta(META_BASE_LANG, lang);
+        swapDraftToTemplateLanguage(lang, subject, ta);
         onTyping();
         return updatePreview(frame, ta.value);
       })
-<<<<<<< HEAD
-      .catch(console.error);
-=======
-      .then(() => Promise.all([refreshCustomModulesList(), refreshCvSelect()]))
+      .then(() =>
+        Promise.all([refreshCustomModulesList(), refreshProfileSelect(), refreshCvSelect()])
+      )
+      .then(() => updateEditorContextSummary())
       .catch(console.error);
 
     root.__invooRefreshCustomModules = refreshCustomModulesList;
+    root.__invooRefreshProfileSelect = refreshProfileSelect;
     root.__invooRefreshCvSelect = refreshCvSelect;
->>>>>>> 7f4f399 (ok)
+    root.__invooUpdateContextSummary = updateEditorContextSummary;
+    root.__invooSyncTemplateLangFromDraftProfile = syncTemplateLangFromDraftProfile;
   }
 
   /** Même forme qu’un ancien « modèle » pour mergeWithProfileAndContact. */
   async function getDraftAsTemplateRow() {
     const d = await loadDraft();
+    let subj = d.subject;
+    let rto = d.replyTo;
+    const prof = await getProfileForDraft();
+    if (!String(subj || '').trim() && prof && String(prof.emailSubject || '').trim()) {
+      subj = String(prof.emailSubject);
+    }
+    if (!String(rto || '').trim() && prof && String(prof.emailReplyTo || '').trim()) {
+      rto = String(prof.emailReplyTo);
+    }
     return {
       id: 'draft',
       name: 'Brouillon',
-      subject: d.subject,
-      replyTo: d.replyTo,
+      subject: subj,
+      replyTo: rto,
       html: d.html
     };
   }
@@ -1935,23 +1905,38 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
     const chipsEl = root.querySelector('#ed-var-chips');
     const frameEl = root.querySelector('#ed-preview-frame');
     if (!taEl || !frameEl) return;
-    const [d, savedLang] = await Promise.all([loadDraft(), db.getMeta(META_BASE_LANG)]);
+    const d = await loadDraft();
+    const prof = await getProfileForDraft();
+    const lang = prof && prof.preferredTemplateLang === 'en' ? 'en' : 'fr';
     const langSel = root.querySelector('#ed-tpl-lang');
-    if (langSel) langSel.value = normalizeBaseLang(savedLang) === 'en' ? 'en' : 'fr';
-    if (subjectEl) subjectEl.value = d.subject;
-    if (replyEl) replyEl.value = d.replyTo;
+    if (langSel) langSel.value = lang;
+    await db.setMeta(META_BASE_LANG, lang);
+    let subj = d.subject;
+    let rto = d.replyTo;
+    if (!String(subj || '').trim() && prof && String(prof.emailSubject || '').trim()) {
+      subj = String(prof.emailSubject);
+    }
+    if (!String(rto || '').trim() && prof && String(prof.emailReplyTo || '').trim()) {
+      rto = String(prof.emailReplyTo);
+    }
+    if (subjectEl) subjectEl.value = subj;
+    if (replyEl) replyEl.value = rto;
     taEl.value = d.html;
-    if (subjectEl && taEl) swapDraftToTemplateLanguage(langSel ? langSel.value : 'fr', subjectEl, taEl);
+    if (
+      String(subj || '') !== String(d.subject || '') ||
+      String(rto || '') !== String(d.replyTo || '')
+    ) {
+      await saveDraft(subj, rto, d.html, { silent: true });
+    }
+    if (subjectEl && taEl) swapDraftToTemplateLanguage(lang, subjectEl, taEl);
     renderVarChips(chipsEl, extractVars(taEl.value));
-<<<<<<< HEAD
-    await updatePreview(frameEl, taEl.value);
-=======
+    if (typeof root.__invooRefreshProfileSelect === 'function') await root.__invooRefreshProfileSelect();
     if (typeof root.__invooRefreshCvSelect === 'function') await root.__invooRefreshCvSelect();
+    if (typeof root.__invooUpdateContextSummary === 'function') await root.__invooUpdateContextSummary();
     await updatePreview(frameEl, taEl.value);
     if (typeof root.__invooRefreshCustomModules === 'function') {
       await root.__invooRefreshCustomModules();
     }
->>>>>>> 7f4f399 (ok)
   }
 
   global.addEventListener('invooblast:page', (e) => {
@@ -1969,33 +1954,58 @@ I am open-minded, a good listener, and used to teamwork across diverse contexts;
     if (!root || root.dataset.mounted !== '1') return;
     const ta = root.querySelector('#ed-html');
     const frame = root.querySelector('#ed-preview-frame');
-<<<<<<< HEAD
-    if (ta && frame) updatePreview(frame, ta.value).catch(console.error);
-=======
     const sync = async () => {
+      if (typeof root.__invooRefreshProfileSelect === 'function') {
+        await root.__invooRefreshProfileSelect().catch(() => {});
+      }
       if (typeof root.__invooRefreshCvSelect === 'function') {
         await root.__invooRefreshCvSelect().catch(() => {});
+      }
+      if (typeof root.__invooSyncTemplateLangFromDraftProfile === 'function') {
+        await root.__invooSyncTemplateLangFromDraftProfile().catch(() => {});
+      }
+      if (typeof root.__invooUpdateContextSummary === 'function') {
+        await root.__invooUpdateContextSummary().catch(() => {});
       }
       if (ta && frame) await updatePreview(frame, ta.value).catch(console.error);
     };
     sync();
->>>>>>> 7f4f399 (ok)
+  });
+
+  global.addEventListener('invooblast:draft-updated', () => {
+    const root = document.getElementById('email-editor-root');
+    if (!root || root.dataset.mounted !== '1') return;
+    const ta = root.querySelector('#ed-html');
+    const frame = root.querySelector('#ed-preview-frame');
+    const sync = async () => {
+      if (typeof root.__invooRefreshProfileSelect === 'function') {
+        await root.__invooRefreshProfileSelect().catch(() => {});
+      }
+      if (typeof root.__invooRefreshCvSelect === 'function') {
+        await root.__invooRefreshCvSelect().catch(() => {});
+      }
+      if (typeof root.__invooUpdateContextSummary === 'function') {
+        await root.__invooUpdateContextSummary().catch(() => {});
+      }
+      if (ta && frame) await updatePreview(frame, ta.value).catch(console.error);
+    };
+    sync();
   });
 
   global.InvooEmailEditor = {
     init: initEmailEditor,
     applyVars,
+    applyVarsHeaders,
     applyVarsPreview,
     extractVars,
     buildPreviewData,
     buildPreviewRaw,
     loadDraft,
+    persistDraftFromEditorDom,
+    getProfileForDraft,
     getDraftAsTemplateRow,
-<<<<<<< HEAD
-=======
     getCustomModules,
     META_CUSTOM_MODULES,
->>>>>>> 7f4f399 (ok)
     META_BASE_LANG,
     normalizeBaseLang,
     DEFAULT_STAGE_SUBJECT,

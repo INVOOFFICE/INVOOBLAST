@@ -112,22 +112,16 @@
     if (window.InvooListsImport && typeof window.InvooListsImport.init === 'function') {
       window.InvooListsImport.init();
     }
-<<<<<<< HEAD
-=======
 
     if (window.InvooImapPage && typeof window.InvooImapPage.init === 'function') {
       window.InvooImapPage.init();
     }
->>>>>>> 7f4f399 (ok)
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     boot().catch((err) => console.error('[INVOOBLAST]', err));
   });
 
-<<<<<<< HEAD
-  window.InvooApp = { showToast };
-=======
   window.InvooApp = {
     showToast,
     confirm: (opts) => {
@@ -141,5 +135,4 @@
       return Promise.resolve(window.confirm(msg));
     }
   };
->>>>>>> 7f4f399 (ok)
 })();

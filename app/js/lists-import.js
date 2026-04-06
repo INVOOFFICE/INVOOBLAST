@@ -210,11 +210,7 @@
     return db.normalizeEmail('');
   }
 
-<<<<<<< HEAD
-  /** Corps du fichier modèle (même ordre que le tableau « Structure des colonnes »). */
-=======
   /** Corps du fichier modèle (en-têtes + une ligne d’exemple, ordre TEMPLATE_COLUMNS). */
->>>>>>> 7f4f399 (ok)
   function buildTemplateCsvBody() {
     const delim = ';';
     const header = TEMPLATE_COLUMNS.map((c) => c.label).join(delim);
@@ -248,13 +244,6 @@
   }
 
   function mount(root) {
-<<<<<<< HEAD
-    const rowsDoc = TEMPLATE_COLUMNS.map(
-      (c) =>
-        `<tr><td><code>${escHtml(c.label)}</code></td><td>${escHtml(c.desc)}</td></tr>`
-    ).join('');
-=======
->>>>>>> 7f4f399 (ok)
     root.innerHTML = `
 <div class="lists-import-page">
   <div class="panel">
@@ -271,27 +260,10 @@
   <div class="panel">
     <div class="panel-h"><h2>Structure des colonnes (modèle)</h2></div>
     <div class="panel-b">
-<<<<<<< HEAD
-      <div class="row-actions" style="flex-wrap:wrap;margin-bottom:0.85rem">
-        <button type="button" class="btn primary" id="li-download-template">Télécharger le modèle CSV</button>
-        <span class="editor-hint" style="margin:0;align-self:center">Fichier exemple avec une ligne ; séparateur <strong>;</strong> (souvent correct pour Excel FR).</span>
-      </div>
-      <div class="table-wrap">
-        <table class="lists-col-doc" role="table">
-          <thead><tr><th>Colonne (en-tête CSV)</th><th>Description</th></tr></thead>
-          <tbody>${rowsDoc}</tbody>
-        </table>
-      </div>
-      <p class="editor-hint" style="margin-top:0.75rem">
-        Colonnes supplémentaires acceptées (accents, espaces → clés normalisées). Si un modèle utilise encore <code>{{societe}}</code> plutôt que <code>{{organisation}}</code>,
-        ajoutez une colonne <code>societe</code> ou adaptez le HTML de l’éditeur.
-      </p>
-=======
       <div class="row-actions" style="flex-wrap:wrap;margin-bottom:0">
         <button type="button" class="btn primary" id="li-download-template">Télécharger le modèle CSV</button>
         <span class="editor-hint" style="margin:0;align-self:center">Fichier exemple avec une ligne ; séparateur <strong>;</strong> (souvent correct pour Excel FR).</span>
       </div>
->>>>>>> 7f4f399 (ok)
     </div>
   </div>
 
@@ -385,9 +357,6 @@
     wrap.querySelectorAll('[data-del-list]').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const id = btn.getAttribute('data-del-list');
-<<<<<<< HEAD
-        if (!id || !global.confirm('Supprimer cette liste et tous ses contacts ?')) return;
-=======
         if (!id) return;
         const dlg = global.InvooConfirm;
         const ok = dlg
@@ -400,7 +369,6 @@
             })
           : global.confirm('Supprimer cette liste et tous ses contacts ?');
         if (!ok) return;
->>>>>>> 7f4f399 (ok)
         const allC = await db.getAll(db.STORES.CONTACTS);
         await Promise.all(allC.filter((c) => c.listId === id).map((c) => db.del(db.STORES.CONTACTS, c.id)));
         await db.del(db.STORES.LISTS, id);
